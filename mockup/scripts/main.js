@@ -5,8 +5,3 @@
 
 /*jshint esversion: 6 */
 
- function writeToFile() {
-    let username = $('#username').val();
-
-    console.log(username); 
- }

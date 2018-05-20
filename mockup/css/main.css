@@ -16,3 +16,7 @@
     border-left-color: black;
     border-left-style:  dashed;
 }
+
+tr>th {
+    text-align: center;
+}

@@ -12,8 +12,6 @@
     <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
 </head>
 <body>
-    
-    <!-- TODO: Fix register and login username, password ids -->
 
     <div class="container">
         <!-- Title -->
@@ -28,15 +26,15 @@
             <div class="col-xs-12 col-sm-6 col-md-6">
                 <h2>Login</h2>
                 <hr>
-                <form class="form-horizontal" method="POST">
+                <form class="form-horizontal" method="POST" action="home-user.html">
                     <div class="form-group">                        
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="username" placeholder="Username">
+                            <input type="text" class="form-control" id="loginUsername" placeholder="Username">
                         </div>
                     </div>
                     <div class="form-group">                        
                         <div class="col-sm-12">
-                            <input type="password" class="form-control" id="password" placeholder="Password">
+                            <input type="password" class="form-control" id="loginPassword" placeholder="Password">
                         </div>
                     </div>                            
                     <div class="form-group">
@@ -99,7 +97,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <button onclick="writeToFile()" type="submit" class="full-width btn btn-primary">Register</button>
+                            <button type="submit" class="full-width btn btn-primary">Register</button>
                         </div>
                     </div>
                 </form>
