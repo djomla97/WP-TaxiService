@@ -7,7 +7,7 @@ namespace TaxiServiceWebAPI.Controllers
 {
     public class ValuesController : ApiController
     {
-        private readonly ITextWriter textWriter = new TextParser(@"C:\Users\Mladjo\Desktop\TaxiService\test.txt");
+        //private readonly ITextWriter textWriter = new TextParser(@"C:\Users\Mladjo\Desktop\TaxiService\test.txt");
 
         // GET api/values
         public IEnumerable<string> Get()
@@ -24,7 +24,7 @@ namespace TaxiServiceWebAPI.Controllers
         // POST api/values
         public void Post(User newUser)
         {
-            textWriter.WriteText($"{newUser.Username}, {newUser.Password}");
+            //textWriter.WriteText($"{newUser.Username}, {newUser.Password}");
         }
 
         // PUT api/values/5

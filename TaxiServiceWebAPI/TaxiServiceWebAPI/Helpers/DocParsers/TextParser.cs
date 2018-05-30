@@ -2,7 +2,7 @@
 
 namespace TaxiServiceWebAPI.Helpers.DocParsers
 {
-    public class TextParser : ITextWriter
+    public class TextParser
     {
         public string FilePath { get; set; }
 

@@ -189,8 +189,17 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\DocParsers\ITextWriter.cs" />
+    <Compile Include="Helpers\DocParsers\JsonWriter.cs" />
     <Compile Include="Helpers\DocParsers\TextParser.cs" />
+    <Compile Include="Helpers\Enums.cs" />
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\Comment.cs" />
+    <Compile Include="Models\Vehicle.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Dispatcher.cs" />
+    <Compile Include="Models\Driver.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Ride.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

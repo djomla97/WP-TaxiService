@@ -1,0 +1,24 @@
+[
+  {
+    "Username": "mladjo97",
+    "Password": "testpass",
+    "FirstName": null,
+    "LastName": null,
+    "JMBG": null,
+    "ContactPhone": null,
+    "Email": null,
+    "Role": 0,
+    "Rides": null
+  },
+  {
+    "Username": "usernametest",
+    "Password": "testpassword",
+    "FirstName": null,
+    "LastName": null,
+    "JMBG": null,
+    "ContactPhone": null,
+    "Email": null,
+    "Role": 0,
+    "Rides": null
+  }
+]
