@@ -1,67 +1,12 @@
 [
   {
-    "Username": "mladjo",
-    "Password": "mladjo",
-    "FirstName": "MLaden",
-    "LastName": "Milosevic",
-    "JMBG": "1240198",
-    "ContactPhone": "3059285",
-    "Email": "mladjo@admin.net",
-    "Role": 0,
-    "Rides": []
-  },
-  {
-    "Username": "mladjo",
-    "Password": "mladjo",
-    "FirstName": "MLaden",
-    "LastName": "Milosevic",
-    "JMBG": "1240198",
-    "ContactPhone": "3059285",
-    "Email": "mladjo@",
-    "Role": 0,
-    "Rides": []
-  },
-  {
-    "Username": "mladjo",
-    "Password": "mladjo",
-    "FirstName": "MLaden",
-    "LastName": "Milosevic",
-    "JMBG": "1240198",
-    "ContactPhone": "3059285",
-    "Email": "mladjo@ad",
-    "Role": 0,
-    "Rides": []
-  },
-  {
-    "Username": "mladjo",
-    "Password": "mladjo",
-    "FirstName": "MLaden",
-    "LastName": "Milosevic",
-    "JMBG": "1240198",
-    "ContactPhone": "3059285",
-    "Email": "mladjo@adfa",
-    "Role": 0,
-    "Rides": []
-  },
-  {
-    "Username": "afafafa",
-    "Password": "afafafa",
-    "FirstName": "afaf",
-    "LastName": "afafa",
-    "JMBG": "fafaf",
-    "ContactPhone": "afaf",
-    "Email": "afafaf@",
-    "Role": 0,
-    "Rides": []
-  },
-  {
-    "Username": "afafafar",
-    "Password": "afafafa",
-    "FirstName": "afaf",
-    "LastName": "afafa",
-    "JMBG": "fafaf",
-    "ContactPhone": "afaf",
-    "Email": "afafaf@a",
+    "Username": "demo",
+    "Password": "demo",
+    "FirstName": "John",
+    "LastName": "Doe",
+    "JMBG": "123654987",
+    "ContactPhone": "0645912654",
+    "Email": "demo@user.rs",
     "Role": 0,
     "Rides": []
   }

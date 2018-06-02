@@ -1,0 +1,24 @@
+[
+  {
+    "Username": "supermladen",
+    "Password": "admin",
+    "FirstName": "Mladen",
+    "LastName": "Milosevic",
+    "JMBG": "123456789321654",
+    "ContactPhone": "+3816541653",
+    "Email": "mladjo@taxiservice.com",
+    "Role": 1,
+    "Rides": []
+  },
+  {
+    "Username": "supermladen",
+    "Password": "admin",
+    "FirstName": "Mladen",
+    "LastName": "Milosevic",
+    "JMBG": "123456789321654",
+    "ContactPhone": "+3816541653",
+    "Email": "mladjo@taxiservice.com",
+    "Role": 1,
+    "Rides": []
+  }
+]

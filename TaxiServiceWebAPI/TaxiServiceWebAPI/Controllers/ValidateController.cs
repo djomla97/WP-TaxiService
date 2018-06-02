@@ -11,6 +11,7 @@ namespace TaxiServiceWebAPI.Controllers
     public class ValidateController : ApiController
     {
         private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\users.json");
+        private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\admins.json");
 
         // POST /api/validate/username
         [HttpPost]
@@ -20,13 +21,23 @@ namespace TaxiServiceWebAPI.Controllers
 
             try
             {
-                var found = jsonParser.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
+                var found = jsonParser.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();                
 
                 return "Found";
             }
             catch (Exception)
             {
-                return "Not Found";
+                try
+                {
+                    var found = jsonParserAdmins.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
+
+                    return "Found";
+                }
+                catch (Exception)
+                {
+
+                    return "Not Found";
+                }
             }
         }
 
@@ -44,10 +55,23 @@ namespace TaxiServiceWebAPI.Controllers
             }
             catch (Exception)
             {
-                return "Not Found";
+                try
+                {
+                    var found = jsonParserAdmins.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
+
+                    return "Found";
+                }
+                catch (Exception)
+                {
+
+                    return "Not Found";
+                }
             }
         }
 
+
+        // provera jmbg-a, al drzava treba da osigura da nije isti jmbg :)
+        /*
         // POST /api/validate/email
         [HttpPost]
         [ActionName("jmbg")]
@@ -65,6 +89,7 @@ namespace TaxiServiceWebAPI.Controllers
                 return "Not Found";
             }
         }
+        */
 
 
     }
