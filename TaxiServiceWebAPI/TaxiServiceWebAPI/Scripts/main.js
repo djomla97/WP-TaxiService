@@ -3,6 +3,11 @@
  * Date: 18.05.2018
  */
 
+/*
+ * TODO: Implement Submit changes to profile, Go back to info page profile in modal
+ *       and validation when changing information on user, so no empty, no missing chars like '@'
+ */
+
 $(document).ready(function () {
 
     // sakrijemo na pocetku div-ove
