@@ -27,7 +27,7 @@ $(document).ready(function () {
     $('#logoutButton').click(function (e) {
         e.preventDefault();
 
-        // logika za logout
+        // logika za logout ovde ide
 
         $('#login-register-view').show(1);
         $('#login-register-view').slideDown(500);
@@ -51,10 +51,8 @@ $(document).ready(function () {
 // helper funkcija za validaciju
 function tryAddUser() {
 
-    // promises, promises .. :)
+    // ... promises, promises :)
     $.when(checkEmail(), checkUsername()).done(function (emailFound, usernameFound) {
-        //console.log(emailFound[0]); //debug
-        //console.log(usernameFound[0]); //debug
 
         let canAddUser = true;
         let checkedRadioButtons = 0;
@@ -88,56 +86,32 @@ function tryAddUser() {
         });
 
         // radio button provera
-        if (checkedRadioButtons === 0) {
-            $('#radio-check').show();
-            $('#radio-check').addClass('found-check');
-            $('#radio-check').text('Please select a gender.');
+        if (checkedRadioButtons === 0) 
+            addValidationError('radio', 'found-check', 'Please select a gender.');
+         else 
+            removeValidationError('radio', 'found-check');
+        
 
-        } else {
-            $('#radio-check').hide();
-            $('#radio-check').text('');
-            $('#radio-check').removeClass('found-check');
-        }
-
-        // EMAIL
+        // Email check
         if (emailFound[0] === "Found") {
-            $('#email-check').show();
-            $('#email-check').addClass('not-available');
-            $('#email-check').text('Email is not available.');
-
+            addValidationError('email', 'not-available', 'Email is not available.');
         } else {
 
-            $('#email-check').hide();
-            $('#email-check').text('');
-            $('#email-check').removeClass('not-available');
+            removeValidationError('email', 'not-available');
 
-            if (!($('#email').val().indexOf('@') >= 0)) {
-                $('#email-check').show();
-                $('#email-check').addClass('found-check');
-                $('#email-check').text('You must have a @ in the email address.');
-            } else {
-                $('#email-check').hide();
-                $('#email-check').text('');
-                $('#email-check').removeClass('found-check');
-            }
+            if (!($('#email').val().indexOf('@') >= 0)) 
+                addValidationError('email', 'found-check', 'You must have a @ in the email address.');
+            else 
+                removeValidationError('email', 'found-check');
         }
 
-        // USERNAME
-        if (usernameFound[0] === "Found") {
-            $('#username-check').show();
-            $('#username-check').addClass('not-available');
-            $('#username-check').text('Username is taken.');
-        } else {
-            $('#username-check').hide();
-            $('#username-check').text('');
-            $('#username-check').removeClass('not-available');
-        }
+        // Username check
+        if (usernameFound[0] === "Found")
+            addValidationError('username', 'not-available', 'Username is taken.');
+        else
+            removeValidationError('username', 'not-available');
 
-        // sure thing
-        if (emailFound[0] == "Found" || usernameFound[0] == "Found") {
-            canAddUser = false;
-        }
-
+        
         // hack sa klasom
         $('#register-form p').each(function () {
             if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
@@ -145,6 +119,11 @@ function tryAddUser() {
             }
         });
 
+        // sure thing
+        if (emailFound[0] == "Found" || usernameFound[0] == "Found")
+            canAddUser = false;
+
+        // ako moze, neka doda aj'
         if (canAddUser) {
 
             var newUser = {};
@@ -198,4 +177,22 @@ function checkUsername() {
         contentType: 'application/json',
         data: JSON.stringify($('#username').val())
     });
+}
+
+// dry
+function removeValidationError(checkName, className) {
+
+    $(`#${checkName}-check`).hide();
+    $(`#${checkName}-check`).text('');
+    $(`#${checkName}-check`).removeClass(className);
+
+}
+
+// dry
+function addValidationError(checkName, className, message) {
+
+    $(`#${checkName}-check`).show();
+    $(`#${checkName}-check`).addClass(className);
+    $(`#${checkName}-check`).text(message);
+
 }
