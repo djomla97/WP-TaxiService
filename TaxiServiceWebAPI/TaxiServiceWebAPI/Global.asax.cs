@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using TaxiServiceWebAPI.Helpers;
 using TaxiServiceWebAPI.Helpers.DocParsers;
 using TaxiServiceWebAPI.Models;
 
@@ -36,10 +37,11 @@ namespace TaxiServiceWebAPI
                 Email = "mladjo@taxiservice.com",
                 ContactPhone = "+3816541653",
                 JMBG = "123456789321654",
+                Gender = Genders.Male.ToString(),
                 Rides = new List<Ride>() 
             });
 
-            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\admins.json");
+            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
 
             foreach (var admin in admins)
                 jsonParser.WriteUser(admin);

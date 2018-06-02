@@ -32,3 +32,17 @@ tr > th {
 
 .found-check { }
 .not-available { }
+
+.user-modal-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#user-info {
+    text-align: center;
+    font-size: 15px;
+}
+
+span.user-key {
+    font-weight: bold;
+}

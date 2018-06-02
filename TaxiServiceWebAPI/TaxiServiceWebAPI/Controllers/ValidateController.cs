@@ -10,8 +10,8 @@ namespace TaxiServiceWebAPI.Controllers
 {
     public class ValidateController : ApiController
     {
-        private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\users.json");
-        private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\admins.json");
+        private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
+        private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
 
         // POST /api/validate/username
         [HttpPost]
@@ -68,6 +68,8 @@ namespace TaxiServiceWebAPI.Controllers
                 }
             }
         }
+
+
 
 
         // provera jmbg-a, al drzava treba da osigura da nije isti jmbg :)
