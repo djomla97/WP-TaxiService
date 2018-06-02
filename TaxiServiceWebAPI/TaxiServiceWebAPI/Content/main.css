@@ -1,0 +1,34 @@
+﻿/*
+ * Author: Mladen Milosevic
+ * Date: 18.05.2018
+ */
+
+
+.center-text {
+    text-align: center;
+}
+
+.full-width {
+    width: 100%;
+}
+
+tr > th {
+    text-align: center;
+}
+
+.equal {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+}
+
+.found-p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 11px;
+    color: red;
+}
+
+.found-check { }
+.not-available { }

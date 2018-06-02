@@ -37,6 +37,29 @@ $(document).ready(function (){
 
     });
 
+    $('#registerButton').click(function(){
+        event.preventDefault();
+
+        // logika za register
+        let username = $('#username').val();
+        let password = $('#password').val();
+        let firstName = $('#firstName').val();
+        let lastName = $('#lastName').val();
+        let email = $('#email').val();
+        let phone = $('#phone').val();
+        let pid = $('#pid').val();
+        let gender = $('#radioGender').val();
+        console.log(gender);
+
+        /*
+        $.post('http://localhost:58775/api/users', function(data){
+            console.log('ok');
+        });
+        */
+
+    });
+
+
     // neka animacija .. nesto .. kao
     $('#login-form-view').hover(function(e){
         e.preventDefault();

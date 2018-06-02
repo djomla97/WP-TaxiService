@@ -7,28 +7,33 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using TaxiServiceWebAPI.Models;
 using TaxiServiceWebAPI.Helpers.DocParsers;
+using System.IO;
 
 namespace TaxiServiceWebAPI.Controllers
 {
     //[EnableCors(origins: "file:///C:/Users/Mladjo/Desktop/TaxiService/WP-TaxiService/mockup/index.html", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
-        private JsonWriter jsonWrites = new JsonWriter(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\users.json");
-
+        private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\users.json");
 
         // GET api/users
-        public string Get()
-        { 
-            return "opa prodje";
+        public bool Get()
+        {
+            return true;
         }
 
+
         // POST api/users
-        public HttpResponseMessage Post([FromBody] User newUser)
+        public HttpResponseMessage Post([FromBody]User newUser)
         {
-            jsonWrites.WriteUser(newUser);
+            newUser.Rides = new List<Ride>();
+
+            jsonParser.WriteUser(newUser);
 
             return Request.CreateResponse(HttpStatusCode.OK, "Added");
+
         }
 
     }
 }
+

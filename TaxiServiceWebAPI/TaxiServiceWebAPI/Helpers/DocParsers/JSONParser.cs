@@ -1,23 +1,23 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 using TaxiServiceWebAPI.Models;
 
 namespace TaxiServiceWebAPI.Helpers.DocParsers
 {
-    public class JsonWriter
+    public class JSONParser
     {
         private string path = string.Empty;
 
-        public JsonWriter(string path)
+        public JSONParser(string path)
         {
             this.path = path;
         }
 
+        /// <summary>
+        ///     Writes a single user into the specified .json file
+        /// </summary>
+        /// <param name="userData">user that should be saved</param>
         public void WriteUser(User userData)
         {
             if (!File.Exists(path))
@@ -42,5 +42,30 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             File.WriteAllText(path, jsonData);
 
         }
+
+        
+        /// <summary>
+        ///     Reads from a .json file for Users
+        /// </summary>
+        /// <returns>List of all users in specified file</returns>
+        public List<User> ReadUsers()
+        {
+            List<User> users = new List<User>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                users = JsonConvert.DeserializeObject<List<User>>(json);
+            }
+
+            return users;
+        }
+
     }
 }

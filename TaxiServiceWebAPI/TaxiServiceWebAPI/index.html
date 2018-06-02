@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -6,37 +6,38 @@
     <meta name="author" content="Mladen Milosevic">
     <meta name="description" content="A simple taxi service single page web app">
     <meta name="keywords" content="taxi, service, single, page, web, app">
-    <title>TaxiService app</title>
+    <title>TaxiService App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="Content/main.css" />
 </head>
+
 <body>
 
     <div class="container" id="login-register-view">
         <!-- Title -->
-        <div class="row center-text">            
-            <h1>Taxi Service</h1>            
+        <div class="row center-text">
+            <h1 id="site-title">Taxi Service</h1>
         </div>
 
         <!-- Login & Register forms -->
-        <div class="row center-text">
+        <div class="row center-text equal">
             <hr>
             <!-- Login -->
             <div class="col-xs-12 col-sm-6 col-md-6" id="login-form-view">
                 <h2>Login</h2>
                 <hr>
                 <form class="form-horizontal">
-                    <div class="form-group">                        
+                    <div class="form-group">
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="loginUsername" placeholder="Username">
                         </div>
                     </div>
-                    <div class="form-group">                        
+                    <div class="form-group">
                         <div class="col-sm-12">
                             <input type="password" class="form-control" id="loginPassword" placeholder="Password">
                         </div>
-                    </div>                            
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-12">
                             <button id="loginButton" class="full-width btn btn-primary">Log in</button>
@@ -50,49 +51,57 @@
                 <h2>Register</h2>
                 <hr>
                 <form id="register-form" class="form-horizontal">
-                    <div class="form-group">                            
+                    <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="username" placeholder="Username">
+                            <input type="text" class="form-control" id="username" placeholder="Username" />
+                            <p id="username-check" class="found-p"></p>
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="password" class="form-control" id="password" placeholder="Password">
-                        </div>
-                    </div>                  
-                    <div class="form-group">                            
-                        <div class="col-sm-12">
-                            <input type="email" class="form-control" id="email" placeholder="username@email.com">
+                            <input type="password" class="form-control" id="password" placeholder="Password" />
+                            <p id="password-check" class="found-p"></p>
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="firstName" placeholder="First name">
+                            <input type="email" class="form-control" id="email" placeholder="username@email.com" />
+                            <p id="email-check" class="found-p"></p>
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="lastName" placeholder="Last name">
+                            <input type="text" class="form-control" id="firstName" placeholder="First name" />
+                            <p id="firstname-check" class="found-p"></p>
                         </div>
                     </div>
-                    <div class="form-group">                            
+                    <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="pid" placeholder="PID">
+                            <input type="text" class="form-control" id="lastName" placeholder="Last name" />
+                            <p id="lastname-check" class="found-p"></p>
                         </div>
                     </div>
-                    <div class="form-group">                            
-                            <div class="col-sm-12">
-                                <input type="text" class="form-control" id="phone" placeholder="Phone number">
-                            </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="jmbg" placeholder="JMBG" />
+                            <p id="jmbg-check" class="found-p"></p>
                         </div>
-                    <div class="form-group">                            
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="phone" placeholder="Phone number" />
+                            <p id="phone-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-12">
                             <label class="radio-inline">
-                                <input type="radio" name="radioGender" id="radioGenderMale" value="male"> Male
+                                <input type="radio" name="radioGender" id="radioGenderMale" value="male" /> Male
                             </label>
                             <label class="radio-inline">
-                                <input type="radio" name="radioGender" id="radioGenderFemale" value="female"> Female
+                                <input type="radio" name="radioGender" id="radioGenderFemale" value="female" /> Female
                             </label>
+                            <p id="radio-check" class="found-p"></p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -105,8 +114,7 @@
         </div>
     </div>
     <!-- END of login-register div -->
-
-
+    <!-- Customer View -->
     <div class="container" id="home-customer-view">
         <!-- Hello message -->
         <div class="row center-text">
@@ -114,7 +122,7 @@
                 <h1>Hello, Mladen Milosevic</h1>
             </div>
         </div>
-        
+
         <!-- Options row -->
         <div class="row center-text">
             <div class="col-xs-12 col-sm-4 col-md-4">
@@ -126,14 +134,14 @@
             <div class="col-xs-12 col-sm-4 col-md-4">
                 <button id="logoutButton" type="button" class="btn btn-primary btn-lg btn-block">Log out</button>
             </div>
-        </div>        
-    
+        </div>
+
         <br>
 
         <!-- Tabela sa voznjama -->
         <div class="table-responsive">
-            <table class="table table-hover">   
-                <!-- Zaglavlja tabele -->         
+            <table class="table table-hover">
+                <!-- Zaglavlja tabele -->
                 <tr>
                     <th>ID</th>
                     <th>Start</th>
@@ -175,11 +183,12 @@
     </div>
     <!-- END of Home-Customer-View div  -->
 
-    
-    <!-- Javascript -->    
-    <script type="text/javascript" src="scripts/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="scripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="scripts/main.js"></script> 
+    <!-- Javascript -->
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="Scripts/validation.js"></script>
+    <script type="text/javascript" src="Scripts/animations.js"></script>
+    <script type="text/javascript" src="Scripts/main.js"></script>
 
 </body>
 </html>
