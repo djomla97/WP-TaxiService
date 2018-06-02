@@ -6,7 +6,7 @@ namespace TaxiServiceWebAPI.Models
     {
         public Dispatcher()
         {
-            this.Role = Roles.Dispatcher;
+            this.Role = Roles.Dispatcher.ToString();
         }
 
     }

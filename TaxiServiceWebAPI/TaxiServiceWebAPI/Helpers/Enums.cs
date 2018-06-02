@@ -39,4 +39,10 @@ namespace TaxiServiceWebAPI.Helpers
         FIVE = 5
     }
 
+    public enum Genders
+    {
+        Male,
+        Female
+    }
+
 }

@@ -6,7 +6,7 @@ namespace TaxiServiceWebAPI.Models
     {
         public Customer()
         {
-            this.Role = Roles.Customer; // vec je default
+            this.Role = Roles.Customer.ToString(); // vec je default
         }
     }
 }

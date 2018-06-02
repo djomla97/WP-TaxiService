@@ -9,7 +9,7 @@ namespace TaxiServiceWebAPI.Models
 
         public Driver()
         {
-            this.Role = Roles.Driver;
+            this.Role = Roles.Driver.ToString();
         }
 
     }

@@ -12,8 +12,9 @@ namespace TaxiServiceWebAPI.Models
         public string JMBG { get; set; }
         public string ContactPhone { get; set; }
         public string Email { get; set; }
-        public Roles Role { get; set; } = Roles.Customer;
+        public string Role { get; set; } = Roles.Customer.ToString();
         public List<Ride> Rides { get; set; }
+        public string Gender { get; set; } 
 
         public User() { }
     }
