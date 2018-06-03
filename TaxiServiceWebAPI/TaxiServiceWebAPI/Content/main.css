@@ -3,9 +3,18 @@
  * Date: 18.05.2018
  */
 
+#site-title {
+    margin: auto;
+    text-align: center;
+}
 
 .center-text {
+    margin: auto;
     text-align: center;
+}
+
+span.user-key {
+    font-weight: bold;
 }
 
 .full-width {
@@ -43,7 +52,5 @@ div#user-info {
     font-size: 15px;
 }
 
-span.user-key {
-    font-weight: bold;
-}
+
 

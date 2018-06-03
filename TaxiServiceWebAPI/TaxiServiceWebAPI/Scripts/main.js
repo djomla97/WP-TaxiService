@@ -20,7 +20,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         tryLoginUser();
-  
+
     });
 
     // kad klikne na logout, odjavi i ocisti cookies?
@@ -49,21 +49,43 @@ $(document).ready(function () {
     // otvanje modala
     $('#checkProfileButton').click(function () {
 
-        // restartujemo modal, da ne prikazuje edit stranicu
-        $('#editInfoButton').show();
-        $('#goBackToInfoButton').hide();
-        $('#saveChangesButton').hide();
+        $('#user-info').empty();
 
-        $('#closeModalButton').addClass('btn-primary');
-        $('#closeModalButton').removeClass('btn-secondary');
+        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+            console.log('Got user from web api: ');
+            console.log(JSON.stringify(user));
 
-        $('#edit-form').hide();
-        $('#edit-form').empty();
-        $('#user-info').show();
-        
-        // prikazemo modal
-        $('#profileModal').modal('show');
+            // update informacija trenutnog korisnika
+            $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${user.Username}</p>`);
+            $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${user.FirstName}</p>`);
+            $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${user.LastName}</p>`);
+            $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${user.Email}</p>`);
+            $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${user.JMBG}</p>`);
+            $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${user.ContactPhone}</p>`);
+            $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
+
+            console.log('Updated user info on modal.');
+
+            // restartujemo modal, da ne prikazuje edit stranicu
+            $('#editInfoButton').show();
+            $('#goBackToInfoButton').hide();
+            $('#saveChangesButton').hide();
+
+            $('#closeModalButton').addClass('btn-primary');
+            $('#closeModalButton').removeClass('btn-secondary');
+
+            $('#edit-form').hide();
+            $('#edit-form').empty();
+
+            $('#user-info').show();
+
+            // prikazemo modal
+            $('#profileModal').modal('show');
+            console.log('Modal opened successfully.');
+        });
+
     });
+
 
     // kad kliknemo na edit u modalu
     $('#editInfoButton').click(function () {
@@ -79,22 +101,24 @@ $(document).ready(function () {
         $('#closeModalButton').removeClass('btn-primary');
         $('#closeModalButton').addClass('btn-secondary');
 
+        $('#edit-form').empty();
         // bar radi :)
-        if (!$('#edit-form').html()) {
-            // https://img.devrant.com/devrant/rant/r_115445_YcizR.jpg
-            $('#user-info span').each(function () {
-                if (($(this).text().indexOf('Gender') >= 0)) {
-                    if ($(this).next().text() === "Male") {
-                        $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
-                    } else {
-                        $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
-                    }
+        // https://img.devrant.com/devrant/rant/r_115445_YcizR.jpg
+        $('#user-info span').each(function () {
+            if (($(this).text().indexOf('Gender') >= 0)) {
+                if ($(this).next().text() === "Male") {
+                    $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
                 } else {
-                    $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label>${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+                    $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
                 }
+            } else {
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+            }
 
-            });
-        }
+        });
+
+        // za Password
+        $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
         // prikazemo edit formu
         $('#edit-form').show();
@@ -106,7 +130,7 @@ $(document).ready(function () {
 
         // podesi modal na View user info
         $('#edit-form').hide();
-        $('#modal-title').text('User information');
+        $('#modalTitle').text('User information');
         $('#editInfoButton').show();
         $('#goBackToInfoButton').hide();
         $('#saveChangesButton').hide();
@@ -134,6 +158,10 @@ function tryEditUser() {
 
         // provera da li je prazno
         $('#edit-form input').each(function () {
+            // preskoci new password, optional je
+            if ($(this).attr('id') == 'editPassword')
+                return true;
+
             if (!$(this).val()) {
 
                 $(this).next().show();
@@ -154,6 +182,7 @@ function tryEditUser() {
 
         // Email check
         if (emailFound[0] === "Found") {
+            console.log('Info email:' + $('#info-email').text());
             if ($('#editEmail').val() === $('#info-email').text()) {
                 removeValidationError('editEmail', 'not-available');
                 foundEmail = 'Old one';
@@ -182,10 +211,10 @@ function tryEditUser() {
             }
 
         } else {
-            if (!$('#username').val())
-                addValidationError('editUsername', 'not-available', 'This field cannot be left empty.');
+            if (!$('#editUsername').val())
+                addValidationError('editUsername', 'found-check', 'This field cannot be left empty.');
             else
-                removeValidationError('editUsername', 'not-available');
+                removeValidationError('editUsername', 'found-check');
         }
 
         // hack sa klasom
@@ -208,12 +237,25 @@ function tryEditUser() {
             editedUser.Email = $('#editEmail').val();
             editedUser.ContactPhone = $('#editPhone').val();
             editedUser.JMBG = $('#editJMBG').val();
-            editedUser.Gender = $('#edit').val();
+            editedUser.Gender = $('input[name=editRadioGender]:checked').val();
+            editedUser.Password = $('#editPassword').val();
 
-            console.log(JSON.stringify(editedUser));
+            $.ajax({
+                method: 'PUT',
+                url: '/api/users/' + $('#info-username').text(),
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(editedUser)
+            }).done(function (user) {
+                console.log('Update passed.');
+                console.log('New user:');
+                console.log(JSON.stringify(user));
+
+                updateUserInformation(user);
+            });
 
         } else {
-            console.log('Ne moze');
+            console.log('Cannot update');
         }
 
 
@@ -241,8 +283,8 @@ function tryLoginUser() {
         removeValidationError('loginPassword', 'found-check');
 
     // dummy user za login
-    loginUser.Username = $('#loginUsername').val();
-    loginUser.Password = $('#loginPassword').val();
+    loginUser.username = $('#loginUsername').val();
+    loginUser.password = $('#loginPassword').val();
 
     let canLoginUser = true;
     // hack sa klasom
@@ -254,59 +296,50 @@ function tryLoginUser() {
 
     if (canLoginUser) {
         // poziv za login
-        $.ajax({
-            method: "POST",
-            url: "/api/users/login",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(loginUser)
-
-        }).done(function (user) {
-
+        $.post('/api/users/login', loginUser, function (loggedIn) {
             // restart login vrednosti
             $('#loginUsername').val('');
             $('#loginPassword').val('');
 
-            if (user.Username !== null) {
+            console.log('Logged in: ' + loggedIn);
 
-                $('#hello-message h1').text(`Hello, ${user.FirstName} ${user.LastName}`);
+            if (loggedIn !== false) {
 
-                // obrisemo postojece informacije za modal
-                $('#editInfoButton').show();
-                $('#goBackToInfoButton').hide();
-                $('#saveChangesButton').hide();
+                // uzmemo tog korisnika i update UI
+                $.get(`/api/users/${loginUser.username}`, function (user) {
+                    console.log('Username: ' + user.Username);
 
-                $('#closeModalButton').addClass('btn-primary');
-                $('#closeModalButton').removeClass('btn-secondary');
+                    $('#hello-message').text(`Hello, ${user.FirstName} ${user.LastName}`);
+                    $('#loggedIn-username').text(`${user.Username}`);
 
-                $('#edit-form').hide();
-                $('#user-info').show();
+                    // obrisemo postojece informacije za modal
+                    $('#editInfoButton').show();
+                    $('#goBackToInfoButton').hide();
+                    $('#saveChangesButton').hide();
 
-                // ne smeju drugi korisnici da dobiju informacije od prethodnog
-                $('#user-info').empty();
-                $('#edit-form').empty();
+                    $('#closeModalButton').addClass('btn-primary');
+                    $('#closeModalButton').removeClass('btn-secondary');
 
-                // update informacija trenutnog korisnika
-                $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${user.Username}</p>`);
-                $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${user.FirstName}</p>`);
-                $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${user.LastName}</p>`);
-                $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${user.Email}</p>`);
-                $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${user.JMBG}</p>`);
-                $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${user.ContactPhone}</p>`);
-                $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
+                    // better safe than sure
+                    $('#user-info').empty();
+                    $('#edit-form').empty();
 
-                // abra kadabra
-                $('#login-register-view').slideUp(300);
-                $('#login-register-view').hide(1);
+                    // abra kadabra
+                    $('#login-register-view').slideUp(300);
+                    $('#login-register-view').hide();
 
-                $('#home-customer-view').show();
+                    $('#home-customer-view').show();
+
+                });
 
             } else {
                 $('p.login-fail').css('text-weight', 'bold');
                 $('p.login-fail').css('color', 'red');
                 $('p.login-fail').text('Username and password do not match. Try again.');
             }
+
         });
+
     }
 }
 
@@ -406,14 +439,13 @@ function tryAddUser() {
             // Ajax za dodavanje korisnika
             $.ajax({
                 method: "POST",
-                url: "/api/users/register",
+                url: "/api/users",
                 contentType: "application/json",
                 dataType: "json",
                 data: JSON.stringify(newUser)
 
             }).done(function (data) {
                 console.log("Data: " + data);
-
             });
 
         } else {
@@ -427,20 +459,16 @@ function tryAddUser() {
 // deffered
 function checkEmail(email) {
     return $.ajax({
-        method: "POST",
-        url: "api/validate/email",
-        contentType: 'application/json',
-        data: JSON.stringify(email)
+        method: "GET",
+        url: "api/validate/email?email=" + email
     });
 }
 
 // deffered
 function checkUsername(username) {
     return $.ajax({
-        method: "POST",
-        url: "api/validate/Username",
-        contentType: 'application/json',
-        data: JSON.stringify(username)
+        method: "GET",
+        url: "api/validate/username?username=" + username
     });
 }
 
@@ -460,4 +488,20 @@ function addValidationError(checkName, className, message) {
     $(`#${checkName}-check`).addClass(className);
     $(`#${checkName}-check`).text(message);
 
+}
+
+function updateUserInformation(newUser) {
+    // update UI
+    $('#hello-message').text(`Hello, ${newUser.FirstName} ${newUser.LastName}`);
+    $('#loggedIn-username').text(newUser.Username);
+
+    $('#user-info').empty();
+    // update informacija editovanog korisnika
+    $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${newUser.Username}</p>`);
+    $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${newUser.FirstName}</p>`);
+    $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${newUser.LastName}</p>`);
+    $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${newUser.Email}</p>`);
+    $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${newUser.JMBG}</p>`);
+    $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${newUser.ContactPhone}</p>`);
+    $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${newUser.Gender}</p>`);
 }

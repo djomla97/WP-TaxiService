@@ -8,7 +8,7 @@
     <meta name="keywords" content="taxi, service, single, page, web, app">
     <title>TaxiService App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen"  href="Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="Content/main.css" />
 </head>
 
@@ -117,12 +117,15 @@
         </div>
     </div>
     <!-- END of login-register div -->
+
     <!-- Customer View -->
     <div class="container" id="home-customer-view">
         <!-- Hello message -->
-        <div id="hello-message" class="row center-text">
+        <div class="row center-text">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <h1></h1>
+                <h1 id="hello-message"></h1>
+                <h3>(<span id="loggedIn-username"></span>)</h3>
+                <hr />
             </div>
         </div>
 
@@ -186,18 +189,17 @@
     </div>
 
     <!-- Edit information about user -->
-    <div id="profileModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
+    <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" id="modalTitle">User information</h4>
+                    <h5 class="modal-title" id="modalTitle">User information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Podaci o korisniku -->
                     <div id="user-info"></div>
-                    <!-- Edit forma za korisnika -->
                     <div id="edit-form"></div>
                 </div>
                 <div class="modal-footer">
@@ -207,7 +209,6 @@
                     <button id="saveChangesButton" type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
-
         </div>
     </div>
 

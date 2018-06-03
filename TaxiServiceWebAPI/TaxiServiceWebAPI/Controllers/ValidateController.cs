@@ -8,15 +8,15 @@ using TaxiServiceWebAPI.Helpers.DocParsers;
 
 namespace TaxiServiceWebAPI.Controllers
 {
+    //[RoutePrefix("api/validate")]
     public class ValidateController : ApiController
     {
         private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
         private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
 
-        // POST /api/validate/username
-        [HttpPost]
-        [ActionName("username")]
-        public string CheckUsername([FromBody]string username)
+        [HttpGet]
+        [Route("api/validate/username")]
+        public string CheckUsername([FromUri]string username)
         {
 
             try
@@ -41,10 +41,9 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
-        // POST /api/validate/email
-        [HttpPost]
-        [ActionName("email")]
-        public string CheckEmail([FromBody]string email)
+        [HttpGet]
+        [Route("api/validate/email")]
+        public string CheckEmail(string email)
         {
 
             try

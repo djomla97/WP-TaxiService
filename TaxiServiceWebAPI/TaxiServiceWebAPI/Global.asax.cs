@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -26,6 +27,10 @@ namespace TaxiServiceWebAPI
 
         private void InitializeAdmins()
         {
+            // ne zelimo vise puta iste admine da unosi
+            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json"))
+                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
+
             List<Dispatcher> admins = new List<Dispatcher>();
 
             admins.Add(new Dispatcher()
@@ -46,6 +51,8 @@ namespace TaxiServiceWebAPI
             foreach (var admin in admins)
                 jsonParser.WriteUser(admin);
 
+            // stavimo read-only na file, da ne moze da se menja
+            //File.SetAttributes(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json", FileAttributes.ReadOnly);
 
     }
 

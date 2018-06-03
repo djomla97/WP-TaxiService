@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using TaxiServiceWebAPI.Models;
+using System.Linq;
 
 namespace TaxiServiceWebAPI.Helpers.DocParsers
 {
@@ -30,13 +31,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             var jsonData = File.ReadAllText(path);
 
             // zatim u listu pretvori
-            var employeeList = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
+            var users = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
 
             // doda novog
-            employeeList.Add(userData);
+            users.Add(userData);
 
             // zatim u Json pretvori listu, jer nam treba niz
-            jsonData = JsonConvert.SerializeObject(employeeList, Formatting.Indented);
+            jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
 
             // i onda upise u .json
             File.WriteAllText(path, jsonData);
@@ -66,6 +67,45 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             return users;
         }
+
+        /// <summary>
+        ///     Edits user information
+        /// </summary>
+        /// <param name="oldUsername">Username of user to be edited</param>
+        /// <param name="newUser">New user to replace the old one</param>
+        public void EditUser(string oldUsername, User newUser)
+        {
+            List<User> users = new List<User>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                users = JsonConvert.DeserializeObject<List<User>>(json);
+            }
+
+            User oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
+            newUser.Rides = oldUser.Rides;
+
+            if (newUser.Password == null || newUser.Password == string.Empty)
+                newUser.Password = oldUser.Password;
+                
+
+            // zamenimo ih samo
+            users.Remove(oldUser);
+            users.Add(newUser);
+
+            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+
+            File.WriteAllText(path, jsonData);
+
+        }
+
 
     }
 }

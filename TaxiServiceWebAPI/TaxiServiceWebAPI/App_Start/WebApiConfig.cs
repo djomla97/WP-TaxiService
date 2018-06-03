@@ -27,29 +27,10 @@ namespace TaxiServiceWebAPI
                 defaults: new { id = "index" });
 
 
-            // https://stackoverflow.com/questions/11407267/multiple-httppost-method-in-web-api-controller
-
-            // Controller Only
-            // To handle routes like `/api/VTRouting`
             config.Routes.MapHttpRoute(
-                name: "ControllerOnly",
-                routeTemplate: "api/{controller}"
-            );
-
-            // Controller with ID
-            // To handle routes like `/api/VTRouting/1`
-            config.Routes.MapHttpRoute(
-                name: "ControllerAndId",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: null,
-                constraints: new { id = @"^\d+$" } // Only integers 
-            );
-
-            // Controllers with Actions
-            // To handle routes like `/api/VTRouting/route`
-            config.Routes.MapHttpRoute(
-                name: "ControllerAndAction",
-                routeTemplate: "api/{controller}/{action}"
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{username}",
+                defaults: new { username = RouteParameter.Optional }
             );
 
 

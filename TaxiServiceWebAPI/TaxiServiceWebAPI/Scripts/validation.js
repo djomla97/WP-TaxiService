@@ -15,10 +15,8 @@ $(document).ready(function () {
         let username = $(this).val();
         
         $.ajax({
-            method: "POST",
-            url: "api/validate/Username",
-            contentType: 'application/json',
-            data: JSON.stringify(username)
+            method: "GET",
+            url: "api/validate/username?username="+username
         }).done(function (response) {
 
             //console.log("Response: " + response);
@@ -42,10 +40,8 @@ $(document).ready(function () {
         let email = $(this).val();
 
         $.ajax({
-            method: "POST",
-            url: "api/validate/email",
-            contentType: 'application/json',
-            data: JSON.stringify(email)
+            method: "GET",
+            url: "api/validate/email?email=" + email
         }).done(function (response) {
 
             //console.log("Response: " + response);
@@ -71,10 +67,8 @@ $(document).ready(function () {
         if (email !== $('#info-email')) {
 
             $.ajax({
-                method: "POST",
-                url: "api/validate/email",
-                contentType: 'application/json',
-                data: JSON.stringify(email)
+                method: "GET",
+                url: "api/validate/email?email=" + email
             }).done(function (response) {
 
                 //console.log("Response: " + response);
@@ -102,10 +96,8 @@ $(document).ready(function () {
         if (username !== $('#info-username')) {
 
             $.ajax({
-                method: "POST",
-                url: "api/validate/username",
-                contentType: 'application/json',
-                data: JSON.stringify(username)
+                method: "GET",
+                url: "api/validate/username?username=" + username
             }).done(function (response) {
 
                 //console.log("Response: " + response);
