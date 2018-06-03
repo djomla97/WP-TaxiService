@@ -48,14 +48,7 @@ $(document).ready(function () {
         $('#user-info').empty();
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
 
-            // update informacija trenutnog korisnika
-            $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${user.Username}</p>`);
-            $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${user.FirstName}</p>`);
-            $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${user.LastName}</p>`);
-            $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${user.Email}</p>`);
-            $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${user.JMBG}</p>`);
-            $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${user.ContactPhone}</p>`);
-            $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
+            updateUserInformation(user);
 
             console.log('Updated user info on modal.');
 
