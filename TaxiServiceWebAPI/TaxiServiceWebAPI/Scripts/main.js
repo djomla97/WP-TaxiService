@@ -4,8 +4,7 @@
  */
 
 /*
- * TODO: Implement api/edit for user and maybe email validation for a '.' after '@'
- *       
+ * TODO: maybe email validation for a '.' after '@'       
  */
 
 $(document).ready(function () {
@@ -14,13 +13,13 @@ $(document).ready(function () {
     $('#home-customer-view').css('display', 'none');
     $('#goBackToInfoButton').css('display', 'none');
     $('#saveChangesButton').css('display', 'none');
+    $('#edit-message-alert').css('display', 'none');
+    $('#register-message-alert').css('display', 'none');
 
     // ako klikne na login
     $('#loginButton').click(function (e) {
         e.preventDefault();
-
         tryLoginUser();
-
     });
 
     // kad klikne na logout, odjavi i ocisti cookies?
@@ -28,14 +27,12 @@ $(document).ready(function () {
         e.preventDefault();
 
         // logika za logout ovde ide
-        $('#user-info').html('');
-        $('#edit-form').html('');
+        $('#user-info').empty();
+        $('#edit-form').empty();
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
-
         $('#home-customer-view').hide();
-
     });
 
     // Klikom na register radimo validaciju i saljemo korisnika
@@ -43,17 +40,13 @@ $(document).ready(function () {
         event.preventDefault();
 
         tryAddUser();
-
     });
 
     // otvanje modala
     $('#checkProfileButton').click(function () {
-
+        $('#edit-message-alert').hide();
         $('#user-info').empty();
-
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
-            console.log('Got user from web api: ');
-            console.log(JSON.stringify(user));
 
             // update informacija trenutnog korisnika
             $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${user.Username}</p>`);
@@ -97,6 +90,7 @@ $(document).ready(function () {
         $('#editInfoButton').hide();
         $('#goBackToInfoButton').show();
         $('#saveChangesButton').show();
+        $('#edit-message-alert').hide();
 
         $('#closeModalButton').removeClass('btn-primary');
         $('#closeModalButton').addClass('btn-secondary');
@@ -136,6 +130,7 @@ $(document).ready(function () {
         $('#saveChangesButton').hide();
         $('#closeModalButton').removeClass('btn-secondary');
         $('#closeModalButton').addClass('btn-primary');
+        $('#edit-message-alert').hide();
         $('#user-info').show();
     });
 
@@ -148,8 +143,11 @@ $(document).ready(function () {
 
 }); // on ready
 
-function tryEditUser() {
 
+/* Helper funkcije */
+
+// Pokusava editovanje informacija korisnika ako je sve u formi dobro
+function tryEditUser() {
     $.when(checkEmail($('#editEmail').val()), checkUsername($('#editUsername').val())).done(function (emailFound, usernameFound) {
 
         let canEditUser = true;
@@ -163,21 +161,16 @@ function tryEditUser() {
                 return true;
 
             if (!$(this).val()) {
-
                 $(this).next().show();
                 $(this).next().addClass('found-check');
                 $(this).next().text('This field cannot be left empty.');
-
             } else {
-
                 if (!$(this).next().hasClass('not-available')) {
-
                     $(this).next().hide();
                     $(this).next().text('');
                     $(this).next().removeClass('found-check');
                 }
             }
-
         });
 
         // Email check
@@ -240,16 +233,17 @@ function tryEditUser() {
             editedUser.Gender = $('input[name=editRadioGender]:checked').val();
             editedUser.Password = $('#editPassword').val();
 
-            $.ajax({
+            $.ajax({                                
                 method: 'PUT',
                 url: '/api/users/' + $('#info-username').text(),
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify(editedUser)
-            }).done(function (user) {
-                console.log('Update passed.');
-                console.log('New user:');
-                console.log(JSON.stringify(user));
+            }).success(function (user) {
+
+                $('#edit-message-alert').show();
+                $('#edit-message-alert').text('User information was edited successfully.');
+                $('#edit-message-alert').delay(3000).slideUp(500);
 
                 updateUserInformation(user);
             });
@@ -263,8 +257,7 @@ function tryEditUser() {
 
 }
 
-
-// helper funkcija za validaciju login
+// helper funkcija za validaciju login forme i login akcije
 function tryLoginUser() {
 
     // napravimo dummy usera
@@ -297,9 +290,12 @@ function tryLoginUser() {
     if (canLoginUser) {
         // poziv za login
         $.post('/api/users/login', loginUser, function (loggedIn) {
-            // restart login vrednosti
+            // restart login/register vrednosti
             $('#loginUsername').val('');
             $('#loginPassword').val('');
+            $('#register-form input').each(function () {
+                $(this).val('');
+            });
 
             console.log('Logged in: ' + loggedIn);
 
@@ -343,7 +339,7 @@ function tryLoginUser() {
     }
 }
 
-// helper funkcija za validaciju registracije
+// helper funkcija za validaciju register forme i registera
 function tryAddUser() {
 
     // ... promises, promises :)
@@ -445,7 +441,14 @@ function tryAddUser() {
                 data: JSON.stringify(newUser)
 
             }).done(function (data) {
-                console.log("Data: " + data);
+                // ispraznimo sve
+                $('#register-form input').each(function () {
+                    $(this).val('');
+                });
+                // kazemo da moze da se loguje
+                $('#register-message-alert').text('Success! You can now log in to your account.');
+                $('#register-message-alert').show();
+                $('#register-message-alert').delay(3000).slideUp(500);
             });
 
         } else {

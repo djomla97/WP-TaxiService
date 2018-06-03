@@ -1,0 +1,14 @@
+[
+  {
+    "Username": "demo",
+    "Password": "demo",
+    "FirstName": "Demo",
+    "LastName": "User",
+    "JMBG": "12305965891239",
+    "ContactPhone": "6521492215",
+    "Email": "demo@demo.com",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Male"
+  }
+]

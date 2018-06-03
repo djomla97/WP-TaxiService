@@ -8,6 +8,21 @@
     text-align: center;
 }
 
+
+p#edit-message-alert {
+    text-align: center;
+    font-size: 14px;
+    color: green;
+    font-weight: bold;
+}
+
+p#register-message-alert {
+    text-align: center;
+    font-size: 14px;
+    color: green;
+    font-weight: bold;
+}
+
 .center-text {
     margin: auto;
     text-align: center;
