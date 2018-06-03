@@ -36,7 +36,7 @@ $(document).ready(function () {
         });
     });
 
-    // Username validacija
+    // Email validacija
     $('#email').on('input', function () {
 
         let email = $(this).val();
@@ -63,6 +63,66 @@ $(document).ready(function () {
         });
     });
 
+    // Edit email validacija
+    $('#editEmail').on('input', function () {
+
+        let email = $(this).val();
+
+        if (email !== $('#info-email')) {
+
+            $.ajax({
+                method: "POST",
+                url: "api/validate/email",
+                contentType: 'application/json',
+                data: JSON.stringify(email)
+            }).done(function (response) {
+
+                //console.log("Response: " + response);
+
+                if (response === "Found") {
+                    $('#email-form p').show();
+                    $('#email-form p').addClass('not-available');
+                    $('#email-form p').text('Email is not available.');
+                } else {
+                    $('#email-form p').hide();
+                    $('#email-form p').text('');
+                    $('#email-form p').removeClass('not-available');
+                }
+
+            });
+        }
+    });
+
+    // Edit username validacija
+    $('#editUsername').on('input', function () {
+
+        let username = $(this).val();
+        console.log(username);
+
+        if (username !== $('#info-username')) {
+
+            $.ajax({
+                method: "POST",
+                url: "api/validate/username",
+                contentType: 'application/json',
+                data: JSON.stringify(username)
+            }).done(function (response) {
+
+                //console.log("Response: " + response);
+
+                if (response === "Found") {
+                    $('#email-form p').show();
+                    $('#email-form p').addClass('not-available');
+                    $('#email-form p').text('Username is not available.');
+                } else {
+                    $('#email-form p').hide();
+                    $('#email-form p').text('');
+                    $('#email-form p').removeClass('not-available');
+                }
+
+            });
+        }
+    });
 
 
 
