@@ -59,6 +59,14 @@ span.user-key {
     font-weight: bold;
 }
 
+label#edit-form-label.user-key {
+    font-weight: bold;
+}
+
+edit-form-label {
+    font-weight: bold;
+}
+
 .full-width {
     width: 100%;
 }

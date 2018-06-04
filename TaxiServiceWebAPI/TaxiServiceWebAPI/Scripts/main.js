@@ -4,9 +4,7 @@
  */
 
 /*
- * TODO:
- * - when edit-form input changes, then enable Save changes
- * - two fields for Location for drivers
+ *  TODO:
  */
 
 $(document).ready(function () {
@@ -20,7 +18,6 @@ $(document).ready(function () {
     $('#home-customer-view').hide();
     $('#login-register-view').hide();
 
-    console.log('Cookie: ' + getCookie('loggedInCookie'));
     let loggedInUsername = getCookie('loggedInCookie');
 
     if (loggedInUsername !== null)
@@ -105,6 +102,14 @@ $(document).ready(function () {
         // update edit form
         updateEditForm();
 
+        // ne dozvoli izmenu ako nije nista izmenjeno
+        $('#saveChangesButton').prop('disabled', true);
+
+        // dodamo event listener na promene u input
+        $('form#edit-form :input').change(function () {
+            $('#saveChangesButton').prop('disabled', false);
+        });
+
         // prikazemo edit formu
         $('#edit-form').show();
     });
@@ -123,11 +128,12 @@ $(document).ready(function () {
         $('#closeModalButton').addClass('btn-primary');
         $('#edit-message-alert').hide();
         $('#user-info').show();
-    });
+    }); 
 
     // Save changes from edit-form
     $('#saveChangesButton').click(function () {
-        tryEditUser();
+        if (!$('#saveChangesButton').prop('disabled'))
+            tryEditUser();
     });
 
 }); // on ready
@@ -430,7 +436,6 @@ function tryEditUser() {
 
             // JMBG moze imati samo brojeve
             if ($(this).attr('id') == 'editJMBG') {
-                console.log($('#editJMBG').val().match(/^[\d]+$/g));
                 if ($('#editJMBG').val().match(/^[\d]+$/g) == null)
                     addValidationError('editJMBG', 'found-check', 'JMBG can only have numbers');
                 else
@@ -439,7 +444,6 @@ function tryEditUser() {
 
             // Phone moze imati samo brojeve i opciono na pocetku '+'
             if ($(this).attr('id') == 'editPhone') {
-                console.log('phone');
                 if (!$('#editPhone').val().match(/^\+?[\d]+$/g))
                     addValidationError('editPhone', 'found-check', 'Phone can only have numbers and an optional starting (+)');
                 else
@@ -499,6 +503,8 @@ function tryEditUser() {
         // sure thing
         if (foundEmail === "Found" || foundUsername === "Found")
             canEditUser = false;
+
+        console.log($('#edit-form').data('changed'));
 
         if (canEditUser) {
             let editedUser;
@@ -650,9 +656,9 @@ function updateEditForm() {
 
         if (($(this).text().indexOf('Gender') >= 0)) {
             if ($(this).next().text() === "Male") {
-                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12 center-text"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
             } else {
-                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12 center-text"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
             }
         } else {
             $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
@@ -666,6 +672,7 @@ function updateEditForm() {
 
 
 /* Cookie logika */
+// Source: https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript
 function setCookie(name, value, days) {
     var expires = "";
     if (days) {
