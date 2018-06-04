@@ -88,25 +88,9 @@ $(document).ready(function () {
         $('#closeModalButton').removeClass('btn-primary');
         $('#closeModalButton').addClass('btn-secondary');
 
-        $('#edit-form').empty();
-        // bar radi :)
-        // https://img.devrant.com/devrant/rant/r_115445_YcizR.jpg
-        $('#user-info span').each(function () {
-            if (($(this).text().indexOf('Gender') >= 0)) {
-                if ($(this).next().text() === "Male") {
-                    $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
-                } else {
-                    $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
-                }
-            } else {
-                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
-            }
-
-        });
-
-        // za Password
-        $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
-
+        // update edit form
+        updateEditForm();
+        
         // prikazemo edit formu
         $('#edit-form').show();
     });
@@ -486,18 +470,48 @@ function addValidationError(checkName, className, message) {
 
 }
 
-function updateUserInformation(newUser) {
+function updateUserInformation(user) {
     // update UI
-    $('#hello-message').text(`Hello, ${newUser.FirstName} ${newUser.LastName}`);
-    $('#loggedIn-username').text(newUser.Username);
+    $('#hello-message').text(`Hello, ${user.FirstName} ${user.LastName}`);
+    $('#loggedIn-username').text(user.Username);
 
     $('#user-info').empty();
     // update informacija editovanog korisnika
-    $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${newUser.Username}</p>`);
-    $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${newUser.FirstName}</p>`);
-    $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${newUser.LastName}</p>`);
-    $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${newUser.Email}</p>`);
-    $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${newUser.JMBG}</p>`);
-    $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${newUser.ContactPhone}</p>`);
-    $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${newUser.Gender}</p>`);
+    $('#user-info').append(`<span class="user-key">Username</span>: <p id="info-username">${user.Username}</p>`);
+    $('#user-info').append(`<span class="user-key">First name</span>: <p id="info-firstname">${user.FirstName}</p>`);
+    $('#user-info').append(`<span class="user-key">Last name</span>: <p id="info-lastname">${user.LastName}</p>`);
+    $('#user-info').append(`<span class="user-key">Email</span>: <p id="info-email">${user.Email}</p>`);
+    $('#user-info').append(`<span class="user-key">JMBG</span>: <p id="info-jmbg">${user.JMBG}</p>`);
+    $('#user-info').append(`<span class="user-key">Phone</span>: <p id="info-phone">${user.ContactPhone}</p>`);
+    $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
+
+    if (user.Role == 'Dispatcher' || user.Role == 'Driver') {
+        $('#user-info').append(`<span class="user-key">Role</span>: <p id="info-gender">${user.Role}</p>`);
+    }
+
+}
+
+function updateEditForm() {
+    $('#edit-form').empty();
+    // bar radi :)
+    // https://img.devrant.com/devrant/rant/r_115445_YcizR.jpg
+    $('#user-info span').each(function () {
+        if (($(this).text().indexOf('Role') >= 0))
+            return true;
+
+        if (($(this).text().indexOf('Gender') >= 0)) {
+            if ($(this).next().text() === "Male") {
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" checked/> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" /> Female </label></div></div>`);
+            } else {
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
+            }
+        } else {
+            $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+        }
+    });
+    // za Password
+    $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
+
+
+
 }
