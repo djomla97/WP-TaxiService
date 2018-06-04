@@ -120,7 +120,7 @@ $(document).ready(function () {
 }); // on ready
 
 
-/* Helper funkcije */
+/* HELPER FUNKCIJE */
 
 // Register & register validation
 function tryAddUser() {
@@ -141,6 +141,21 @@ function tryAddUser() {
                 }
             }
 
+            // JMBG moze imati samo brojeve
+            if ($(this).attr('id') == 'jmbg') {
+                if (!$('#jmbg').val().match(/^[\d]+$/g))                 
+                    addValidationError('jmbg', 'found-check', 'JMBG can only have numbers');
+                else
+                    removeValidationError('jmbg', 'found-check');
+            }
+
+            // Phone moze imati samo brojeve i opciono na pocetku '+'
+            if ($(this).attr('id') == 'phone') {
+                if (!$('#phone').val().match(/^\+?[\d]+$/g))
+                    addValidationError('phone', 'found-check', 'Phone can only have numbers and an optional starting (+)');
+                else
+                    removeValidationError('phone', 'found-check');
+            }
             // text input        
             if (!$(this).val()) {
 
@@ -151,10 +166,11 @@ function tryAddUser() {
             } else {
 
                 if (!$(this).next().hasClass('not-available')) {
-
-                    $(this).next().hide();
-                    $(this).next().text('');
-                    $(this).next().removeClass('found-check');
+                    if (!$(this).attr('id') == 'jmbg' || !$(this).attr('id') == 'phone') {
+                        $(this).next().hide();
+                        $(this).next().text('');
+                        $(this).next().removeClass('found-check');
+                    }
                 }
             }
         });
@@ -315,6 +331,9 @@ function tryLoginUser() {
                     $('#login-register-view').hide();
 
                     $('#home-customer-view').show();
+
+                    // sklonimo onaj login-fail
+                    $('p.login-fail').hide();
 
                 });
 
@@ -481,7 +500,7 @@ function addValidationError(checkName, className, message) {
 // dry
 function updateUserInformation(user) {
     // update UI
-    $('#hello-message').text(`Hello, ${user.FirstName} ${user.LastName}`);
+    $('#hello-message').text(`Hi, ${user.FirstName} ${user.LastName}`);
     $('#loggedIn-username').text(user.Username);
 
     $('#user-info').empty();
