@@ -4,17 +4,21 @@
  */
 
 /*
- * TODO: maybe email validation for a '.' after '@'       
+ * TODO:
+ * - maybe email validation for a '.' after '@' 
+ * - when edit-form input changes, then enable Save changes
+ * 
  */
 
 $(document).ready(function () {
 
     // sakrijemo na pocetku div-ove
+    $('#register-message-alert').css('display', 'none');
     $('#home-customer-view').css('display', 'none');
     $('#goBackToInfoButton').css('display', 'none');
     $('#saveChangesButton').css('display', 'none');
     $('#edit-message-alert').css('display', 'none');
-    $('#register-message-alert').css('display', 'none');
+    
 
     // ako klikne na login
     $('#loginButton').click(function (e) {
@@ -50,8 +54,6 @@ $(document).ready(function () {
 
             updateUserInformation(user);
 
-            console.log('Updated user info on modal.');
-
             // restartujemo modal, da ne prikazuje edit stranicu
             $('#editInfoButton').show();
             $('#goBackToInfoButton').hide();
@@ -67,7 +69,6 @@ $(document).ready(function () {
 
             // prikazemo modal
             $('#profileModal').modal('show');
-            console.log('Modal opened successfully.');
         });
 
     });
@@ -116,207 +117,12 @@ $(document).ready(function () {
         tryEditUser();
     });
 
-
-
 }); // on ready
 
 
 /* Helper funkcije */
 
-// Pokusava editovanje informacija korisnika ako je sve u formi dobro
-function tryEditUser() {
-    $.when(checkEmail($('#editEmail').val()), checkUsername($('#editUsername').val())).done(function (emailFound, usernameFound) {
-
-        let canEditUser = true;
-        let foundEmail = emailFound[0];
-        let foundUsername = usernameFound[0];
-
-        // provera da li je prazno
-        $('#edit-form input').each(function () {
-            // preskoci new password, optional je
-            if ($(this).attr('id') == 'editPassword')
-                return true;
-
-            if (!$(this).val()) {
-                $(this).next().show();
-                $(this).next().addClass('found-check');
-                $(this).next().text('This field cannot be left empty.');
-            } else {
-                if (!$(this).next().hasClass('not-available')) {
-                    $(this).next().hide();
-                    $(this).next().text('');
-                    $(this).next().removeClass('found-check');
-                }
-            }
-        });
-
-        // Email check
-        if (emailFound[0] === "Found") {
-            console.log('Info email:' + $('#info-email').text());
-            if ($('#editEmail').val() === $('#info-email').text()) {
-                removeValidationError('editEmail', 'not-available');
-                foundEmail = 'Old one';
-            } else {
-                addValidationError('editEmail', 'not-available', 'Email is not available.');
-            }
-        } else {
-
-            removeValidationError('editEmail', 'not-available');
-
-            console.log($('#editEmail').val());
-
-            if (!($('#editEmail').val().indexOf('@') >= 0))
-                addValidationError('editEmail', 'found-check', 'You must have a @ in the email address.');
-            else
-                removeValidationError('editEmail', 'found-check');
-        }
-
-        // Username check
-        if (usernameFound[0] === "Found") {
-            if ($('#editUsername').val() == $('#info-username').text()) {
-                removeValidationError('editUsername', 'not-available');
-                foundUsername = 'Old one';
-            } else {
-                addValidationError('editUsername', 'not-available', 'Username is taken.');
-            }
-
-        } else {
-            if (!$('#editUsername').val())
-                addValidationError('editUsername', 'found-check', 'This field cannot be left empty.');
-            else
-                removeValidationError('editUsername', 'found-check');
-        }
-
-        // hack sa klasom
-        $('#edit-form p').each(function () {
-            if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
-                canEditUser = false;
-            }
-        });
-
-        // sure thing
-        if (foundEmail === "Found" || foundUsername === "Found")
-            canEditUser = false;
-
-        if (canEditUser) {
-            let editedUser = {};
-
-            editedUser.Username = $('#editUsername').val();
-            editedUser.FirstName = $('#editFirstname').val();
-            editedUser.LastName = $('#editLastname').val();
-            editedUser.Email = $('#editEmail').val();
-            editedUser.ContactPhone = $('#editPhone').val();
-            editedUser.JMBG = $('#editJMBG').val();
-            editedUser.Gender = $('input[name=editRadioGender]:checked').val();
-            editedUser.Password = $('#editPassword').val();
-
-            $.ajax({                                
-                method: 'PUT',
-                url: '/api/users/' + $('#info-username').text(),
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(editedUser)
-            }).success(function (user) {
-
-                $('#edit-message-alert').show();
-                $('#edit-message-alert').text('User information was edited successfully.');
-                $('#edit-message-alert').delay(3000).slideUp(500);
-
-                updateUserInformation(user);
-            });
-
-        } else {
-            console.log('Cannot update');
-        }
-
-
-    });
-
-}
-
-// helper funkcija za validaciju login forme i login akcije
-function tryLoginUser() {
-
-    // napravimo dummy usera
-    let loginUser = {};
-
-    // username
-    if (!$('#loginUsername').val())
-        addValidationError('loginUsername', 'found-check', 'You must enter a username');
-    else
-        removeValidationError('loginUsername', 'found-check');
-
-    // password
-    if (!$('#loginPassword').val())
-        addValidationError('loginPassword', 'found-check', 'You must enter a password');
-    else
-        removeValidationError('loginPassword', 'found-check');
-
-    // dummy user za login
-    loginUser.username = $('#loginUsername').val();
-    loginUser.password = $('#loginPassword').val();
-
-    let canLoginUser = true;
-    // hack sa klasom
-    $('#login-form p').each(function () {
-        if ($(this).hasClass('found-check')) {
-            canLoginUser = false;
-        }
-    });
-
-    if (canLoginUser) {
-        // poziv za login
-        $.post('/api/users/login', loginUser, function (loggedIn) {
-            // restart login/register vrednosti
-            $('#loginUsername').val('');
-            $('#loginPassword').val('');
-            $('#register-form input').each(function () {
-                $(this).val('');
-            });
-
-            console.log('Logged in: ' + loggedIn);
-
-            if (loggedIn !== false) {
-
-                // uzmemo tog korisnika i update UI
-                $.get(`/api/users/${loginUser.username}`, function (user) {
-                    console.log('Username: ' + user.Username);
-
-                    $('#hello-message').text(`Hello, ${user.FirstName} ${user.LastName}`);
-                    $('#loggedIn-username').text(`${user.Username}`);
-
-                    // obrisemo postojece informacije za modal
-                    $('#editInfoButton').show();
-                    $('#goBackToInfoButton').hide();
-                    $('#saveChangesButton').hide();
-
-                    $('#closeModalButton').addClass('btn-primary');
-                    $('#closeModalButton').removeClass('btn-secondary');
-
-                    // better safe than sure
-                    $('#user-info').empty();
-                    $('#edit-form').empty();
-
-                    // abra kadabra
-                    $('#login-register-view').slideUp(300);
-                    $('#login-register-view').hide();
-
-                    $('#home-customer-view').show();
-
-                });
-
-            } else {
-                $('p.login-fail').css('text-weight', 'bold');
-                $('p.login-fail').css('color', 'red');
-                $('p.login-fail').text('Username and password do not match. Try again.');
-            }
-
-        });
-
-    }
-}
-
-// helper funkcija za validaciju register forme i registera
+// Register & register validation
 function tryAddUser() {
 
     // ... promises, promises :)
@@ -367,10 +173,18 @@ function tryAddUser() {
 
             removeValidationError('email', 'not-available');
 
+            // email validacija '@'
             if (!($('#email').val().indexOf('@') >= 0)) 
                 addValidationError('email', 'found-check', 'You must have a @ in the email address.');
             else 
                 removeValidationError('email', 'found-check');
+
+            // email validacija '.'
+            if (!($('#email').val().indexOf('.') >= ($('#email').val().indexOf('@'))))
+                addValidationError('email', 'found-check', 'You must have a dot (.) after @ in the email address.');
+            else
+                removeValidationError('email', 'found-check');
+
         }
 
         // Username check
@@ -436,6 +250,200 @@ function tryAddUser() {
 
 }
 
+// helper funkcija za validaciju login forme i login akcije
+function tryLoginUser() {
+
+    // napravimo dummy usera
+    let loginUser = {};
+
+    // username
+    if (!$('#loginUsername').val())
+        addValidationError('loginUsername', 'found-check', 'You must enter a username');
+    else
+        removeValidationError('loginUsername', 'found-check');
+
+    // password
+    if (!$('#loginPassword').val())
+        addValidationError('loginPassword', 'found-check', 'You must enter a password');
+    else
+        removeValidationError('loginPassword', 'found-check');
+
+    // dummy user za login
+    loginUser.username = $('#loginUsername').val();
+    loginUser.password = $('#loginPassword').val();
+
+    let canLoginUser = true;
+    // hack sa klasom
+    $('#login-form p').each(function () {
+        if ($(this).hasClass('found-check')) {
+            canLoginUser = false;
+        }
+    });
+
+    if (canLoginUser) {
+        // poziv za login
+        $.post('/api/users/login', loginUser, function (loggedIn) {
+            // restart login/register vrednosti
+            $('#loginUsername').val('');
+            $('#loginPassword').val('');
+            $('#register-form input').each(function () {
+                $(this).val('');
+            });
+
+            if (loggedIn !== false) {
+
+                // uzmemo tog korisnika i update UI
+                $.get(`/api/users/${loginUser.username}`, function (user) {
+
+                    $('#hello-message').text(`Hi, ${user.FirstName} ${user.LastName}`);
+                    $('#loggedIn-username').text(`${user.Username}`);
+
+                    // obrisemo postojece informacije za modal
+                    $('#editInfoButton').show();
+                    $('#goBackToInfoButton').hide();
+                    $('#saveChangesButton').hide();
+
+                    $('#closeModalButton').addClass('btn-primary');
+                    $('#closeModalButton').removeClass('btn-secondary');
+
+                    // better safe than sure
+                    $('#user-info').empty();
+                    $('#edit-form').empty();
+
+                    // abra kadabra
+                    $('#login-register-view').slideUp(300);
+                    $('#login-register-view').hide();
+
+                    $('#home-customer-view').show();
+
+                });
+
+            } else {
+                $('p.login-fail').css('text-weight', 'bold');
+                $('p.login-fail').css('color', 'red');
+                $('p.login-fail').text('Username and password do not match. Try again.');
+            }
+
+        });
+
+    }
+}
+
+// Pokusava editovanje informacija korisnika ako je sve u formi dobro
+function tryEditUser() {
+    $.when(checkEmail($('#editEmail').val()), checkUsername($('#editUsername').val())).done(function (emailFound, usernameFound) {
+
+        let canEditUser = true;
+        let foundEmail = emailFound[0];
+        let foundUsername = usernameFound[0];
+
+        // provera da li je prazno
+        $('#edit-form input').each(function () {
+            // preskoci new password, optional je
+            if ($(this).attr('id') == 'editPassword')
+                return true;
+
+            if (!$(this).val()) {
+                $(this).next().show();
+                $(this).next().addClass('found-check');
+                $(this).next().text('This field cannot be left empty.');
+            } else {
+                if (!$(this).next().hasClass('not-available')) {
+                    $(this).next().hide();
+                    $(this).next().text('');
+                    $(this).next().removeClass('found-check');
+                }
+            }
+        });
+
+        // Email check
+        if (emailFound[0] === "Found") {
+            if ($('#editEmail').val() === $('#info-email').text()) {
+                removeValidationError('editEmail', 'not-available');
+                foundEmail = 'Old one';
+            } else {
+                addValidationError('editEmail', 'not-available', 'Email is not available.');
+            }
+        } else {
+
+            removeValidationError('editEmail', 'not-available');
+
+            // email validacija '@'
+            if (!($('#editEmail').val().indexOf('@') >= 0))
+                addValidationError('editEmail', 'found-check', 'You must have a @ in the email address.');
+            else
+                removeValidationError('editEmail', 'found-check');
+
+            // email validacija '.'
+            if (!($('#editEmail').val().indexOf('.') >= ($('#editEmail').val().indexOf('@'))))
+                addValidationError('editEmail', 'found-check', 'You must have a dot (.) after @ in the email address.');
+            else
+                removeValidationError('editEmail', 'found-check');
+        }
+
+        // Username check
+        if (usernameFound[0] === "Found") {
+            if ($('#editUsername').val() == $('#info-username').text()) {
+                removeValidationError('editUsername', 'not-available');
+                foundUsername = 'Old one';
+            } else {
+                addValidationError('editUsername', 'not-available', 'Username is taken.');
+            }
+
+        } else {
+            if (!$('#editUsername').val())
+                addValidationError('editUsername', 'found-check', 'This field cannot be left empty.');
+            else
+                removeValidationError('editUsername', 'found-check');
+        }
+
+        // hack sa klasom
+        $('#edit-form p').each(function () {
+            if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
+                canEditUser = false;
+            }
+        });
+
+        // sure thing
+        if (foundEmail === "Found" || foundUsername === "Found")
+            canEditUser = false;
+
+        if (canEditUser) {
+            let editedUser = {};
+
+            editedUser.Username = $('#editUsername').val();
+            editedUser.FirstName = $('#editFirstname').val();
+            editedUser.LastName = $('#editLastname').val();
+            editedUser.Email = $('#editEmail').val();
+            editedUser.ContactPhone = $('#editPhone').val();
+            editedUser.JMBG = $('#editJMBG').val();
+            editedUser.Gender = $('input[name=editRadioGender]:checked').val();
+            editedUser.Password = $('#editPassword').val();
+
+            $.ajax({
+                method: 'PUT',
+                url: '/api/users/' + $('#info-username').text(),
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(editedUser)
+            }).success(function (user) {
+
+                $('#edit-message-alert').show();
+                $('#edit-message-alert').text('User information was edited successfully.');
+                $('#edit-message-alert').delay(3000).slideUp(500);
+
+                updateUserInformation(user);
+            });
+
+        } else {
+            console.log('Cannot update');
+        }
+
+
+    });
+
+}
+
 // deffered
 function checkEmail(email) {
     return $.ajax({
@@ -470,6 +478,7 @@ function addValidationError(checkName, className, message) {
 
 }
 
+// dry
 function updateUserInformation(user) {
     // update UI
     $('#hello-message').text(`Hello, ${user.FirstName} ${user.LastName}`);
@@ -491,6 +500,7 @@ function updateUserInformation(user) {
 
 }
 
+// dry
 function updateEditForm() {
     $('#edit-form').empty();
     // bar radi :)
@@ -509,6 +519,7 @@ function updateEditForm() {
             $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
         }
     });
+
     // za Password
     $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 

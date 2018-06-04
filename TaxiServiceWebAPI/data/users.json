@@ -10,5 +10,29 @@
     "Role": "Customer",
     "Rides": [],
     "Gender": "Male"
+  },
+  {
+    "Username": "biancafraneta",
+    "Password": "volimmladju",
+    "FirstName": "Aleksandra",
+    "LastName": "Franeta",
+    "JMBG": "21545321321321",
+    "ContactPhone": "+63338974",
+    "Email": "bianca@franeta.rs",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Female"
+  },
+  {
+    "Username": "demo",
+    "Password": "user",
+    "FirstName": "Demo",
+    "LastName": "User",
+    "JMBG": "1239566",
+    "ContactPhone": "245666",
+    "Email": "demo@d.com",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Male"
   }
 ]
