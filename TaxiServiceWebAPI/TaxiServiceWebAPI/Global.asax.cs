@@ -42,6 +42,7 @@ namespace TaxiServiceWebAPI
                 Email = "mladjo@taxiservice.com",
                 ContactPhone = "+3816541653",
                 JMBG = "123456789321654",
+                Role = Roles.Dispatcher.ToString(),
                 Gender = Genders.Male.ToString(),
                 Rides = new List<Ride>() 
             });

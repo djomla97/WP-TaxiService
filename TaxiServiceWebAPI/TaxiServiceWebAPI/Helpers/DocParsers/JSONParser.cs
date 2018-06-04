@@ -91,11 +91,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             User oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
             newUser.Rides = oldUser.Rides;
+            // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
+            newUser.Role = oldUser.Role; 
 
+            // ako ne izmeni sifru
             if (newUser.Password == null || newUser.Password == string.Empty)
                 newUser.Password = oldUser.Password;
                 
-
             // zamenimo ih samo
             users.Remove(oldUser);
             users.Add(newUser);
@@ -103,7 +105,6 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
 
             File.WriteAllText(path, jsonData);
-
         }
 
 
