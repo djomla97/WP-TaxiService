@@ -11,14 +11,22 @@
 
 $(document).ready(function () {
 
-    // sakrijemo na pocetku div-ove
-    $('#register-message-alert').css('display', 'none');
-    $('#home-customer-view').css('display', 'none');
-    $('#goBackToInfoButton').css('display', 'none');
-    $('#saveChangesButton').css('display', 'none');
-    $('#edit-message-alert').css('display', 'none');
+    // sakrijemo div-ove 
+    $('#saveChangesButton').hide();
+    $('#edit-message-alert').hide();
+    $('#goBackToInfoButton').hide();
     $('#order-ride-div').hide();
     $('#seeRidesDiv').hide();
+    $('#home-customer-view').hide();
+    $('#login-register-view').hide();
+
+    console.log('Cookie: ' + getCookie('loggedInCookie'));
+    let loggedInUsername = getCookie('loggedInCookie');
+
+    if (loggedInUsername !== null)
+        loginFromCookie(loggedInUsername);
+    else 
+        $('#login-register-view').show();
 
 
     // ako klikne na login
@@ -32,7 +40,9 @@ $(document).ready(function () {
     $('#logoutButton').click(function (e) {
         e.preventDefault();
 
-        // logika za logout ovde ide
+        // neka logika za logout ???
+        eraseCookie('loggedInCookie');
+
         $('#user-info').empty();
         $('#edit-form').empty();
 
@@ -217,8 +227,6 @@ function tryAddUser() {
         else
             removeValidationError('radiogender', 'found-check');
 
-
-
         // hack sa klasom
         $('#register-form p').each(function () {
             if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
@@ -273,6 +281,40 @@ function tryAddUser() {
 
 }
 
+// helper for logged in user
+function loginFromCookie(username) {
+    // uzmemo tog korisnika i update UI
+    $.get(`/api/users/${username}`, function (user) {
+
+        console.log('User login from cookie');
+
+        $('#fullName').text(`${user.FirstName} ${user.LastName}`);
+        $('#loggedIn-username').text(`${user.Username}`);
+
+        // obrisemo postojece informacije za modal
+        $('#editInfoButton').show();
+        $('#goBackToInfoButton').hide();
+        $('#saveChangesButton').hide();
+
+        $('#closeModalButton').addClass('btn-primary');
+        $('#closeModalButton').removeClass('btn-secondary');
+
+        // better safe than sure
+        $('#user-info').empty();
+        $('#edit-form').empty();
+
+        // abra kadabra
+        $('#login-register-view').slideUp(300);
+        $('#login-register-view').hide();
+
+        $('#home-customer-view').show();
+
+        // sklonimo onaj login-fail
+        $('p.login-fail').hide();
+
+    });
+}
+
 // helper funkcija za validaciju login forme i login akcije
 function tryLoginUser() {
 
@@ -318,7 +360,9 @@ function tryLoginUser() {
                 // uzmemo tog korisnika i update UI
                 $.get(`/api/users/${loginUser.username}`, function (user) {
 
-                    //console.log(JSON.stringify(user));
+                    console.log('Setting cookie');
+                    setCookie('loggedInCookie', loginUser.username, 1);
+                    console.log('Cookie set')
 
                     $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
@@ -508,15 +552,14 @@ function tryEditUser() {
                 $('#edit-message-alert').delay(3000).slideUp(500);
 
                 updateUserInformation(user);
+                eraseCookie('loggedInCookie');
+                setCookie('loggedInCookie', user.Username, 1);
             });
 
         } else {
             console.log('Cannot update');
         }
-
-
     });
-
 }
 
 // deffered
@@ -619,4 +662,29 @@ function updateEditForm() {
     // za Password
     $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
+}
+
+
+/* Cookie logika */
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
 }

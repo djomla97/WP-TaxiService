@@ -48,8 +48,6 @@
     "Gender": ""
   },
   {
-    "DriverLocation": null,
-    "DriverVehicle": null,
     "Username": "rere",
     "Password": "rere",
     "FirstName": "Rere",
@@ -57,6 +55,18 @@
     "JMBG": "654654654",
     "ContactPhone": "+326115151",
     "Email": "rere@rere.rom",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Male"
+  },
+  {
+    "Username": "demotwo",
+    "Password": "demo",
+    "FirstName": "Demo",
+    "LastName": "User",
+    "JMBG": "65432198465",
+    "ContactPhone": "+33322",
+    "Email": "demo@user.com",
     "Role": "Customer",
     "Rides": [],
     "Gender": "Male"
