@@ -17,6 +17,7 @@ namespace TaxiServiceWebAPI.Controllers
     {
         private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
         private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
+        private JSONParser jsonParserDrivers = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
 
         // GET api/users
         [HttpGet]
@@ -41,7 +42,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var foundUser = jsonParserAdmins.ReadUsers()
+                    var foundUser = jsonParserDrivers.ReadDrivers()
                             .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
 
                     return foundUser;
@@ -49,7 +50,18 @@ namespace TaxiServiceWebAPI.Controllers
                 }
                 catch (Exception)
                 {
-                    return null;
+                    try
+                    {
+                        var foundUser = jsonParserAdmins.ReadDispatchers()
+                                .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
+
+                        return foundUser;
+
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
                 }
             }
         }
@@ -68,25 +80,41 @@ namespace TaxiServiceWebAPI.Controllers
         }
 
         // PUT api/users/username
-        public User Put(string username, [FromBody]User editedUser)
+        public User Put(string username, [FromBody]Driver editedUser)
         {
-            try
-            {
-                jsonParser.EditUser(username, editedUser);
-
-                return editedUser;
-            }
-            catch (Exception)
+            if (editedUser.DriverLocation != null)
             {
                 try
                 {
-                    jsonParserAdmins.EditUser(username, editedUser);
+                    jsonParserDrivers.EditDriver(username, editedUser);
 
                     return editedUser;
                 }
                 catch (Exception)
                 {
                     return null;
+                }
+            }
+            else
+            {
+                try
+                {
+                    jsonParser.EditUser(username, editedUser);
+
+                    return editedUser;
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        jsonParserAdmins.EditUser(username, editedUser);
+
+                        return editedUser;
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
                 }
             }
         }
@@ -111,7 +139,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var foundUser = jsonParserAdmins.ReadUsers()
+                    var foundUser = jsonParserDrivers.ReadUsers()
                                 .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
 
                     return true;
@@ -119,7 +147,18 @@ namespace TaxiServiceWebAPI.Controllers
                 }
                 catch (Exception)
                 {
-                    return false;
+                    try
+                    {
+                        var foundUser = jsonParserAdmins.ReadUsers()
+                                    .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
+
+                        return true;
+
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
                 }
             }
         }

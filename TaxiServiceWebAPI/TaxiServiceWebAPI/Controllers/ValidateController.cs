@@ -13,6 +13,7 @@ namespace TaxiServiceWebAPI.Controllers
     {
         private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
         private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
+        private JSONParser jsonParserDrivers = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
 
         [HttpGet]
         [Route("api/validate/username")]
@@ -29,14 +30,24 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var found = jsonParserAdmins.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
+                    var found = jsonParserDrivers.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
 
                     return "Found";
                 }
                 catch (Exception)
                 {
 
-                    return "Not Found";
+                    try
+                    {
+                        var found = jsonParserAdmins.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
+
+                        return "Found";
+                    }
+                    catch (Exception)
+                    {
+
+                        return "Not Found";
+                    }
                 }
             }
         }
@@ -56,42 +67,27 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var found = jsonParserAdmins.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
+                    var found = jsonParserDrivers.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
 
                     return "Found";
                 }
                 catch (Exception)
                 {
 
-                    return "Not Found";
+                    try
+                    {
+                        var found = jsonParserAdmins.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
+
+                        return "Found";
+                    }
+                    catch (Exception)
+                    {
+
+                        return "Not Found";
+                    }
                 }
             }
         }
-
-
-
-
-        // provera jmbg-a, al drzava treba da osigura da nije isti jmbg :)
-        /*
-        // POST /api/validate/email
-        [HttpPost]
-        [ActionName("jmbg")]
-        public string CheckJMBG([FromBody]string jmbg)
-        {
-
-            try
-            {
-                var found = jsonParser.ReadUsers().Where(u => u.JMBG.ToLower().Equals(jmbg.ToLower())).First();
-
-                return "Found";
-            }
-            catch (Exception)
-            {
-                return "Not Found";
-            }
-        }
-        */
-
 
     }
 }

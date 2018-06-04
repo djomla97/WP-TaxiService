@@ -17,7 +17,7 @@ $(document).ready(function () {
     $('#goBackToInfoButton').css('display', 'none');
     $('#saveChangesButton').css('display', 'none');
     $('#edit-message-alert').css('display', 'none');
-    
+
 
     // ako klikne na login
     $('#loginButton').click(function (e) {
@@ -92,7 +92,7 @@ $(document).ready(function () {
 
         // update edit form
         updateEditForm();
-        
+
         // prikazemo edit formu
         $('#edit-form').show();
     });
@@ -176,7 +176,7 @@ function tryAddUser() {
 
             // JMBG moze imati samo brojeve
             if ($(this).attr('id') == 'jmbg') {
-                if (!$('#jmbg').val().match(/^[\d]+$/g))                 
+                if (!$('#jmbg').val().match(/^[\d]+$/g))
                     addValidationError('jmbg', 'found-check', 'JMBG can only have numbers');
                 else
                     removeValidationError('jmbg', 'found-check');
@@ -209,13 +209,13 @@ function tryAddUser() {
         });
 
         // radio button provera
-        if (checkedRadioButtons === 0) 
+        if (checkedRadioButtons === 0)
             addValidationError('radiogender', 'found-check', 'Please select a gender.');
-         else 
+        else
             removeValidationError('radiogender', 'found-check');
-        
 
-        
+
+
         // hack sa klasom
         $('#register-form p').each(function () {
             if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
@@ -241,6 +241,7 @@ function tryAddUser() {
             newUser.ContactPhone = $('#phone').val();
             newUser.JMBG = $('#jmbg').val();
             newUser.Gender = $('input[name=radioGender]:checked').val();
+            console.log(newUser.Gender);
 
             // Ajax za dodavanje korisnika
             $.ajax({
@@ -314,6 +315,8 @@ function tryLoginUser() {
                 // uzmemo tog korisnika i update UI
                 $.get(`/api/users/${loginUser.username}`, function (user) {
 
+                    //console.log(JSON.stringify(user));
+
                     $('#hello-message').text(`Hi, ${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
 
@@ -345,7 +348,6 @@ function tryLoginUser() {
                 $('p.login-fail').css('color', 'red');
                 $('p.login-fail').text('Username and password do not match. Try again.');
                 $('p.login-fail').show();
-                console.log('ok');
             }
 
         });
@@ -433,16 +435,43 @@ function tryEditUser() {
             canEditUser = false;
 
         if (canEditUser) {
-            let editedUser = {};
+            let editedUser;
 
-            editedUser.Username = $('#editUsername').val();
-            editedUser.FirstName = $('#editFirstname').val();
-            editedUser.LastName = $('#editLastname').val();
-            editedUser.Email = $('#editEmail').val();
-            editedUser.ContactPhone = $('#editPhone').val();
-            editedUser.JMBG = $('#editJMBG').val();
-            editedUser.Gender = $('input[name=editRadioGender]:checked').val();
-            editedUser.Password = $('#editPassword').val();
+            if ($('#info-role').text() == 'Driver') {
+
+                editedUser = {
+                    Username: $('#editUsername').val(),
+                    FirstName: $('#editFirstname').val(),
+                    LastName: $('#editLastname').val(),
+                    Email: $('#editEmail').val(),
+                    ContactPhone: $('#editPhone').val(),
+                    JMBG: $('#editJMBG').val(),
+                    Gender: $('input[name=editRadioGender]:checked').val(),
+                    Password: $('#editPassword').val(),
+                    DriverLocation: {
+                        X: 0.0,
+                        Y: 0.0,
+                        LocationAddress: {
+                            City: $('#editCity').val(),
+                            Street: $('#editStreet').val(),
+                            ZipCode: $('#editZipcode').val()
+
+                        }
+                    }
+                };
+            } else {
+
+                editedUser = {
+                    Username: $('#editUsername').val(),
+                    FirstName: $('#editFirstname').val(),
+                    LastName: $('#editLastname').val(),
+                    Email: $('#editEmail').val(),
+                    ContactPhone: $('#editPhone').val(),
+                    JMBG: $('#editJMBG').val(),
+                    Gender: $('input[name=editRadioGender]:checked').val(),
+                    Password: $('#editPassword').val()
+                };
+            }
 
             $.ajax({
                 method: 'PUT',
@@ -532,14 +561,14 @@ function updateUserInformation(user) {
     $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
 
     if (user.Role == 'Dispatcher' || user.Role == 'Driver') {
-        $('#user-info').append(`<span class="user-key">Role</span>: <p id="info-gender">${user.Role}</p>`);
+        $('#user-info').append(`<span class="user-key">Role</span>: <p id="info-role">${user.Role}</p>`);
     }
 
     if (user.Role == 'Driver') {
-        $('#user-info').append(`<h4 class="info-location">Location</h4>`);
-        $('#user-info').append(`<span class="user-key">City:</span>: <p id="info-location-city">${user.Location.LocationAddress.City}</p>`);
-        $('#user-info').append(`<span class="user-key">Street:</span>: <p id="info-location-street">${user.Location.LocationAddress.Street}</p>`);
-        $('#user-info').append(`<span class="user-key">Zip code:</span>: <p id="info-location-zipcode">${user.Location.LocationAddress.ZipCode}</p>`);
+        $('#user-info').append('<h4 class="info-location">Location</h4>');
+        $('#user-info').append(`<span class="user-key">City</span>: <p id="info-location-city">${user.DriverLocation.LocationAddress.City}</p>`);
+        $('#user-info').append(`<span class="user-key">Street</span>: <p id="info-location-street">${user.DriverLocation.LocationAddress.Street}</p>`);
+        $('#user-info').append(`<span class="user-key">Zip code</span>: <p id="info-location-zipcode">${user.DriverLocation.LocationAddress.ZipCode}</p>`);
     }
 
 
@@ -561,11 +590,11 @@ function updateEditForm() {
                 $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
             }
         } else {
-            $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+            $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
         }
     });
 
     // za Password
-    $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
+    $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
 }

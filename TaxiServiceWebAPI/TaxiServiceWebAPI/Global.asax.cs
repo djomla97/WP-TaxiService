@@ -18,6 +18,7 @@ namespace TaxiServiceWebAPI
         protected void Application_Start()
         {
             InitializeAdmins();
+            InitializeDrivers();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -55,7 +56,37 @@ namespace TaxiServiceWebAPI
             // stavimo read-only na file, da ne moze da se menja
             //File.SetAttributes(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json", FileAttributes.ReadOnly);
 
-    }
+        }
+
+        private void InitializeDrivers()
+        {
+            // ne zelimo vise puta iste admine da unosi
+            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json"))
+                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
+
+            List<Driver> drivers = new List<Driver>();
+
+            drivers.Add(new Driver()
+            {
+                Username = "driver",
+                FirstName = "Mile",
+                LastName = "Vozac",
+                Password = "driver",
+                Email = "driver@taxiservice.com",
+                ContactPhone = "+3816541653",
+                JMBG = "32165481522",
+                Role = Roles.Driver.ToString(),
+                Gender = Genders.Male.ToString(),
+                DriverLocation = new Location() { X = 0, Y = 0, LocationAddress = new Address("Bulevar Oslobodjenja", "NoviSad", "21000") },
+                Rides = new List<Ride>()
+            });
+
+            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
+
+            foreach (var driver in drivers)
+                jsonParser.WriteUser(driver);
+
+        }
 
     }
 }

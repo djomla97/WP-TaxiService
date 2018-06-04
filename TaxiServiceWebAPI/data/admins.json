@@ -1,12 +1,14 @@
 [
   {
+    "DriverLocation": null,
+    "DriverVehicle": null,
     "Username": "mladjo",
-    "Password": "admin",
+    "Password": "123",
     "FirstName": "Mladen",
     "LastName": "Milosevic",
-    "JMBG": "36648955215",
-    "ContactPhone": "+3816541658",
-    "Email": "mladjo@milosevic.com",
+    "JMBG": "123456789321654",
+    "ContactPhone": "+3816541653566",
+    "Email": "mladjo@taxiservice.com",
     "Role": "Dispatcher",
     "Rides": [],
     "Gender": "Male"

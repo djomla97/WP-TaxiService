@@ -8,6 +8,9 @@
     text-align: center;
 }
 
+h4.info-location {
+    text-decoration: underline;
+}
 
 p#edit-message-alert {
     text-align: center;
@@ -66,6 +69,10 @@ div#user-info {
     text-align: center;
     font-size: 15px;
 }
+
+
+
+
 
 
 

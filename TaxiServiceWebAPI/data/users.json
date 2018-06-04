@@ -12,18 +12,6 @@
     "Gender": "Male"
   },
   {
-    "Username": "biancafraneta",
-    "Password": "volimmladju",
-    "FirstName": "Aleksandra",
-    "LastName": "Franeta",
-    "JMBG": "21545321321321",
-    "ContactPhone": "+63338974",
-    "Email": "bianca@franeta.rs",
-    "Role": "Customer",
-    "Rides": [],
-    "Gender": "Female"
-  },
-  {
     "Username": "demo",
     "Password": "user",
     "FirstName": "Demo",
@@ -31,6 +19,44 @@
     "JMBG": "1239566",
     "ContactPhone": "245666",
     "Email": "demo@d.com",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Male"
+  },
+  {
+    "Username": "demoo",
+    "Password": "demo",
+    "FirstName": "Demo",
+    "LastName": "User",
+    "JMBG": "12309815123",
+    "ContactPhone": "21365464",
+    "Email": "demo@user.rs",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": "Male"
+  },
+  {
+    "Username": "test",
+    "Password": "test",
+    "FirstName": "Tester",
+    "LastName": "Testerica",
+    "JMBG": "321654654",
+    "ContactPhone": "+6633661616",
+    "Email": "test@test.com",
+    "Role": "Customer",
+    "Rides": [],
+    "Gender": ""
+  },
+  {
+    "DriverLocation": null,
+    "DriverVehicle": null,
+    "Username": "rere",
+    "Password": "rere",
+    "FirstName": "Rere",
+    "LastName": "Test",
+    "JMBG": "654654654",
+    "ContactPhone": "+326115151",
+    "Email": "rere@rere.rom",
     "Role": "Customer",
     "Rides": [],
     "Gender": "Male"

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TaxiServiceWebAPI.Models;
 using System.Linq;
+using System;
 
 namespace TaxiServiceWebAPI.Helpers.DocParsers
 {
@@ -30,14 +31,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             // cita json
             var jsonData = File.ReadAllText(path);
 
-            // zatim u listu pretvori
-            var users = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
+            var list = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
 
             // doda novog
-            users.Add(userData);
+            list.Add(userData);
 
             // zatim u Json pretvori listu, jer nam treba niz
-            jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+            jsonData = JsonConvert.SerializeObject(list, Formatting.Indented);
 
             // i onda upise u .json
             File.WriteAllText(path, jsonData);
@@ -51,7 +51,7 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         /// <returns>List of all users in specified file</returns>
         public List<User> ReadUsers()
         {
-            List<User> users = new List<User>();
+            List<User> users = new List<User>();            
 
             if (!File.Exists(path))
             {
@@ -62,10 +62,59 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             using (StreamReader r = new StreamReader(path))
             {
                 string json = r.ReadToEnd();
-                users = JsonConvert.DeserializeObject<List<User>>(json);
+
+                users = JsonConvert.DeserializeObject<List<User>>(json);                
             }
 
             return users;
+        }
+
+        /// <summary>
+        ///     Reads from a .json file for Drivers
+        /// </summary>
+        /// <returns>List of all drivers in specified file</returns>
+        public List<Driver> ReadDrivers()
+        {
+            List<Driver> drivers = new List<Driver>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+
+                drivers = JsonConvert.DeserializeObject<List<Driver>>(json);
+            }
+
+            return drivers;
+        }
+
+        /// <summary>
+        ///     Reads from a .json file for Dispatchers
+        /// </summary>
+        /// <returns>List of all drivers in specified file</returns>
+        public List<Dispatcher> ReadDispatchers()
+        {
+            List<Dispatcher> dispatchers = new List<Dispatcher>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+
+                dispatchers = JsonConvert.DeserializeObject<List<Dispatcher>>(json);
+            }
+
+            return dispatchers;
         }
 
         /// <summary>
@@ -107,6 +156,46 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             File.WriteAllText(path, jsonData);
         }
 
+
+        /// <summary>
+        ///     Edits driver information
+        /// </summary>
+        /// <param name="oldUsername">Username of driver to be edited</param>
+        /// <param name="newUser">New driver to replace the old one</param>
+        public void EditDriver(string oldUsername, Driver newUser)
+        {
+            List<Driver> users = new List<Driver>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                users = JsonConvert.DeserializeObject<List<Driver>>(json);
+            }
+
+            Driver oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
+            newUser.Rides = oldUser.Rides;
+            // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
+            newUser.Role = oldUser.Role;
+
+            // ako ne izmeni sifru
+            if (newUser.Password == null || newUser.Password == string.Empty)
+                newUser.Password = oldUser.Password;
+
+            // zamenimo ih samo
+            users.Remove(oldUser);
+            users.Add(newUser);
+
+            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+
+            File.WriteAllText(path, jsonData);
+        }
+        
 
     }
 }
