@@ -43,6 +43,7 @@ $(document).ready(function () {
     $('#registerButton').click(function () {
         event.preventDefault();
         removeValidationErrors('login');
+        $('p.login-fail').hide();
         tryAddUser();
     });
 
@@ -343,6 +344,8 @@ function tryLoginUser() {
                 $('p.login-fail').css('text-weight', 'bold');
                 $('p.login-fail').css('color', 'red');
                 $('p.login-fail').text('Username and password do not match. Try again.');
+                $('p.login-fail').show();
+                console.log('ok');
             }
 
         });
@@ -481,7 +484,16 @@ function checkUsername(username) {
     });
 }
 
-// dry
+// dodaje validation form na jedan input
+function addValidationError(checkName, className, message) {
+
+    $(`#${checkName}-check`).show();
+    $(`#${checkName}-check`).addClass(className);
+    $(`#${checkName}-check`).text(message);
+
+}
+
+// uklanja validation error sa jednog inputa
 function removeValidationError(checkName, className) {
 
     $(`#${checkName}-check`).hide();
@@ -490,13 +502,17 @@ function removeValidationError(checkName, className) {
 
 }
 
-// dry
-function addValidationError(checkName, className, message) {
-
-    $(`#${checkName}-check`).show();
-    $(`#${checkName}-check`).addClass(className);
-    $(`#${checkName}-check`).text(message);
-
+// uklanja svaki validation check error u odredjenoj formi
+function removeValidationErrors(formName) {
+    $(`#${formName}-form input`).each(function () {
+        if ($(this).attr('id')) {
+            removeValidationError($(this).attr('id').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('id').toLowerCase(), 'not-available');
+        } else {
+            removeValidationError($(this).attr('name').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('name').toLowerCase(), 'not-available');
+        }
+    });
 }
 
 // dry
@@ -518,6 +534,14 @@ function updateUserInformation(user) {
     if (user.Role == 'Dispatcher' || user.Role == 'Driver') {
         $('#user-info').append(`<span class="user-key">Role</span>: <p id="info-gender">${user.Role}</p>`);
     }
+
+    if (user.Role == 'Driver') {
+        $('#user-info').append(`<h4 class="info-location">Location</h4>`);
+        $('#user-info').append(`<span class="user-key">City:</span>: <p id="info-location-city">${user.Location.LocationAddress.City}</p>`);
+        $('#user-info').append(`<span class="user-key">Street:</span>: <p id="info-location-street">${user.Location.LocationAddress.Street}</p>`);
+        $('#user-info').append(`<span class="user-key">Zip code:</span>: <p id="info-location-zipcode">${user.Location.LocationAddress.ZipCode}</p>`);
+    }
+
 
 }
 
@@ -544,17 +568,4 @@ function updateEditForm() {
     // za Password
     $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
-}
-
-// uklanja svaki validation check error u odredjenoj formi
-function removeValidationErrors(formName) {
-    $(`#${formName}-form input`).each(function () {
-        if ($(this).attr('id')) {
-            removeValidationError($(this).attr('id').toLowerCase(), 'found-check');
-            removeValidationError($(this).attr('id').toLowerCase(), 'not-available');
-        } else {
-            removeValidationError($(this).attr('name').toLowerCase(), 'found-check');
-            removeValidationError($(this).attr('name').toLowerCase(), 'not-available');
-        } 
-    });
 }
