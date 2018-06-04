@@ -24,10 +24,9 @@
                 <div id="register-message-alert" class="alert alert-primary" role="alert" style="display:none"></div>
             </div>
         </div>
-
+        
         <!-- Login & Register forms -->
         <div class="row center-text equal">
-            <hr>
             <!-- Login -->
             <div class="col-xs-12 col-sm-6 col-md-6" id="login-form-view">
                 <h2>Login</h2>
@@ -61,7 +60,7 @@
                 <form id="register-form" class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="username" placeholder="Username" autocomplete="off"/>
+                            <input type="text" class="form-control" id="username" placeholder="Username" autocomplete="off" />
                             <p id="username-check" class="found-p"></p>
                         </div>
                     </div>
@@ -128,16 +127,18 @@
         <!-- Hello message -->
         <div class="row center-text">
             <div class="col-xs-12 col-sm-12 col-md-12">
-                <h1 id="hello-message"></h1>
+                <h1>Hi, <span id="fullName"></span></h1>
                 <h3>(<span id="loggedIn-username"></span>)</h3>
-                <hr />
             </div>
-        </div>
-
+        </div>    
+        <hr />
         <!-- Options row -->
         <div class="row center-text">
-            <div class="col-xs-12 col-sm-4 col-md-4">
-                <button type="button" class="btn btn-primary btn-lg btn-block">Order ride</button>
+            <div class="col-xs-12 col-sm-4 col-md-4" id="orderRideButtonDiv">
+                <button id="orderRideButton" type="button" class="btn btn-primary btn-lg btn-block">Order ride</button>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4" id="seeRidesDiv">
+                <button id="seeRidesButton" type="button" class="btn btn-primary btn-lg btn-block">See rides</button>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4">
                 <button id="checkProfileButton" type="button" class="btn btn-primary btn-lg btn-block">View profile</button>
@@ -146,52 +147,104 @@
                 <button id="logoutButton" type="button" class="btn btn-primary btn-lg btn-block">Log out</button>
             </div>
         </div>
+        <hr />
 
         <br>
 
         <!-- Tabela sa voznjama -->
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <!-- Zaglavlja tabele -->
-                <tr>
-                    <th>ID</th>
-                    <th>Start</th>
-                    <th>Destination</th>
-                    <th>Date and time</th>
-                    <th>Type of car</th>
-                    <th>Driver</th>
-                    <th>Price</th>
-                    <th>Comment</th>
-                    <th>Status</th>
-                </tr>
+        <div id="rides-table">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <!-- Zaglavlja tabele -->
+                    <tr>
+                        <th>ID</th>
+                        <th>Start</th>
+                        <th>Destination</th>
+                        <th>Date and time</th>
+                        <th>Type of car</th>
+                        <th>Driver</th>
+                        <th>Price</th>
+                        <th>Comment</th>
+                        <th>Status</th>
+                    </tr>
 
-                <!-- Podaci o voznjama -->
-                <tr>
-                    <td>178</td>
-                    <td>Novi Sad</td>
-                    <td>Bratunac</td>
-                    <td>20.05.2018 14:35</td>
-                    <td>Regular</td>
-                    <td>John Doe</td>
-                    <td>850</td>
-                    <td>Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride</td>
-                    <td>DONE</td>
-                </tr>
+                    <!-- Podaci o voznjama -->
+                    <tr>
+                        <td>178</td>
+                        <td>Novi Sad</td>
+                        <td>Bratunac</td>
+                        <td>20.05.2018 14:35</td>
+                        <td>Regular</td>
+                        <td>John Doe</td>
+                        <td>850</td>
+                        <td>Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride</td>
+                        <td>DONE</td>
+                    </tr>
 
-                <tr>
-                    <td>153</td>
-                    <td>Bratunac</td>
-                    <td>Banja Luka</td>
-                    <td>22.05.2018 17:55</td>
-                    <td>Regular</td>
-                    <td>John Doe</td>
-                    <td>7899</td>
-                    <td>Long but fun</td>
-                    <td>DONE</td>
-                </tr>
-            </table>
+                    <tr>
+                        <td>153</td>
+                        <td>Bratunac</td>
+                        <td>Banja Luka</td>
+                        <td>22.05.2018 17:55</td>
+                        <td>Regular</td>
+                        <td>John Doe</td>
+                        <td>7899</td>
+                        <td>Long but fun</td>
+                        <td>DONE</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
+
+        <!-- View za Order Ride -->
+        <div class="row" id="order-ride-div">
+
+            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+            <div class="col-xs-12 col-sm-6 col-md-6 text-center">
+                <h2>Order a ride</h2>
+                <hr>
+                <form id="order-ride-form" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="orderRideStreet" placeholder="Street" autocomplete="off" />
+                            <p id="orderridestreet-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="password" class="form-control" id="orderRideCity" placeholder="City" autocomplete="off" />
+                            <p id="orderridecity-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="email" class="form-control" id="orderRideZipCode" placeholder="Zip code" autocomplete="off" />
+                            <p id="orderridezipcode-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="radioCarType" value="Passenger" /> Passenger
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="radioCarType" value="Van" /> Van
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button id="submitRideButton" class="full-width btn btn-primary">Order ride</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+        </div>
+
+
+    </div> <!-- END of Home-Customer-View div  -->
+
 
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
@@ -219,9 +272,6 @@
     </div>
 
 
-
-
-    <!-- END of Home-Customer-View div  -->
     <!-- Javascript -->
     <script type="text/javascript" src="Scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>

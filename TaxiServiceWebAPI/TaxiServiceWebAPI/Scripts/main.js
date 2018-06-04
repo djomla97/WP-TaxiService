@@ -17,6 +17,8 @@ $(document).ready(function () {
     $('#goBackToInfoButton').css('display', 'none');
     $('#saveChangesButton').css('display', 'none');
     $('#edit-message-alert').css('display', 'none');
+    $('#order-ride-div').hide();
+    $('#seeRidesDiv').hide();
 
 
     // ako klikne na login
@@ -189,6 +191,7 @@ function tryAddUser() {
                 else
                     removeValidationError('phone', 'found-check');
             }
+
             // text input        
             if (!$(this).val()) {
 
@@ -317,7 +320,7 @@ function tryLoginUser() {
 
                     //console.log(JSON.stringify(user));
 
-                    $('#hello-message').text(`Hi, ${user.FirstName} ${user.LastName}`);
+                    $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
 
                     // obrisemo postojece informacije za modal
@@ -380,6 +383,25 @@ function tryEditUser() {
                     $(this).next().removeClass('found-check');
                 }
             }
+
+            // JMBG moze imati samo brojeve
+            if ($(this).attr('id') == 'editJMBG') {
+                console.log($('#editJMBG').val().match(/^[\d]+$/g));
+                if ($('#editJMBG').val().match(/^[\d]+$/g) == null)
+                    addValidationError('editJMBG', 'found-check', 'JMBG can only have numbers');
+                else
+                    removeValidationError('editJMBG', 'found-check');
+            }
+
+            // Phone moze imati samo brojeve i opciono na pocetku '+'
+            if ($(this).attr('id') == 'editPhone') {
+                console.log('phone');
+                if (!$('#editPhone').val().match(/^\+?[\d]+$/g))
+                    addValidationError('editPhone', 'found-check', 'Phone can only have numbers and an optional starting (+)');
+                else
+                    removeValidationError('editPhone', 'found-check');
+            }
+
         });
 
         // Email check
@@ -547,7 +569,7 @@ function removeValidationErrors(formName) {
 // dry
 function updateUserInformation(user) {
     // update UI
-    $('#hello-message').text(`Hi, ${user.FirstName} ${user.LastName}`);
+    $('#fullName').text(`${user.FirstName} ${user.LastName}`);
     $('#loggedIn-username').text(user.Username);
 
     $('#user-info').empty();

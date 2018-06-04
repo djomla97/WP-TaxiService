@@ -12,6 +12,20 @@ h4.info-location {
     text-decoration: underline;
 }
 
+.equal {
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: wrap;
+}
+
+.found-p {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    text-align: left;
+    font-size: 11px;
+    color: red;
+}
+
 p#edit-message-alert {
     text-align: center;
     font-size: 14px;
@@ -31,6 +45,16 @@ p#register-message-alert {
     text-align: center;
 }
 
+.user-modal-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+div#user-info {
+    text-align: center;
+    font-size: 15px;
+}
+
 span.user-key {
     font-weight: bold;
 }
@@ -43,32 +67,25 @@ tr > th {
     text-align: center;
 }
 
-.equal {
-    display: flex;
-    display: -webkit-flex;
-    flex-wrap: wrap;
+#order-ride-div {
+    align-content: center;
+    margin: auto;
+    text-align: center;
 }
 
-.found-p {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    text-align: left;
-    font-size: 11px;
-    color: red;
+.cover {
+    color: white;
+    background: #ffffff;
+    background: -moz-linear-gradient(left, #ffffff 0%, #73b1e7 21%, #0a77d5 35%, #0a77d5 69%, #539fe1 82%, #ffffff 100%);
+    background: -webkit-linear-gradient(left, #ffffff 0%,#73b1e7 21%,#0a77d5 35%,#0a77d5 69%,#539fe1 82%,#ffffff 100%);
+    background: linear-gradient(to right, #ffffff 0%,#73b1e7 21%,#0a77d5 35%,#0a77d5 69%,#539fe1 82%,#ffffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 );
 }
 
 .found-check { }
 .not-available { }
 
-.user-modal-title {
-    font-size: 14px;
-    font-weight: bold;
-}
 
-div#user-info {
-    text-align: center;
-    font-size: 15px;
-}
 
 
 
