@@ -5,9 +5,8 @@
 
 /*
  * TODO:
- * - maybe email validation for a '.' after '@' 
  * - when edit-form input changes, then enable Save changes
- * 
+ * - two fields for Location for drivers
  */
 
 $(document).ready(function () {
@@ -23,6 +22,7 @@ $(document).ready(function () {
     // ako klikne na login
     $('#loginButton').click(function (e) {
         e.preventDefault();
+        removeValidationErrors('register');
         tryLoginUser();
     });
 
@@ -42,7 +42,7 @@ $(document).ready(function () {
     // Klikom na register radimo validaciju i saljemo korisnika
     $('#registerButton').click(function () {
         event.preventDefault();
-
+        removeValidationErrors('login');
         tryAddUser();
     });
 
@@ -131,11 +131,43 @@ function tryAddUser() {
         let canAddUser = true;
         let checkedRadioButtons = 0;
 
+
+        // Email check
+        if (emailFound[0] === "Found") {
+            addValidationError('email', 'not-available', 'Email is not available.');
+        } else {
+
+            removeValidationError('email', 'not-available');
+
+            // email validacija '@'
+            if (!($('#email').val().indexOf('@') >= 0))
+                addValidationError('email', 'found-check', 'You must have a @ in the email address.');
+            else
+                removeValidationError('email', 'found-check');
+
+            // email validacija '.'
+            if (!($('#email').val().indexOf('.') >= ($('#email').val().indexOf('@'))))
+                addValidationError('email', 'found-check', 'You must have a dot (.) after @ in the email address.');
+            else
+                removeValidationError('email', 'found-check');
+
+        }
+
+        // Username check
+        if (usernameFound[0] === "Found") {
+            addValidationError('username', 'not-available', 'Username is taken.');
+        } else {
+            if (!$('#username').val())
+                addValidationError('username', 'not-available', 'This field cannot be left empty.');
+            else
+                removeValidationError('username', 'not-available');
+        }
+
         // provera inputa
         $('#register-form input').each(function () {
 
             // radio button
-            if ($(this).attr('id').indexOf('radio') >= 0) {
+            if ($(this).attr('name') == 'radioGender') {
                 if ($(this).is(':checked')) {
                     checkedRadioButtons++;
                 }
@@ -177,41 +209,11 @@ function tryAddUser() {
 
         // radio button provera
         if (checkedRadioButtons === 0) 
-            addValidationError('radio', 'found-check', 'Please select a gender.');
+            addValidationError('radiogender', 'found-check', 'Please select a gender.');
          else 
-            removeValidationError('radio', 'found-check');
+            removeValidationError('radiogender', 'found-check');
         
 
-        // Email check
-        if (emailFound[0] === "Found") {
-            addValidationError('email', 'not-available', 'Email is not available.');
-        } else {
-
-            removeValidationError('email', 'not-available');
-
-            // email validacija '@'
-            if (!($('#email').val().indexOf('@') >= 0)) 
-                addValidationError('email', 'found-check', 'You must have a @ in the email address.');
-            else 
-                removeValidationError('email', 'found-check');
-
-            // email validacija '.'
-            if (!($('#email').val().indexOf('.') >= ($('#email').val().indexOf('@'))))
-                addValidationError('email', 'found-check', 'You must have a dot (.) after @ in the email address.');
-            else
-                removeValidationError('email', 'found-check');
-
-        }
-
-        // Username check
-        if (usernameFound[0] === "Found") {
-            addValidationError('username', 'not-available', 'Username is taken.');
-        } else {
-            if (!$('#username').val())
-                addValidationError('username', 'not-available', 'This field cannot be left empty.');
-            else
-                removeValidationError('username', 'not-available');
-        }
         
         // hack sa klasom
         $('#register-form p').each(function () {
@@ -274,15 +276,15 @@ function tryLoginUser() {
 
     // username
     if (!$('#loginUsername').val())
-        addValidationError('loginUsername', 'found-check', 'You must enter a username');
+        addValidationError('loginusername', 'found-check', 'You must enter a username');
     else
-        removeValidationError('loginUsername', 'found-check');
+        removeValidationError('loginusername', 'found-check');
 
     // password
     if (!$('#loginPassword').val())
-        addValidationError('loginPassword', 'found-check', 'You must enter a password');
+        addValidationError('loginpassword', 'found-check', 'You must enter a password');
     else
-        removeValidationError('loginPassword', 'found-check');
+        removeValidationError('loginpassword', 'found-check');
 
     // dummy user za login
     loginUser.username = $('#loginUsername').val();
@@ -542,6 +544,17 @@ function updateEditForm() {
     // za Password
     $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="text" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
+}
 
-
+// uklanja svaki validation check error u odredjenoj formi
+function removeValidationErrors(formName) {
+    $(`#${formName}-form input`).each(function () {
+        if ($(this).attr('id')) {
+            removeValidationError($(this).attr('id').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('id').toLowerCase(), 'not-available');
+        } else {
+            removeValidationError($(this).attr('name').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('name').toLowerCase(), 'not-available');
+        } 
+    });
 }
