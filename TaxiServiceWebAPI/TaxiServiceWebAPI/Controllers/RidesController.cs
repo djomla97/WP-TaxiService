@@ -64,7 +64,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
 
-            if (newRide.RideVehicle.VehicleType == null)
+            if (newRide.RideVehicle.VehicleType == null || newRide.RideVehicle.VehicleType == string.Empty)
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString(); 
 
             Ride writtenRide = jsonParserRides.WriteRide(newRide);
@@ -89,7 +89,19 @@ namespace TaxiServiceWebAPI.Controllers
         }
 
         // DELETE /api/ride/id
-
+        [HttpDelete]
+        [Route("api/rides/{id}")]
+        public HttpResponseMessage Delete(int id)
+        {
+            try
+            {
+                jsonParserRides.DeleteRide(id);
+                return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is deleted.");
+            }
+            catch (Exception) {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, $"Ride {id} was not deleted.");
+            }
+        }
 
     }
 }

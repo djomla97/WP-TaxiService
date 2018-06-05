@@ -1,14 +1,14 @@
 [
   {
-    "ID": 925,
-    "DateAndTime": "2018-06-05T17:22:08.887Z",
+    "ID": 1741,
+    "DateAndTime": "2018-06-05T23:17:32.56Z",
     "StartLocation": {
       "X": 0.0,
       "Y": 0.0,
       "LocationAddress": {
-        "Street": "Gogoljeva 5",
-        "City": "Novi Sad",
-        "ZipCode": "21000"
+        "Street": "asdads",
+        "City": "asdad",
+        "ZipCode": "14144"
       }
     },
     "RideVehicle": {
@@ -19,51 +19,13 @@
       "VehicleType": "Passenger"
     },
     "RideCustomer": {
-      "Username": "demo",
-      "Password": "demo",
-      "FirstName": "Demo",
-      "LastName": "User",
-      "JMBG": "445556978112",
-      "ContactPhone": "+386895222222",
-      "Email": "demo@taxiservice.com",
-      "Role": "Customer",
-      "Rides": null,
-      "Gender": "Male"
-    },
-    "Destination": null,
-    "RideDispatcher": null,
-    "RideDriver": null,
-    "Fare": 0.0,
-    "Comment": null,
-    "StatusOfRide": "CREATED_ONWAIT"
-  },
-  {
-    "ID": 1144,
-    "DateAndTime": "2018-06-05T18:01:03.721Z",
-    "StartLocation": {
-      "X": 0.0,
-      "Y": 0.0,
-      "LocationAddress": {
-        "Street": "Cirpanova 4",
-        "City": "Novi Sad",
-        "ZipCode": "21005"
-      }
-    },
-    "RideVehicle": {
-      "CarDriver": null,
-      "VehicleAge": 0,
-      "NumberOfRegistration": null,
-      "TaxiNumber": null,
-      "VehicleType": "Van"
-    },
-    "RideCustomer": {
-      "Username": "demo",
-      "Password": "demo",
-      "FirstName": "Demo",
-      "LastName": "User",
-      "JMBG": "445556978112",
-      "ContactPhone": "+386895111",
-      "Email": "demo@taxiservice.com",
+      "Username": "user",
+      "Password": "user",
+      "FirstName": "User",
+      "LastName": "ForTest",
+      "JMBG": "131231093",
+      "ContactPhone": "12319238123",
+      "Email": "user@user.com",
       "Role": "Customer",
       "Rides": null,
       "Gender": "Male"

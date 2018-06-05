@@ -12,27 +12,15 @@
     "Gender": "Male"
   },
   {
-    "Username": "strahinja",
-    "Password": "pass",
-    "FirstName": "Strahinja",
-    "LastName": "Lazarevic",
-    "JMBG": "321654654321",
-    "ContactPhone": "+355516281",
-    "Email": "caki@users.com",
+    "Username": "user",
+    "Password": "user",
+    "FirstName": "User",
+    "LastName": "ForTest",
+    "JMBG": "131231093",
+    "ContactPhone": "12319238123",
+    "Email": "user@user.com",
     "Role": "Customer",
     "Rides": [],
-    "Gender": ""
-  },
-  {
-    "Username": "demo2",
-    "Password": "demo",
-    "FirstName": "Tester",
-    "LastName": "TesrUset",
-    "JMBG": "123141",
-    "ContactPhone": "231414124",
-    "Email": "test@test.com",
-    "Role": "Customer",
-    "Rides": [],
-    "Gender": ""
+    "Gender": "Male"
   }
 ]

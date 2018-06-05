@@ -3,11 +3,17 @@
  * Date: 18.05.2018
  */
 
+// TODO : Fix car type radio
+
 $(document).ready(function () {
 
     // sakrijemo sve div-ove koji nam ne trebaju kad se stranica ucita
     $('#home-view').hide();
     $('#profileModal').hide();
+    $('#addRideButtonDiv').hide();
+    $('#orderRideButtonDiv').hide();
+    $('#orderRidesTableDiv').hide();
+    $('#seeRidesButtonDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -151,13 +157,12 @@ $(document).ready(function () {
         });
     });
 
-
+    // submit ride form
     $('#submitRideButton').click(function () {
         event.preventDefault();
-        console.log('Ordering a ride ');
+        console.log('Ordering a ride');
         orderRide();
     });
-
 
 
 }); // on ready
@@ -215,6 +220,8 @@ function orderRide() {
             let date = new Date();
             let jsonDate = date.toJSON();
 
+            console.log('[DEBUG] Car type checked: ' + $('input[name=radioCarType]:checked').val());
+
             // voznja
             let newOrderRide = {
                 RideCustomer: {
@@ -250,6 +257,7 @@ function orderRide() {
                 contentType: 'application/json',
                 data: JSON.stringify(newOrderRide)
             }).success(function (id) {
+                // ocistimo formu
                 clearForm('order-ride-form');               
 
                 // zatrazimo nazad voznju sa dodeljenim ID
@@ -279,8 +287,11 @@ function updateOrderTable(orderRide) {
 
     // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
     $('#order-rides-table-body tr').each(function () {
+        //console.log('DEBUG: attrID = ' + $(this).attr('id') + ' : ' + orderRide.ID);
         if ($(this).attr('id') == orderRide.ID) {
+            console.log('udje');
             $(this).remove();
+            return true;
         }
     });
 
@@ -294,17 +305,46 @@ function updateOrderTable(orderRide) {
     if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
         status = 'Created - on wait';
 
-    $('#order-rides-table-body').append(`<tr><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+    $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
                             <td>${orderRide.RideVehicle.VehicleType}</td>
                             <td>${status}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button id="editOrderRide" type="button" class="btn btn-primary">Edit</button>
-                                    <button id="deleteOrderRide" type="button" class="btn btn-danger">Delete</button>
+                                    <button id="editOrderRideButton" type="button" class="btn btn-primary">Edit</button>
+                                    <button id="deleteOrder${orderRide.ID}" name="deleteOrderButton" type="button" class="btn btn-danger">Delete</button>
                                 </div>
                             </td>
                         </tr>`);
+
+    // mora jer nisu u DOM kad se desi $(document).ready
+    addButtonListeners(orderRide.ID);
+
+}
+
+function addButtonListeners(orderRideID) {
+    $(`#deleteOrder${orderRideID}`).click(function () {
+        let orderID = $(this).attr('id').replace(/\D/g, '');
+        $.ajax({
+            method: 'DELETE',
+            url: `/api/rides/${orderRideID}`,
+            contentType: 'application/json'
+        }).done(function (response) {           
+
+            // odmah update tabelu
+            $('#order-rides-table-body tr').each(function () {
+                if ($(this).attr('id') == orderID) {
+                    $(this).remove();
+                    return true;
+                }
+            });
+
+            console.log('[DEBUG] table tr number: ' + $('#order-rides-table-body tr').length);
+            if ($('#order-rides-table-body tr').length == 0)
+                $('#orderRidesTableDiv').hide();
+
+        });
+    });
 }
 
 
@@ -506,9 +546,14 @@ function loginFromCookie(username) {
         if (user.Role == 'Customer') {
             // update Ordered rides from web api
             $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
-                orderedRides.forEach(function (ride) {
-                    updateOrderTable(ride);
-                });
+                console.log(orderedRides);
+                if (orderedRides !== null && orderedRides.length > 0) {
+                    orderedRides.forEach(function (ride) {
+                        updateOrderTable(ride);
+                    });
+                } else {
+                    $('#orderRidesTableDiv').hide();
+                }
             });
         }
 
@@ -548,9 +593,14 @@ function tryLoginUser() {
     if (canLoginUser) {
         // poziv za login
         $.post('/api/users/login', loginUser, function (loggedIn) {
-            // restart login/register vrednosti
+            // restart login/register vrednosti i ciscenje div-ova
             clearForm('login-form');
             clearForm('register-form');
+            $('#orderRideButtonDiv').hide();
+            $('#seeRidesButtonDiv').hide();
+            $('#orderRidesTableDiv').hide();
+            $('#orderRideFormDiv').hide();
+            $('#addRideButtonDiv').hide();
 
             if (loggedIn !== false) {
 
@@ -572,15 +622,17 @@ function tryLoginUser() {
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
                     } else if (user.Role == 'Driver') {
-                        $('#seeRidesButtonDiv').hide();
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
+                        $('#seeRidesButtonDiv').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
+                        $('#seeRidesButtonDiv').hide();
                         $('#orderRideButtonDiv').show();
                         $('#orderRidesTableDiv').show();
+                        $('#orderRideFormDiv').hide();
                     }
 
                     // obrisemo postojece informacije za modal
@@ -608,9 +660,13 @@ function tryLoginUser() {
                     if (user.Role == 'Customer') {
                         // update Ordered rides from web api
                         $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
-                            orderedRides.forEach(function (ride) {
-                                updateOrderTable(ride);
-                            });
+                            if (orderedRides !== null && orderedRides.length > 0) {                                
+                                orderedRides.forEach(function (ride) {
+                                    updateOrderTable(ride);
+                                });
+                            } else {
+                                $('#orderRidesTableDiv').hide();
+                            }
                         });
                     }
                 });

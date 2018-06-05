@@ -295,6 +295,35 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             File.WriteAllText(path, jsonData);
         }
 
+        /// <summary>
+        ///     Deletes a ride with id from .json file
+        /// </summary>
+        /// <param name="id">id of ride to remove</param>
+        public void DeleteRide(int id)
+        {
+            List<Ride> rides = new List<Ride>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                rides = JsonConvert.DeserializeObject<List<Ride>>(json);
+            }
+
+            Ride rideToRemove = rides.Where(r => r.ID == id).First();
+
+            // zamenimo ih samo
+            rides.Remove(rideToRemove);
+
+            var jsonData = JsonConvert.SerializeObject(rides, Formatting.Indented);
+
+            File.WriteAllText(path, jsonData);
+        }
 
     }
 }

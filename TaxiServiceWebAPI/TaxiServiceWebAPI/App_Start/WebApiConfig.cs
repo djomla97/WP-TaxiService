@@ -39,13 +39,6 @@ namespace TaxiServiceWebAPI
                 defaults: new { id = RouteParameter.Optional }
             );
 
-            config.Routes.MapHttpRoute(
-                name: "ApiWithUsername",
-                routeTemplate: "api/{controller}/{username}",
-                defaults: new { username = RouteParameter.Optional }
-            );
-
-
             // sa vezbi
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
 
