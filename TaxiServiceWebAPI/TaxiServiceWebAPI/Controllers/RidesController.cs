@@ -17,15 +17,16 @@ namespace TaxiServiceWebAPI.Controllers
         private JSONParser jsonParserDrivers = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
         private JSONParser jsonParserRides = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
 
-        // GET /rides
+        // GET /api/rides
         [HttpGet]
         public List<Ride> Get()
         {
             return jsonParserRides.ReadRides();
         }
 
-        // GET /rides/id
+        // GET /api/rides/id
         [HttpGet]
+        [Route("api/rides/{id}")]
         public Ride Get(int id)
         {
             try
@@ -39,18 +40,21 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
-        // POST /rides
+        // POST /api/rides
         [HttpPost]
         public HttpResponseMessage Post([FromBody]Ride newRide)
         {
             newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
 
-            jsonParserRides.WriteRide(newRide);
+            if (newRide.RideVehicle.VehicleType == null)
+                newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString(); 
 
-            return Request.CreateResponse(HttpStatusCode.Created, "Created");
+            Ride writtenRide = jsonParserRides.WriteRide(newRide);
+
+            return Request.CreateResponse(HttpStatusCode.Created, $"{writtenRide.ID}");
         }
 
-        // PUT /rides/id
+        // PUT /api/rides/id
         [HttpPut]
         public Ride Put(int id, [FromBody]Ride editedRide)
         {
@@ -66,7 +70,7 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
-        // DELETE /ride/id
+        // DELETE /api/ride/id
 
 
     }

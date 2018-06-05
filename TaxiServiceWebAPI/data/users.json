@@ -1,11 +1,13 @@
 [
   {
+    "DriverLocation": null,
+    "DriverVehicle": null,
     "Username": "demo",
     "Password": "demo",
     "FirstName": "Demo",
     "LastName": "User",
     "JMBG": "445556978112",
-    "ContactPhone": "+386895111",
+    "ContactPhone": "+386895111512",
     "Email": "demo@taxiservice.com",
     "Role": "Customer",
     "Rides": [],

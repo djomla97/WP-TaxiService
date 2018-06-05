@@ -140,7 +140,7 @@
             <div class="col-xs-12 col-sm-4 col-md-4" id="addRideButtonDiv">
                 <button id="addRideButton" type="button" class="btn btn-primary btn-lg btn-block">Add ride</button>
             </div>
-            <div class="col-xs-12 col-sm-4 col-md-4" id="seeRidesDiv">
+            <div class="col-xs-12 col-sm-4 col-md-4" id="seeRidesButtonDiv">
                 <button id="seeRidesButton" type="button" class="btn btn-primary btn-lg btn-block">See rides</button>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4">
@@ -154,70 +154,44 @@
 
         <br>
 
-        <!-- Tabela sa tek narucenim voznjama -->
+        <!-- Tabela sa narucenim voznjama -->
         <div id="orderRidesTableDiv">
+            <h4>Ordered rides:</h4>
             <div class="table-responsive">
-                <table class="table table-hover" id="order-rides-table">
-                    <!-- Zaglavlja tabele -->
-                    <tr>
-                        <th>ID</th>
-                        <th>Start</th>
-                        <th>Date and time</th>
-                        <th>Type of car</th>                                             
-                        <th>Status</th>
-                    </tr>                    
-                </table>
-            </div>
-        </div>
+                <table class="table" id="order-rides-table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-auto">ID</th>
+                            <th scope="col" class="col-md-auto">Start location</th>
+                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
+                            <th scope="col" class="col-md-auto">Vehicle type</th>
+                            <th scope="col" class="col-md-auto">Status</th>
+                            <th scope="col" class="col-md-auto">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody id="order-rides-table-body">
 
-        <!-- Tabela sa voznjama -->
-        <div id="ridesTableDiv">
-            <div class="table-responsive">
-                <table class="table table-hover" id="rides-table">
-                    <!-- Zaglavlja tabele -->
-                    <tr>
-                        <th>ID</th>
-                        <th>Start</th>
-                        <th>Destination</th>
-                        <th>Date and time</th>
-                        <th>Type of car</th>
-                        <th>Driver</th>
-                        <th>Price</th>
-                        <th>Comment</th>
-                        <th>Status</th>
-                    </tr>
-
-                    <!-- Podaci o voznjama -->
-                    <tr>
-                        <td>178</td>
-                        <td>Novi Sad</td>
-                        <td>Bratunac</td>
-                        <td>20.05.2018 14:35</td>
-                        <td>Regular</td>
-                        <td>John Doe</td>
-                        <td>850</td>
-                        <td>Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride, Nice ride</td>
-                        <td>DONE</td>
-                    </tr>
-
-                    <tr>
-                        <td>153</td>
-                        <td>Bratunac</td>
-                        <td>Banja Luka</td>
-                        <td>22.05.2018 17:55</td>
-                        <td>Regular</td>
-                        <td>John Doe</td>
-                        <td>7899</td>
-                        <td>Long but fun</td>
-                        <td>DONE</td>
-                    </tr>
+                        <tr>
+                            <th scope="row">1566</th>
+                            <td>Gogoljeva 4, Novi Sad 21000</td>
+                            <td>12/07/2018 12:05:44</td>
+                            <td>Passenger</td>
+                            <td>Created - on wait</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary">Edit</button>
+                                    <button type="button" class="btn btn-danger">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
                 </table>
             </div>
         </div>
 
         <!-- View za Order Ride -->
-        <div class="row" id="order-ride-div">
-
+        <div class="row" id="orderRideFormDiv">
             <div class="col-xs-1 col-sm-3 col-md-3"></div>
             <div class="col-xs-12 col-sm-6 col-md-6 text-center">
                 <h2>Order a ride</h2>

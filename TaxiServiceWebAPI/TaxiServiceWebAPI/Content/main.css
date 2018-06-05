@@ -40,6 +40,11 @@ p#register-message-alert {
     font-weight: bold;
 }
 
+table#order-rides-table {
+    text-align: center;
+    margin: auto;
+}
+
 .center-text {
     margin: auto;
     text-align: center;

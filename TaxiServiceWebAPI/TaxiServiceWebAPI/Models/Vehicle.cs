@@ -9,7 +9,7 @@ namespace TaxiServiceWebAPI.Models
         public int VehicleAge { get; set; }
         public string NumberOfRegistration { get; set; }
         public string TaxiNumber { get; set; }
-        public string VehicleType { get; set; } = VehicleTypes.Passenger.ToString();
+        public string VehicleType { get; set; }
 
         public Vehicle() { }
 

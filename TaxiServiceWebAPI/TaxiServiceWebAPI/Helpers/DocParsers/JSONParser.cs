@@ -48,7 +48,7 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         ///     Writes a single ride into the specified .json file
         /// </summary>
         /// <param name="rideData">ride that should be saved</param>
-        public void WriteRide(Ride rideData)
+        public Ride WriteRide(Ride rideData)
         {
             if (!File.Exists(path))
             {
@@ -61,6 +61,20 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             var list = JsonConvert.DeserializeObject<List<Ride>>(jsonData) ?? new List<Ride>();
 
+            bool existsID = false;
+            Random rand = new Random();
+
+            do
+            {
+                existsID = false;
+                rideData.ID = rand.Next(500, 3000);
+                foreach (var ride in list)
+                {
+                    if (ride.ID == rideData.ID)
+                        existsID = true;
+                }
+            } while (existsID == true);
+
             // doda novog
             list.Add(rideData);
 
@@ -70,6 +84,7 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             // i onda upise u .json
             File.WriteAllText(path, jsonData);
 
+            return rideData;
         }
 
 
