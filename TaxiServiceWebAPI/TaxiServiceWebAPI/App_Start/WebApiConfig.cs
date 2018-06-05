@@ -34,9 +34,15 @@ namespace TaxiServiceWebAPI
             );
 
             config.Routes.MapHttpRoute(
-                name: "RidesApi",
+                name: "ApiWithID",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "ApiWithUsername",
+                routeTemplate: "api/{controller}/{username}",
+                defaults: new { username = RouteParameter.Optional }
             );
 
 

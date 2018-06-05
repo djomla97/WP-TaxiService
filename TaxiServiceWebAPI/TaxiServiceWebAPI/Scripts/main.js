@@ -34,6 +34,7 @@ $(document).ready(function () {
         console.log('Cookie cleared.');
         $('#user-info').empty();
         $('#edit-form').empty();
+        $('#order-rides-table-body').empty();
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
@@ -156,7 +157,6 @@ $(document).ready(function () {
         console.log('Ordering a ride ');
         orderRide();
     });
-
 
 
 
@@ -292,7 +292,7 @@ function updateOrderTable(orderRide) {
     // da status bude lepsi
     let status;
     if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
-        status = 'Crated - on wait';
+        status = 'Created - on wait';
 
     $('#order-rides-table-body').append(`<tr><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
@@ -502,6 +502,16 @@ function loginFromCookie(username) {
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
 
+        // ako je korisnik, onda ima Ordered rides
+        if (user.Role == 'Customer') {
+            // update Ordered rides from web api
+            $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
+                orderedRides.forEach(function (ride) {
+                    updateOrderTable(ride);
+                });
+            });
+        }
+
     });
 }
 
@@ -594,6 +604,15 @@ function tryLoginUser() {
                     // sklonimo onaj login-fail
                     $('p.login-fail').hide();
 
+                    // ako je korisnik, onda ima Ordered rides
+                    if (user.Role == 'Customer') {
+                        // update Ordered rides from web api
+                        $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
+                            orderedRides.forEach(function (ride) {
+                                updateOrderTable(ride);
+                            });
+                        });
+                    }
                 });
 
             } else {

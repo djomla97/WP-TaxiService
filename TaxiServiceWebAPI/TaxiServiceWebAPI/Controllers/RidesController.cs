@@ -40,6 +40,24 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
+        // GET /api/rides/id
+        [HttpGet]
+        [Route("api/rides/ordered/{username}")]
+        public IEnumerable<Ride> Get(string username)
+        {
+            try
+            {
+                var foundRide = jsonParserRides.ReadRides()
+                    .Where(r => r.RideCustomer.Username.ToLower().Equals(username.ToLower()) && r.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString());
+
+                return foundRide;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         // POST /api/rides
         [HttpPost]
         public HttpResponseMessage Post([FromBody]Ride newRide)
