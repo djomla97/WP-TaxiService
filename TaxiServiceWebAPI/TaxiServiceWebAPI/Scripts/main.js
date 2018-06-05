@@ -3,31 +3,20 @@
  * Date: 18.05.2018
  */
 
-/*
- * 
- * TODO: Implement for users to be able to ask for their ordered rides 
- * 
- */
-
 $(document).ready(function () {
 
-    // sakrijemo div-ove 
-    $('#saveChangesButton').hide();
-    $('#edit-message-alert').hide();
-    $('#goBackToInfoButton').hide();
-    $('#orderRideButtonDiv').show();
-    $('#seeRidesButtonDiv').hide();
+    // sakrijemo sve div-ove koji nam ne trebaju kad se stranica ucita
     $('#home-view').hide();
-    $('#login-register-view').hide();
-    $('#addRideButtonDiv').hide();
-    $('#orderRideFormDiv').hide();
+    $('#profileModal').hide();
 
+    // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
 
-    if (loggedInUsername !== null)
+    if (loggedInUsername !== null) {
         loginFromCookie(loggedInUsername);
-    else
+    } else {
         $('#login-register-view').show();
+    }
 
     // ako klikne na login
     $('#loginButton').click(function (e) {
@@ -145,6 +134,7 @@ $(document).ready(function () {
     $('#seeRidesButton').click(function () {
         $('#orderRideFormDiv').fadeOut('500', function () {
             $('#orderRidesTableDiv').fadeIn('500');
+            $('#ridesTableDiv').fadeIn('500');
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
         });
@@ -153,6 +143,7 @@ $(document).ready(function () {
     // order ride button click
     $('#orderRideButton').click(function () {
         $('#orderRidesTableDiv').fadeOut('500', function () {
+            $('#ridesTableDiv').hide();
             $('#orderRideFormDiv').fadeIn('500');
             $('#orderRideButtonDiv').hide();
             $('#seeRidesButtonDiv').show();
@@ -469,20 +460,25 @@ function loginFromCookie(username) {
         $('#fullName').text(`${user.FirstName} ${user.LastName}`);
         $('#loggedIn-username').text(`${user.Username}`);
 
-        // za formiranje novih voznji
+        // svaki korisnik drugaciji view ima
         if (user.Role == 'Dispatcher') {
             $('#addRideButtonDiv').show();
             $('#orderRideButtonDiv').hide();
+            $('#seeRidesButtonDiv').hide();
             $('#orderRidesTableDiv').hide();
+            $('#orderRideFormDiv').hide();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
             $('#orderRidesTableDiv').hide();
             $('#orderRideFormDiv').hide();
+            $('#seeRidesButtonDiv').hide();
         } else {
             $('#addRideButtonDiv').hide();
+            $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
             $('#orderRidesTableDiv').show();
+            $('#orderRideFormDiv').hide();
         }
 
         // obrisemo postojece informacije za modal
@@ -558,12 +554,15 @@ function tryLoginUser() {
                     $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
 
-                    // za formiranje novih voznji
+                    // svaki korisnik drugaciji view ima
                     if (user.Role == 'Dispatcher') {
                         $('#addRideButtonDiv').show();
                         $('#orderRideButtonDiv').hide();
+                        $('#seeRidesButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
+                        $('#orderRideFormDiv').hide();
                     } else if (user.Role == 'Driver') {
+                        $('#seeRidesButtonDiv').hide();
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();

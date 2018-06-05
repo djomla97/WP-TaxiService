@@ -1,0 +1,40 @@
+[
+  {
+    "ID": 925,
+    "DateAndTime": "2018-06-05T17:22:08.887Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "Gogoljeva 5",
+        "City": "Novi Sad",
+        "ZipCode": "21000"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895222222",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CREATED_ONWAIT"
+  }
+]

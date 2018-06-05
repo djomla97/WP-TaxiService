@@ -1,11 +1,13 @@
 [
   {
+    "DriverLocation": null,
+    "DriverVehicle": null,
     "Username": "supermladen",
     "Password": "admin",
     "FirstName": "Mladen",
     "LastName": "Milosevic",
     "JMBG": "123456789321654",
-    "ContactPhone": "+3816541653",
+    "ContactPhone": "+381654165333",
     "Email": "mladjo@taxiservice.com",
     "Role": "Dispatcher",
     "Rides": [],

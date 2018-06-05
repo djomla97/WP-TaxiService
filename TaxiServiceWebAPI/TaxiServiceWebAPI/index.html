@@ -130,7 +130,7 @@
                 <h1>Hi, <span id="fullName"></span></h1>
                 <h3>(<span id="loggedIn-username"></span>)</h3>
             </div>
-        </div>    
+        </div>
         <hr />
         <!-- Options row -->
         <div class="row center-text">
@@ -156,7 +156,7 @@
 
         <!-- Tabela sa narucenim voznjama -->
         <div id="orderRidesTableDiv">
-            <h4>Ordered rides:</h4>
+            >Ordered rides:</>
             <div class="table-responsive">
                 <table class="table" id="order-rides-table">
                     <thead>
@@ -169,23 +169,28 @@
                             <th scope="col" class="col-md-auto">Options</th>
                         </tr>
                     </thead>
-                    <tbody id="order-rides-table-body">
+                    <tbody id="order-rides-table-body"></tbody>
+                </table>
+            </div>
+            <hr />
+        </div>
 
+        <!-- Tabela sa svim voznjama -->
+        <div id="ridesTableDiv">
+            <h4>Your rides:</h4>
+            <div class="table-responsive">
+                <table class="table" id="rides-table">
+                    <thead>
                         <tr>
-                            <th scope="row">1566</th>
-                            <td>Gogoljeva 4, Novi Sad 21000</td>
-                            <td>12/07/2018 12:05:44</td>
-                            <td>Passenger</td>
-                            <td>Created - on wait</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary">Edit</button>
-                                    <button type="button" class="btn btn-danger">Delete</button>
-                                </div>
-                            </td>
+                            <th scope="col" class="col-auto">ID</th>
+                            <th scope="col" class="col-md-auto">Start location</th>
+                            <th scope="col" class="col-md-auto">Destination</th>
+                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
+                            <th scope="col" class="col-md-auto">Status</th>
+                            <th scope="col" class="col-md-auto">Options</th>
                         </tr>
-                        
-                    </tbody>
+                    </thead>
+                    <tbody id="rides-table-body"></tbody>
                 </table>
             </div>
         </div>
