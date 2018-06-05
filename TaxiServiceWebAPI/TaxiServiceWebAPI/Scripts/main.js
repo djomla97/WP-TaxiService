@@ -15,8 +15,10 @@ $(document).ready(function () {
     $('#goBackToInfoButton').hide();
     $('#order-ride-div').hide();
     $('#seeRidesDiv').hide();
-    $('#home-customer-view').hide();
+    $('#home-view').hide();
     $('#login-register-view').hide();
+    $('#addRideButtonDiv').hide();
+    $('#orderRidesTableDiv').hide();
 
     let loggedInUsername = getCookie('loggedInCookie');
 
@@ -45,7 +47,7 @@ $(document).ready(function () {
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
-        $('#home-customer-view').hide();
+        $('#home-view').hide();
     });
 
     // Klikom na register radimo validaciju i saljemo korisnika
@@ -132,14 +134,101 @@ $(document).ready(function () {
 
     // Save changes from edit-form
     $('#saveChangesButton').click(function () {
+        event.preventDefault();
         if (!$('#saveChangesButton').prop('disabled'))
             tryEditUser();
+    });
+
+    $('#submitRideButton').click(function () {
+        event.preventDefault();
+        console.log('Ordering a ride ');
+        orderRide();
     });
 
 }); // on ready
 
 
 /* HELPER FUNKCIJE */
+
+function orderRide() {
+    let canOrderRide = true;
+    let checkedRadioButtons = false;
+
+    $('form#order-ride-form input').each(function () {
+
+        // radio carType
+        if ($(this).attr('name') == 'radioCarType') {
+            if ($(this).is(':checked'))
+                checkedRadioButtons = true;
+            else
+                return true;
+        }
+
+        // text input        
+        if (!$(this).val()) {
+            $(this).next().show();
+            $(this).next().addClass('empty-check');
+            $(this).next().text('This field cannot be left empty.');
+        } else {
+            $(this).next().hide();
+            $(this).next().text('');
+            $(this).next().removeClass('empty-check');
+        }
+
+        // ZipCode moze imati samo brojeve
+        if ($(this).attr('id') == 'orderRideZipCode') {
+            if (!$('#orderRideZipCode').val().match(/^[\d]+$/g))
+                addValidationError('orderRideZipCode', 'empty-check', 'Zip code can only have numbers');
+            else
+                removeValidationError('orderRideZipCode', 'empty-check');
+        }
+    });
+
+    // hack sa klasom
+    $('#order-ride-form p').each(function () {
+        if ($(this).hasClass('empty-check')) {
+            canOrderRide = false;
+        }
+    });
+
+    if (canOrderRide) {
+
+        // trenutno vreme
+        let date = new Date();
+        let jsonDate = date.toJSON();
+
+        // voznja
+        let newOrderRide = {
+            DateAndTime: jsonDate,
+            StartLocation: {
+                X: 0.0,
+                Y: 0.0,
+                LocationAddress: {
+                    City: $('#orderRideCity').val(),
+                    Street: $('#orderRideStreet').val(),
+                    ZipCode: $('#orderRideZipCode').val()
+                }
+            }
+        };
+
+        console.log(JSON.stringify(newOrderRide));
+
+        // posaljemo voznju
+        $.ajax({
+            method: 'POST',
+            url: '/api/rides',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(newOrderRide)
+        });
+
+        clearForm('order-ride-form');
+    } else {
+        console.log('Can\'t order ride.');
+    }
+
+}
+
 
 // Register & register validation
 function tryAddUser() {
@@ -150,7 +239,6 @@ function tryAddUser() {
         let canAddUser = true;
         let checkedRadioButtons = 0;
 
-
         // Email check
         if (emailFound[0] === "Found") {
             addValidationError('email', 'not-available', 'Email is not available.');
@@ -160,15 +248,15 @@ function tryAddUser() {
 
             // email validacija '@'
             if (!($('#email').val().indexOf('@') >= 0))
-                addValidationError('email', 'found-check', 'You must have a @ in the email address.');
+                addValidationError('email', 'empty-check', 'You must have a @ in the email address.');
             else
-                removeValidationError('email', 'found-check');
+                removeValidationError('email', 'empty-check');
 
             // email validacija '.'
             if (!($('#email').val().indexOf('.') >= ($('#email').val().indexOf('@'))))
-                addValidationError('email', 'found-check', 'You must have a dot (.) after @ in the email address.');
+                addValidationError('email', 'empty-check', 'You must have a dot (.) after @ in the email address.');
             else
-                removeValidationError('email', 'found-check');
+                removeValidationError('email', 'empty-check');
 
         }
 
@@ -195,24 +283,24 @@ function tryAddUser() {
             // JMBG moze imati samo brojeve
             if ($(this).attr('id') == 'jmbg') {
                 if (!$('#jmbg').val().match(/^[\d]+$/g))
-                    addValidationError('jmbg', 'found-check', 'JMBG can only have numbers');
+                    addValidationError('jmbg', 'empty-check', 'JMBG can only have numbers');
                 else
-                    removeValidationError('jmbg', 'found-check');
+                    removeValidationError('jmbg', 'empty-check');
             }
 
             // Phone moze imati samo brojeve i opciono na pocetku '+'
             if ($(this).attr('id') == 'phone') {
                 if (!$('#phone').val().match(/^\+?[\d]+$/g))
-                    addValidationError('phone', 'found-check', 'Phone can only have numbers and an optional starting (+)');
+                    addValidationError('phone', 'empty-check', 'Phone can only have numbers and an optional starting (+)');
                 else
-                    removeValidationError('phone', 'found-check');
+                    removeValidationError('phone', 'empty-check');
             }
 
             // text input        
             if (!$(this).val()) {
 
                 $(this).next().show();
-                $(this).next().addClass('found-check');
+                $(this).next().addClass('empty-check');
                 $(this).next().text('This field cannot be left empty.');
 
             } else {
@@ -221,7 +309,7 @@ function tryAddUser() {
                     if (!$(this).attr('id') == 'jmbg' || !$(this).attr('id') == 'phone') {
                         $(this).next().hide();
                         $(this).next().text('');
-                        $(this).next().removeClass('found-check');
+                        $(this).next().removeClass('empty-check');
                     }
                 }
             }
@@ -229,13 +317,13 @@ function tryAddUser() {
 
         // radio button provera
         if (checkedRadioButtons === 0)
-            addValidationError('radiogender', 'found-check', 'Please select a gender.');
+            addValidationError('radiogender', 'empty-check', 'Please select a gender.');
         else
-            removeValidationError('radiogender', 'found-check');
+            removeValidationError('radiogender', 'empty-check');
 
         // hack sa klasom
         $('#register-form p').each(function () {
-            if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
+            if ($(this).hasClass('empty-check') || $(this).hasClass('not-available')) {
                 canAddUser = false;
             }
         });
@@ -270,9 +358,7 @@ function tryAddUser() {
 
             }).done(function (data) {
                 // ispraznimo sve
-                $('#register-form input').each(function () {
-                    $(this).val('');
-                });
+                clearForm('register-form');
                 // kazemo da moze da se loguje
                 $('#register-message-alert').text('Success! You can now log in to your account.');
                 $('#register-message-alert').show();
@@ -297,6 +383,12 @@ function loginFromCookie(username) {
         $('#fullName').text(`${user.FirstName} ${user.LastName}`);
         $('#loggedIn-username').text(`${user.Username}`);
 
+        // za formiranje novih voznji
+        if (user.Role == 'Dispatcher') {
+            $('#addRideButtonDiv').show();
+            $('#orderRideButtonDiv').hide();
+        }
+
         // obrisemo postojece informacije za modal
         $('#editInfoButton').show();
         $('#goBackToInfoButton').hide();
@@ -313,7 +405,7 @@ function loginFromCookie(username) {
         $('#login-register-view').slideUp(300);
         $('#login-register-view').hide();
 
-        $('#home-customer-view').show();
+        $('#home-view').show();
 
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
@@ -329,15 +421,15 @@ function tryLoginUser() {
 
     // username
     if (!$('#loginUsername').val())
-        addValidationError('loginusername', 'found-check', 'You must enter a username');
+        addValidationError('loginusername', 'empty-check', 'You must enter a username');
     else
-        removeValidationError('loginusername', 'found-check');
+        removeValidationError('loginusername', 'empty-check');
 
     // password
     if (!$('#loginPassword').val())
-        addValidationError('loginpassword', 'found-check', 'You must enter a password');
+        addValidationError('loginpassword', 'empty-check', 'You must enter a password');
     else
-        removeValidationError('loginpassword', 'found-check');
+        removeValidationError('loginpassword', 'empty-check');
 
     // dummy user za login
     loginUser.username = $('#loginUsername').val();
@@ -346,7 +438,7 @@ function tryLoginUser() {
     let canLoginUser = true;
     // hack sa klasom
     $('#login-form p').each(function () {
-        if ($(this).hasClass('found-check')) {
+        if ($(this).hasClass('empty-check')) {
             canLoginUser = false;
         }
     });
@@ -355,11 +447,8 @@ function tryLoginUser() {
         // poziv za login
         $.post('/api/users/login', loginUser, function (loggedIn) {
             // restart login/register vrednosti
-            $('#loginUsername').val('');
-            $('#loginPassword').val('');
-            $('#register-form input').each(function () {
-                $(this).val('');
-            });
+            clearForm('login-form');
+            clearForm('register-form');
 
             if (loggedIn !== false) {
 
@@ -372,6 +461,12 @@ function tryLoginUser() {
 
                     $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
+
+                    // za formiranje novih voznji
+                    if (user.Role == 'Dispatcher') {
+                        $('#addRideButtonDiv').show();
+                        $('#orderRideButtonDiv').hide();
+                    }
 
                     // obrisemo postojece informacije za modal
                     $('#editInfoButton').show();
@@ -389,7 +484,7 @@ function tryLoginUser() {
                     $('#login-register-view').slideUp(300);
                     $('#login-register-view').hide();
 
-                    $('#home-customer-view').show();
+                    $('#home-view').show();
 
                     // sklonimo onaj login-fail
                     $('p.login-fail').hide();
@@ -424,30 +519,30 @@ function tryEditUser() {
 
             if (!$(this).val()) {
                 $(this).next().show();
-                $(this).next().addClass('found-check');
+                $(this).next().addClass('empty-check');
                 $(this).next().text('This field cannot be left empty.');
             } else {
                 if (!$(this).next().hasClass('not-available')) {
                     $(this).next().hide();
                     $(this).next().text('');
-                    $(this).next().removeClass('found-check');
+                    $(this).next().removeClass('empty-check');
                 }
             }
 
             // JMBG moze imati samo brojeve
             if ($(this).attr('id') == 'editJMBG') {
                 if ($('#editJMBG').val().match(/^[\d]+$/g) == null)
-                    addValidationError('editJMBG', 'found-check', 'JMBG can only have numbers');
+                    addValidationError('editJMBG', 'empty-check', 'JMBG can only have numbers');
                 else
-                    removeValidationError('editJMBG', 'found-check');
+                    removeValidationError('editJMBG', 'empty-check');
             }
 
             // Phone moze imati samo brojeve i opciono na pocetku '+'
             if ($(this).attr('id') == 'editPhone') {
                 if (!$('#editPhone').val().match(/^\+?[\d]+$/g))
-                    addValidationError('editPhone', 'found-check', 'Phone can only have numbers and an optional starting (+)');
+                    addValidationError('editPhone', 'empty-check', 'Phone can only have numbers and an optional starting (+)');
                 else
-                    removeValidationError('editPhone', 'found-check');
+                    removeValidationError('editPhone', 'empty-check');
             }
 
         });
@@ -466,15 +561,15 @@ function tryEditUser() {
 
             // email validacija '@'
             if (!($('#editEmail').val().indexOf('@') >= 0))
-                addValidationError('editEmail', 'found-check', 'You must have a @ in the email address.');
+                addValidationError('editEmail', 'empty-check', 'You must have a @ in the email address.');
             else
-                removeValidationError('editEmail', 'found-check');
+                removeValidationError('editEmail', 'empty-check');
 
             // email validacija '.'
             if (!($('#editEmail').val().indexOf('.') >= ($('#editEmail').val().indexOf('@'))))
-                addValidationError('editEmail', 'found-check', 'You must have a dot (.) after @ in the email address.');
+                addValidationError('editEmail', 'empty-check', 'You must have a dot (.) after @ in the email address.');
             else
-                removeValidationError('editEmail', 'found-check');
+                removeValidationError('editEmail', 'empty-check');
         }
 
         // Username check
@@ -488,14 +583,14 @@ function tryEditUser() {
 
         } else {
             if (!$('#editUsername').val())
-                addValidationError('editUsername', 'found-check', 'This field cannot be left empty.');
+                addValidationError('editUsername', 'empty-check', 'This field cannot be left empty.');
             else
-                removeValidationError('editUsername', 'found-check');
+                removeValidationError('editUsername', 'empty-check');
         }
 
         // hack sa klasom
         $('#edit-form p').each(function () {
-            if ($(this).hasClass('found-check') || $(this).hasClass('not-available')) {
+            if ($(this).hasClass('empty-check') || $(this).hasClass('not-available')) {
                 canEditUser = false;
             }
         });
@@ -504,7 +599,6 @@ function tryEditUser() {
         if (foundEmail === "Found" || foundUsername === "Found")
             canEditUser = false;
 
-        console.log($('#edit-form').data('changed'));
 
         if (canEditUser) {
             let editedUser;
@@ -606,10 +700,10 @@ function removeValidationError(checkName, className) {
 function removeValidationErrors(formName) {
     $(`#${formName}-form input`).each(function () {
         if ($(this).attr('id')) {
-            removeValidationError($(this).attr('id').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('id').toLowerCase(), 'empty-check');
             removeValidationError($(this).attr('id').toLowerCase(), 'not-available');
         } else {
-            removeValidationError($(this).attr('name').toLowerCase(), 'found-check');
+            removeValidationError($(this).attr('name').toLowerCase(), 'empty-check');
             removeValidationError($(this).attr('name').toLowerCase(), 'not-available');
         }
     });
@@ -632,17 +726,15 @@ function updateUserInformation(user) {
     $('#user-info').append(`<span class="user-key">Gender</span>: <p id="info-gender">${user.Gender}</p>`);
 
     if (user.Role == 'Dispatcher' || user.Role == 'Driver') {
-        $('#user-info').append(`<span class="user-key">Role</span>: <p id="info-role">${user.Role}</p>`);
+        $('#user-info').append(`<hr /><span class="user-key">Role</span>: <p id="info-role">${user.Role}</p>`);
     }
 
     if (user.Role == 'Driver') {
-        $('#user-info').append('<h4 class="info-location">Location</h4>');
+        $('#user-info').append('<hr /><h4 class="info-location">Location</h4>');
         $('#user-info').append(`<span class="user-key">City</span>: <p id="info-location-city">${user.DriverLocation.LocationAddress.City}</p>`);
         $('#user-info').append(`<span class="user-key">Street</span>: <p id="info-location-street">${user.DriverLocation.LocationAddress.Street}</p>`);
         $('#user-info').append(`<span class="user-key">Zip code</span>: <p id="info-location-zipcode">${user.DriverLocation.LocationAddress.ZipCode}</p>`);
     }
-
-
 }
 
 // dry
@@ -661,13 +753,22 @@ function updateEditForm() {
                 $('#edit-form').append(`<div class="form-group"><div class="col-sm-12 center-text"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
             }
         } else {
-            $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+            if (($(this).text().indexOf('City') >= 0))
+                $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+            else
+                $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
         }
     });
 
     // za Password
-    $('#edit-form').append(`<hr><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
+    $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 
+}
+
+function clearForm(formID) {
+    $(`form#${formID} input`).each(function () {
+        $(this).val('');
+    });
 }
 
 

@@ -44,7 +44,35 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
         }
 
-        
+        /// <summary>
+        ///     Writes a single ride into the specified .json file
+        /// </summary>
+        /// <param name="rideData">ride that should be saved</param>
+        public void WriteRide(Ride rideData)
+        {
+            if (!File.Exists(path))
+            {
+                var fileCreate = File.CreateText(path);
+                fileCreate.Close();
+            }
+
+            // cita json
+            var jsonData = File.ReadAllText(path);
+
+            var list = JsonConvert.DeserializeObject<List<Ride>>(jsonData) ?? new List<Ride>();
+
+            // doda novog
+            list.Add(rideData);
+
+            // zatim u Json pretvori listu, jer nam treba niz
+            jsonData = JsonConvert.SerializeObject(list, Formatting.Indented);
+
+            // i onda upise u .json
+            File.WriteAllText(path, jsonData);
+
+        }
+
+
         /// <summary>
         ///     Reads from a .json file for Users
         /// </summary>
@@ -67,6 +95,30 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             }
 
             return users;
+        }
+
+        /// <summary>
+        ///     Reads from a .json file for Rides
+        /// </summary>
+        /// <returns>List of all rides in specified file</returns>
+        public List<Ride> ReadRides()
+        {
+            List<Ride> rides = new List<Ride>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+
+                rides = JsonConvert.DeserializeObject<List<Ride>>(json);
+            }
+
+            return rides;
         }
 
         /// <summary>
@@ -195,7 +247,39 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             File.WriteAllText(path, jsonData);
         }
-        
+
+        /// <summary>
+        ///     Edits ride information
+        /// </summary>
+        /// <param name="id">ID of driver to be edited</param>
+        /// <param name="newRide">New ride to replace the old one</param>
+        public void EditRide(int id, Ride newRide)
+        {
+            List<Ride> rides = new List<Ride>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                rides = JsonConvert.DeserializeObject<List<Ride>>(json);
+            }
+
+            Ride oldRide = rides.Where(r => r.ID == id).First();
+
+            // zamenimo ih samo
+            rides.Remove(oldRide);
+            rides.Add(newRide);
+
+            var jsonData = JsonConvert.SerializeObject(rides, Formatting.Indented);
+
+            File.WriteAllText(path, jsonData);
+        }
+
 
     }
 }

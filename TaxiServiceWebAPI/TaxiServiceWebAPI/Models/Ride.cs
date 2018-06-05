@@ -5,6 +5,7 @@ namespace TaxiServiceWebAPI.Models
 {
     public class Ride
     {
+        public int ID { get; set; }
         public DateTime DateAndTime { get; set; }
         public Location StartLocation { get; set; }
         public Vehicle RideVehicle { get; set; }
@@ -14,7 +15,7 @@ namespace TaxiServiceWebAPI.Models
         public Driver RideDriver { get; set; }
         public double Fare { get; set; }
         public string Comment { get; set; }
-        public RideStatuses StatusOfRide { get; set; }
+        public string StatusOfRide { get; set; }
 
         public Ride()
         {

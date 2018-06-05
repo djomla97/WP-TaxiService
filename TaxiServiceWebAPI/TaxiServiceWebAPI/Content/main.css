@@ -81,16 +81,7 @@ tr > th {
     text-align: center;
 }
 
-.cover {
-    color: white;
-    background: #ffffff;
-    background: -moz-linear-gradient(left, #ffffff 0%, #73b1e7 21%, #0a77d5 35%, #0a77d5 69%, #539fe1 82%, #ffffff 100%);
-    background: -webkit-linear-gradient(left, #ffffff 0%,#73b1e7 21%,#0a77d5 35%,#0a77d5 69%,#539fe1 82%,#ffffff 100%);
-    background: linear-gradient(to right, #ffffff 0%,#73b1e7 21%,#0a77d5 35%,#0a77d5 69%,#539fe1 82%,#ffffff 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 );
-}
-
-.found-check { }
+.empty-check { }
 .not-available { }
 
 

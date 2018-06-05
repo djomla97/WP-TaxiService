@@ -1,4 +1,5 @@
-﻿using TaxiServiceWebAPI.Helpers;
+﻿using System.ComponentModel;
+using TaxiServiceWebAPI.Helpers;
 
 namespace TaxiServiceWebAPI.Models
 {
@@ -8,7 +9,7 @@ namespace TaxiServiceWebAPI.Models
         public int VehicleAge { get; set; }
         public string NumberOfRegistration { get; set; }
         public string TaxiNumber { get; set; }
-        public VehicleTypes VehicleType { get; set; } = VehicleTypes.Passenger;
+        public string VehicleType { get; set; } = VehicleTypes.Passenger.ToString();
 
         public Vehicle() { }
 

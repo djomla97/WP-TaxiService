@@ -19,6 +19,7 @@ namespace TaxiServiceWebAPI
         {
             InitializeAdmins();
             InitializeDrivers();
+            InitializeDemoUser();
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -59,8 +60,7 @@ namespace TaxiServiceWebAPI
         }
 
         private void InitializeDrivers()
-        {
-            // ne zelimo vise puta iste admine da unosi
+        { 
             if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json"))
                 File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
 
@@ -85,6 +85,35 @@ namespace TaxiServiceWebAPI
 
             foreach (var driver in drivers)
                 jsonParser.WriteUser(driver);
+
+        }
+
+        private void InitializeDemoUser()
+        {
+            // ne zelimo vise puta iste admine da unosi
+            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json"))
+                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
+
+            List<User> users = new List<User>();
+
+            users.Add(new User()
+            {
+                Username = "demo",
+                FirstName = "Demo",
+                LastName = "User",
+                Password = "demo",
+                Email = "demo@taxiservice.com",
+                ContactPhone = "+386895111",
+                JMBG = "445556978112",
+                Role = Roles.Customer.ToString(),
+                Gender = Genders.Male.ToString(),
+                Rides = new List<Ride>()
+            });
+
+            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
+
+            foreach (var user in users)
+                jsonParser.WriteUser(user);
 
         }
 

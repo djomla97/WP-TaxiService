@@ -122,8 +122,8 @@
     </div>
     <!-- END of login-register div -->
 
-    <!-- Customer View -->
-    <div class="container" id="home-customer-view">
+    <!-- HomePage View -->
+    <div class="container" id="home-view">
         <!-- Hello message -->
         <div class="row center-text">
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -136,6 +136,9 @@
         <div class="row center-text">
             <div class="col-xs-12 col-sm-4 col-md-4" id="orderRideButtonDiv">
                 <button id="orderRideButton" type="button" class="btn btn-primary btn-lg btn-block">Order ride</button>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4" id="addRideButtonDiv">
+                <button id="addRideButton" type="button" class="btn btn-primary btn-lg btn-block">Add ride</button>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-4" id="seeRidesDiv">
                 <button id="seeRidesButton" type="button" class="btn btn-primary btn-lg btn-block">See rides</button>
@@ -151,10 +154,26 @@
 
         <br>
 
-        <!-- Tabela sa voznjama -->
-        <div id="rides-table">
+        <!-- Tabela sa tek narucenim voznjama -->
+        <div id="orderRidesTableDiv">
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover" id="order-rides-table">
+                    <!-- Zaglavlja tabele -->
+                    <tr>
+                        <th>ID</th>
+                        <th>Start</th>
+                        <th>Date and time</th>
+                        <th>Type of car</th>                                             
+                        <th>Status</th>
+                    </tr>                    
+                </table>
+            </div>
+        </div>
+
+        <!-- Tabela sa voznjama -->
+        <div id="ridesTableDiv">
+            <div class="table-responsive">
+                <table class="table table-hover" id="rides-table">
                     <!-- Zaglavlja tabele -->
                     <tr>
                         <th>ID</th>
@@ -207,19 +226,19 @@
                     <div class="form-group">
                         <div class="col-sm-12">
                             <input type="text" class="form-control" id="orderRideStreet" placeholder="Street" autocomplete="off" />
-                            <p id="orderridestreet-check" class="found-p"></p>
+                            <p id="orderRideStreet-check" class="found-p"></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="password" class="form-control" id="orderRideCity" placeholder="City" autocomplete="off" />
-                            <p id="orderridecity-check" class="found-p"></p>
+                            <input type="text" class="form-control" id="orderRideCity" placeholder="City" autocomplete="off" />
+                            <p id="orderRideCity-check" class="found-p"></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
                             <input type="email" class="form-control" id="orderRideZipCode" placeholder="Zip code" autocomplete="off" />
-                            <p id="orderridezipcode-check" class="found-p"></p>
+                            <p id="orderRideZipCode-check" class="found-p"></p>
                         </div>
                     </div>
                     <div class="form-group">
