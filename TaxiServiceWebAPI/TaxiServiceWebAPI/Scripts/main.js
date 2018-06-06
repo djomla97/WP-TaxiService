@@ -3,8 +3,6 @@
  * Date: 18.05.2018
  */
 
-// TODO : Fix car type radio
-
 $(document).ready(function () {
 
     // sakrijemo sve div-ove koji nam ne trebaju kad se stranica ucita
@@ -14,6 +12,7 @@ $(document).ready(function () {
     $('#orderRideButtonDiv').hide();
     $('#orderRidesTableDiv').hide();
     $('#seeRidesButtonDiv').hide();
+    $('#no-rides-message').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -136,17 +135,23 @@ $(document).ready(function () {
             tryEditUser();
     });
 
-    /* ORDER RIDE */
+    $('#orderRideMark').click(function () {
+        event.preventDefault();
+        $('#orderRideButton').trigger('click');
+    });
+
     // see rides button click
     $('#seeRidesButton').click(function () {
-        $('#orderRideFormDiv').fadeOut('500', function () {
-            $('#orderRidesTableDiv').fadeIn('500');
+        $('#orderRideFormDiv').fadeOut('500', function () {            
             $('#ridesTableDiv').fadeIn('500');
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
+            // provera sadrzaja tabela
+            checkRidesTables();
         });
     });
 
+    /* ORDER RIDE */
     // order ride button click
     $('#orderRideButton').click(function () {
         $('#orderRidesTableDiv').fadeOut('500', function () {
@@ -154,6 +159,7 @@ $(document).ready(function () {
             $('#orderRideFormDiv').fadeIn('500');
             $('#orderRideButtonDiv').hide();
             $('#seeRidesButtonDiv').show();
+            $('#no-rides-message').hide();
         });
     });
 
@@ -167,7 +173,6 @@ $(document).ready(function () {
 
 }); // on ready
 
-
 /* HELPER FUNKCIJE */
 
 function orderRide() {
@@ -175,14 +180,6 @@ function orderRide() {
     let checkedRadioButtons = false;
 
     $('form#order-ride-form input').each(function () {
-
-        // radio carType
-        if ($(this).attr('name') == 'radioCarType') {
-            if ($(this).is(':checked'))
-                checkedRadioButtons = true;
-            else
-                return true;
-        }
 
         // text input        
         if (!$(this).val()) {
@@ -220,7 +217,7 @@ function orderRide() {
             let date = new Date();
             let jsonDate = date.toJSON();
 
-            console.log('[DEBUG] Car type checked: ' + $('input[name=radioCarType]:checked').val());
+            console.log('[DEBUG] Car type selected: ' + $('#orderCarType').val());
 
             // voznja
             let newOrderRide = {
@@ -236,7 +233,7 @@ function orderRide() {
                 },
                 DateAndTime: jsonDate,
                 RideVehicle: {
-                    VehicleType: $('input[name=radioCarType]:checked').val()
+                    VehicleType: $('#orderCarType').val()
                 },
                 StartLocation: {
                     X: 0.0,
@@ -271,23 +268,16 @@ function orderRide() {
                     $('#seeRidesButton').trigger('click');
 
                 });
-                
-
             });
-
         });
-        
     } else {
         console.log('Can\'t order ride.');
     }
-
 }
 
 function updateOrderTable(orderRide) {
-
     // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
     $('#order-rides-table-body tr').each(function () {
-        //console.log('DEBUG: attrID = ' + $(this).attr('id') + ' : ' + orderRide.ID);
         if ($(this).attr('id') == orderRide.ID) {
             console.log('udje');
             $(this).remove();
@@ -338,11 +328,7 @@ function addButtonListeners(orderRideID) {
                     return true;
                 }
             });
-
-            console.log('[DEBUG] table tr number: ' + $('#order-rides-table-body tr').length);
-            if ($('#order-rides-table-body tr').length == 0)
-                $('#orderRidesTableDiv').hide();
-
+            checkRidesTables();
         });
     });
 }
@@ -350,7 +336,6 @@ function addButtonListeners(orderRideID) {
 
 // Register & register validation
 function tryAddUser() {
-
     // ... promises, promises :)
     $.when(checkEmail($('#email').val()), checkUsername($('#username').val())).done(function (emailFound, usernameFound) {
 
@@ -485,9 +470,7 @@ function tryAddUser() {
         } else {
             console.log('Ne moze da doda korisnika.'); // debug
         }
-
     });
-
 }
 
 // helper for logged in user
@@ -554,9 +537,10 @@ function loginFromCookie(username) {
                 } else {
                     $('#orderRidesTableDiv').hide();
                 }
+                updateMarkMessage(user.Role);
+                checkRidesTables();
             });
         }
-
     });
 }
 
@@ -667,19 +651,18 @@ function tryLoginUser() {
                             } else {
                                 $('#orderRidesTableDiv').hide();
                             }
+                            updateMarkMessage(user.Role);
+                            checkRidesTables();
                         });
                     }
                 });
-
             } else {
                 $('p.login-fail').css('text-weight', 'bold');
                 $('p.login-fail').css('color', 'red');
                 $('p.login-fail').text('Username and password do not match. Try again.');
                 $('p.login-fail').show();
             }
-
         });
-
     }
 }
 
@@ -724,7 +707,6 @@ function tryEditUser() {
                 else
                     removeValidationError('editPhone', 'empty-check');
             }
-
         });
 
         // Email check
@@ -779,7 +761,6 @@ function tryEditUser() {
         if (foundEmail === "Found" || foundUsername === "Found")
             canEditUser = false;
 
-
         if (canEditUser) {
             let editedUser;
 
@@ -801,7 +782,6 @@ function tryEditUser() {
                             City: $('#editCity').val(),
                             Street: $('#editStreet').val(),
                             ZipCode: $('#editZipcode').val()
-
                         }
                     }
                 };
@@ -860,20 +840,16 @@ function checkUsername(username) {
 
 // dodaje validation form na jedan input
 function addValidationError(checkName, className, message) {
-
     $(`#${checkName}-check`).show();
     $(`#${checkName}-check`).addClass(className);
     $(`#${checkName}-check`).text(message);
-
 }
 
 // uklanja validation error sa jednog inputa
 function removeValidationError(checkName, className) {
-
     $(`#${checkName}-check`).hide();
     $(`#${checkName}-check`).text('');
     $(`#${checkName}-check`).removeClass(className);
-
 }
 
 // uklanja svaki validation check error u odredjenoj formi
@@ -942,7 +918,6 @@ function updateEditForm() {
 
     // za Password
     $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
-
 }
 
 function clearForm(formID) {
@@ -951,6 +926,28 @@ function clearForm(formID) {
     });
 }
 
+function checkRidesTables() { 
+    if ($('#order-rides-table-body tr').length !== 0) 
+        $('#orderRidesTableDiv').fadeIn('500');
+    else
+        $('#orderRidesTableDiv').hide();
+    
+    if ($('#rides-table-body tr').length !== 0) 
+        $('#ridesTableDiv').fadeIn('500');
+    else
+        $('#ridesTableDiv').hide();
+
+    if ($('#order-rides-table-body tr').length == 0 && $('#rides-table-body tr').length == 0) {
+        $('#orderRidesTableDiv').hide();
+        $('#ridesTableDiv').hide();
+        $('#no-rides-message').show();
+    }
+}
+
+function updateMarkMessage(role) {
+    if(role == 'Customer')
+        $('#orderRideMark').text('ordering a ride');
+}
 
 /* Cookie logika */
 // Source: https://stackoverflow.com/questions/14573223/set-cookie-and-get-cookie-with-javascript

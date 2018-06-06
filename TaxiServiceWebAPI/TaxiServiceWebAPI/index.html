@@ -16,7 +16,7 @@
 
     <div class="container" id="login-register-view">
         <!-- Title -->
-        <div class="row center-text">
+        <div class="row text-center">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <h1 id="site-title">Taxi Service</h1>
             </div>
@@ -26,7 +26,7 @@
         </div>
         
         <!-- Login & Register forms -->
-        <div class="row center-text equal">
+        <div class="row text-center equal">
             <!-- Login -->
             <div class="col-xs-12 col-sm-6 col-md-6" id="login-form-view">
                 <h2>Login</h2>
@@ -125,7 +125,7 @@
     <!-- HomePage View -->
     <div class="container" id="home-view">
         <!-- Hello message -->
-        <div class="row center-text">
+        <div class="row text-center">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <h1>Hi, <span id="fullName"></span></h1>
                 <h3>(<span id="loggedIn-username"></span>)</h3>
@@ -133,7 +133,7 @@
         </div>
         <hr />
         <!-- Options row -->
-        <div class="row center-text">
+        <div class="row text-center">
             <div class="col-xs-12 col-sm-4 col-md-4" id="orderRideButtonDiv">
                 <button id="orderRideButton" type="button" class="btn btn-primary btn-lg btn-block">Order ride</button>
             </div>
@@ -155,7 +155,7 @@
         <br>
 
         <!-- Tabela sa narucenim voznjama -->
-        <div id="orderRidesTableDiv">
+        <div id="orderRidesTableDiv" class="text-center">
             <h3>Ordered rides:</h3>
             <div class="table-responsive">
                 <table class="table" id="order-rides-table">
@@ -174,11 +174,17 @@
             </div>
             <hr />
         </div>
+            
+        <!-- Ako nema voznje -->
+        <div id="no-rides-message" class="text-center">
+            <h3>Oops, you don't have any done or in progress rides</h3>
+            <h4>Try <a href="" id="orderRideMark"></a>, maybe?</h4>
+        </div>
 
         <!-- Tabela sa svim voznjama -->
-        <div id="ridesTableDiv">
-            <h4>Your rides:</h4>
-            <div class="table-responsive">
+        <div class="text-center" id="ridesTableDiv">
+            <h3>Your rides:</h3>
+            <div class="table-responsive" >
                 <table class="table" id="rides-table">
                     <thead>
                         <tr>
@@ -222,12 +228,10 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <label class="radio-inline">
-                                <input type="radio" name="radioCarType" value="Passenger" /> Passenger
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="radioCarType" value="Van" /> Van
-                            </label>
+                            <select class="form-control" id="orderCarType">
+                                <option value="Passenger">Passenger</option>
+                                <option value="Van">Van</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">

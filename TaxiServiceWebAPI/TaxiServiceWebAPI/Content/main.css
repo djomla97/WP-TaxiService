@@ -86,8 +86,21 @@ tr > th {
     text-align: center;
 }
 
-.empty-check { }
+a#orderRideMark {
+    color: darkslateblue;
+    text-decoration: underline;
+}
+
+a#orderRideMark:hover {
+    color: dodgerblue;
+    text-decoration: none;
+}
+
+.empty-check {
+}
 .not-available { }
+
+
 
 
 

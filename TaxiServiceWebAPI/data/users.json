@@ -10,17 +10,5 @@
     "Role": "Customer",
     "Rides": [],
     "Gender": "Male"
-  },
-  {
-    "Username": "user",
-    "Password": "user",
-    "FirstName": "User",
-    "LastName": "ForTest",
-    "JMBG": "131231093",
-    "ContactPhone": "12319238123",
-    "Email": "user@user.com",
-    "Role": "Customer",
-    "Rides": [],
-    "Gender": "Male"
   }
 ]
