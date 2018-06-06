@@ -135,11 +135,6 @@ $(document).ready(function () {
             tryEditUser();
     });
 
-    $('#orderRideMark').click(function () {
-        event.preventDefault();
-        $('#orderRideButton').trigger('click');
-    });
-
     // see rides button click
     $('#seeRidesButton').click(function () {
         $('#orderRideFormDiv').fadeOut('500', function () {            
@@ -537,10 +532,10 @@ function loginFromCookie(username) {
                 } else {
                     $('#orderRidesTableDiv').hide();
                 }
-                updateMarkMessage(user.Role);
-                checkRidesTables();
             });
         }
+        updateMark(user.Role);
+        checkRidesTables();
     });
 }
 
@@ -651,10 +646,10 @@ function tryLoginUser() {
                             } else {
                                 $('#orderRidesTableDiv').hide();
                             }
-                            updateMarkMessage(user.Role);
-                            checkRidesTables();
                         });
                     }
+                    updateMark(user.Role);
+                    checkRidesTables();
                 });
             } else {
                 $('p.login-fail').css('text-weight', 'bold');
@@ -944,9 +939,20 @@ function checkRidesTables() {
     }
 }
 
-function updateMarkMessage(role) {
-    if(role == 'Customer')
+function updateMark(role) {
+    if (role == 'Customer') {
         $('#orderRideMark').text('ordering a ride');
+        $('#orderRideMark').click(function () {
+            event.preventDefault();
+            $('#orderRideButton').trigger('click');
+        });
+    } else if (role == 'Dispatcher') {
+        $('#orderRideMark').text('adding a ride');
+        $('#orderRideMark').click(function () {
+            event.preventDefault();
+            $('#addRideButton').trigger('click');
+        });
+    }
 }
 
 /* Cookie logika */
