@@ -1,14 +1,14 @@
 [
   {
-    "ID": 1741,
-    "DateAndTime": "2018-06-05T23:17:32.56Z",
+    "ID": 1284,
+    "DateAndTime": "2018-06-08T17:11:21.472Z",
     "StartLocation": {
       "X": 0.0,
       "Y": 0.0,
       "LocationAddress": {
-        "Street": "asdads",
-        "City": "asdad",
-        "ZipCode": "14144"
+        "Street": "dawdad",
+        "City": "asdaw",
+        "ZipCode": "1231"
       }
     },
     "RideVehicle": {
@@ -16,16 +16,16 @@
       "VehicleAge": 0,
       "NumberOfRegistration": null,
       "TaxiNumber": null,
-      "VehicleType": "Passenger"
+      "VehicleType": "Van"
     },
     "RideCustomer": {
-      "Username": "user",
-      "Password": "user",
-      "FirstName": "User",
-      "LastName": "ForTest",
-      "JMBG": "131231093",
-      "ContactPhone": "12319238123",
-      "Email": "user@user.com",
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
       "Role": "Customer",
       "Rides": null,
       "Gender": "Male"
@@ -35,18 +35,18 @@
     "RideDriver": null,
     "Fare": 0.0,
     "Comment": null,
-    "StatusOfRide": "CREATED_ONWAIT"
+    "StatusOfRide": "CANCELED"
   },
   {
-    "ID": 2651,
-    "DateAndTime": "2018-06-08T16:20:56.09Z",
+    "ID": 2884,
+    "DateAndTime": "2018-06-08T17:09:42.746Z",
     "StartLocation": {
       "X": 0.0,
       "Y": 0.0,
       "LocationAddress": {
-        "Street": "asdasd",
-        "City": "ada",
-        "ZipCode": "1231"
+        "Street": "sdf",
+        "City": "sfa",
+        "ZipCode": "213"
       }
     },
     "RideVehicle": {
@@ -73,18 +73,94 @@
     "RideDriver": null,
     "Fare": 0.0,
     "Comment": null,
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 1551,
+    "DateAndTime": "2018-06-08T17:11:15.89Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "fdsdfsfds",
+        "City": "212313",
+        "ZipCode": "123"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 1062,
+    "DateAndTime": "2018-06-08T17:15:49.098Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "ada",
+        "City": "sfada",
+        "ZipCode": "3123"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Van"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
     "StatusOfRide": "CREATED_ONWAIT"
   },
   {
-    "ID": 746,
-    "DateAndTime": "2018-06-08T16:21:00.908Z",
+    "ID": 2241,
+    "DateAndTime": "2018-06-08T18:00:55.478Z",
     "StartLocation": {
       "X": 0.0,
       "Y": 0.0,
       "LocationAddress": {
         "Street": "asda",
-        "City": "asd",
-        "ZipCode": "313"
+        "City": "sda",
+        "ZipCode": "1231"
       }
     },
     "RideVehicle": {

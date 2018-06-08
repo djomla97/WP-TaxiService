@@ -88,7 +88,7 @@ $(document).ready(function () {
 
         // promenimo modal na edit
         $('#user-info').hide();
-        $('#modalTitle').text('Edit profile');
+        $('#modalTitle').html('<i class="fas fa-address-card"></i>  Edit profile');
         $('#editInfoButton').hide();
         $('#goBackToInfoButton').show();
         $('#saveChangesButton').show();
@@ -118,7 +118,7 @@ $(document).ready(function () {
 
         // podesi modal na View user info
         $('#edit-form').hide();
-        $('#modalTitle').text('User information');
+        $('#modalTitle').html('<i class="fas fa-address-card"></i>  User information');
         $('#editInfoButton').show();
         $('#goBackToInfoButton').hide();
         $('#saveChangesButton').hide();
@@ -212,8 +212,6 @@ function orderRide() {
             let date = new Date();
             let jsonDate = date.toJSON();
 
-            console.log('[DEBUG] Car type selected: ' + $('#orderCarType').val());
-
             // voznja
             let newOrderRide = {
                 RideCustomer: {
@@ -251,6 +249,7 @@ function orderRide() {
             }).success(function (id) {
                 // ocistimo formu
                 clearForm('order-ride-form');               
+                $('#orderCarType').prop('selectedIndex', 0);
 
                 // zatrazimo nazad voznju sa dodeljenim ID
                 $.get(`/api/rides/${id}`, function (ride) {
@@ -274,7 +273,6 @@ function updateOrderTable(orderRide) {
     // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
     $('#order-rides-table-body tr').each(function () {
         if ($(this).attr('id') == orderRide.ID) {
-            console.log('udje');
             $(this).remove();
             return true;
         }
@@ -296,8 +294,8 @@ function updateOrderTable(orderRide) {
                             <td>${status}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button id="editOrderRideButton" type="button" class="btn btn-primary">Edit</button>
-                                    <button id="deleteOrder${orderRide.ID}" name="deleteOrderButton" type="button" class="btn btn-danger">Delete</button>
+                                    <button id="editOrderRideButton" type="button" class="btn btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button id="cancelOrder${orderRide.ID}" name="cancelOrderButton" type="button" class="btn btn-danger"><i class="fas fa-times-circle"></i></button>
                                 </div>
                             </td>
                         </tr>`);
@@ -306,13 +304,13 @@ function updateOrderTable(orderRide) {
     addButtonListeners(orderRide.ID);
 
 }
-
+// adds listeners to buttons for edit and delete
 function addButtonListeners(orderRideID) {
-    $(`#deleteOrder${orderRideID}`).click(function () {
+    $(`#cancelOrder${orderRideID}`).click(function () {
         let orderID = $(this).attr('id').replace(/\D/g, '');
         $.ajax({
-            method: 'DELETE',
-            url: `/api/rides/${orderRideID}`,
+            method: 'POST',
+            url: `/api/rides/cancel/${orderRideID}`,
             contentType: 'application/json'
         }).done(function (response) {           
 
@@ -327,7 +325,6 @@ function addButtonListeners(orderRideID) {
         });
     });
 }
-
 
 // Register & register validation
 function tryAddUser() {
@@ -525,13 +522,12 @@ function loginFromCookie(username) {
         if (user.Role == 'Customer') {
             // update Ordered rides from web api
             $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
-                console.log(orderedRides);
-                console.log(orderedRides.length);
-                if (orderedRides !== null && orderedRides.length > 0) {
-                    console.log('updating rides')
-                    orderedRides.forEach(function (ride) {
-                        updateOrderTable(ride);
-                    });
+                if (orderedRides !== null) {
+                    if (orderedRides.length > 0) {                        
+                        orderedRides.forEach(function (ride) {
+                            updateOrderTable(ride);
+                        });
+                    }
                 } else {
                     $('#orderRidesTableDiv').hide();
                 }
@@ -539,7 +535,6 @@ function loginFromCookie(username) {
                 checkRidesTables();
             });
         }
-        
     });
 }
 
@@ -643,11 +638,12 @@ function tryLoginUser() {
                     if (user.Role == 'Customer') {
                         // update Ordered rides from web api
                         $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
-                            if (orderedRides !== null && orderedRides.length > 0) {   
-                                console.log('Updating table');
-                                orderedRides.forEach(function (ride) {
-                                    updateOrderTable(ride);
-                                });
+                            if (orderedRides !== null) {
+                                if (orderedRides.length > 0) {                                    
+                                    orderedRides.forEach(function (ride) {
+                                        updateOrderTable(ride);
+                                    });
+                                }
                             } else {
                                 $('#orderRidesTableDiv').hide();
                             }
@@ -927,7 +923,6 @@ function clearForm(formID) {
 }
 
 function checkRidesTables() { 
-    console.log('Checking table contents ...');
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');
     else
