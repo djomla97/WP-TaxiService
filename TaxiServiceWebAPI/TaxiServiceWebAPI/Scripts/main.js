@@ -166,6 +166,10 @@ $(document).ready(function () {
         orderRide();
     });
 
+    $('#closeCommentRideModal').click(function () {
+        event.preventDefault();
+        $(this).next().attr('id', 'confirmCancel');
+    });
 
 }); // on ready
 
@@ -336,6 +340,8 @@ function addButtonListeners(orderRideID) {
                 $('textarea#rideCommentText').val('');
                 // inform user with snackbar
                 showSnackbar(response);
+                // reset confirmCancel button id
+                $(`#confirmCancel${orderID}`).attr('id', 'confirmCancel');
             });
         });
 
