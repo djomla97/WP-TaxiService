@@ -1,0 +1,268 @@
+[
+  {
+    "ID": 1518,
+    "DateAndTime": "2018-06-08T23:38:27.831Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asd",
+        "City": "asd",
+        "ZipCode": "1231"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": "asdklsdlakj",
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 2623,
+    "DateAndTime": "2018-06-08T23:39:12.975Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asdaj",
+        "City": "lkjasdlakj",
+        "ZipCode": "123123"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": "dsdfsdfs",
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 2745,
+    "DateAndTime": "2018-06-08T23:40:14.383Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asdlkj",
+        "City": "alksjd",
+        "ZipCode": "1231231"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": "lskdjad",
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 1494,
+    "DateAndTime": "2018-06-08T23:41:37.105Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asldkj",
+        "City": "askldj",
+        "ZipCode": "1233"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": "aldkjasd",
+    "StatusOfRide": "CANCELED"
+  },
+  {
+    "ID": 1752,
+    "DateAndTime": "2018-06-08T23:44:50.582Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asldkj",
+        "City": "asdlkj",
+        "ZipCode": "2131"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CREATED_ONWAIT"
+  },
+  {
+    "ID": 2968,
+    "DateAndTime": "2018-06-08T23:44:59.991Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asdlkj",
+        "City": "askdlj",
+        "ZipCode": "12313"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CREATED_ONWAIT"
+  },
+  {
+    "ID": 1986,
+    "DateAndTime": "2018-06-08T23:44:32.655Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asldkj",
+        "City": "asdad",
+        "ZipCode": "12313"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": "",
+    "StatusOfRide": "CANCELED"
+  }
+]

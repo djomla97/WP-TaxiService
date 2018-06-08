@@ -262,6 +262,7 @@ function orderRide() {
                     // update view
                     $('#seeRidesButton').trigger('click');
 
+                    showSnackbar('Ordered ride ' + id + ' successfully.');
                 });
             });
         });
@@ -321,7 +322,7 @@ function addButtonListeners(orderRideID) {
                 url: `/api/rides/cancel/${orderRideID}`,
                 contentType: 'application/json',
                 data: JSON.stringify(comment)
-            }).done(function (response) {
+            }).success(function (response) {
 
                 // odmah update tabelu
                 $('#order-rides-table-body tr').each(function () {
@@ -333,6 +334,8 @@ function addButtonListeners(orderRideID) {
                 checkRidesTables();
                 $('#commentRideModal').modal('hide');
                 $('textarea#rideCommentText').val('');
+                // inform user with snackbar
+                showSnackbar(response);
             });
         });
 
@@ -953,6 +956,12 @@ function checkRidesTables() {
         $('#ridesTableDiv').hide();
         $('#no-rides-message').show();
     }
+}
+
+function showSnackbar(message) {
+    $('#snackbar').html(message);
+    $('#snackbar').addClass("show");
+    setTimeout(function () { $('#snackbar').removeClass('show'); }, 3000);
 }
 
 function updateMark(role) {
