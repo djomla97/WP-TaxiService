@@ -105,18 +105,19 @@ namespace TaxiServiceWebAPI.Controllers
 
         [HttpPost]
         [Route("api/rides/cancel/{id}")]
-        public HttpResponseMessage Cancel(int id)
+        public HttpResponseMessage Cancel(int id, [FromBody]string comment)
         {
             try {
                 var foundRide = jsonParserRides.ReadRides().Where(r => r.ID == id).First();
                 foundRide.StatusOfRide = RideStatuses.CANCELED.ToString();
+                foundRide.Comment = comment;
                 jsonParserRides.EditRide(id, foundRide);
 
-                return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is canceled.");
+                return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is cancelled.");
             }
             catch (Exception)
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Ride {id} was not canceled.");
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Ride {id} was not cancelled.");
             }
         }
 

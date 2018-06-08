@@ -25,7 +25,7 @@
                 <div id="register-message-alert" class="alert alert-primary" role="alert" style="display:none"></div>
             </div>
         </div>
-        
+
         <!-- Login & Register forms -->
         <div class="row text-center equal">
             <!-- Login -->
@@ -122,7 +122,6 @@
         </div>
     </div>
     <!-- END of login-register div -->
-
     <!-- HomePage View -->
     <div class="container" id="home-view">
         <!-- Hello message -->
@@ -175,7 +174,7 @@
             </div>
             <hr />
         </div>
-            
+
         <!-- Ako nema voznje -->
         <div id="no-rides-message" class="text-center">
             <h3>Oops, you don't have any done or in progress rides</h3>
@@ -185,7 +184,7 @@
         <!-- Tabela sa svim voznjama -->
         <div class="text-center" id="ridesTableDiv">
             <h3>Your rides:</h3>
-            <div class="table-responsive" >
+            <div class="table-responsive">
                 <table class="table" id="rides-table">
                     <thead>
                         <tr>
@@ -247,8 +246,6 @@
 
 
     </div> <!-- END of Home-Customer-View div  -->
-
-
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -269,6 +266,32 @@
                     <button id="closeModalButton" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     <button id="editInfoButton" type="button" class="btn btn-secondary">Edit profile</button>
                     <button id="saveChangesButton" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for comment ride -->
+    <div class="modal fade" id="commentRideModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">  
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentRideModalTitle"><i class="far fa-frown"></i> Ride cancellation</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="rideComment">
+                        <div class="form-group">
+                            <label for="rideCommentText" class="text-center"><strong>Why are you cancelling your ride?</strong></label>
+                            <textarea class="form-control" id="rideCommentText" rows="3" placeholder="Please leave a comment ..."></textarea>
+                        </div>                        
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button id="closeCommentRideModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button id="confirmCancel" type="button" class="btn btn-danger">Cancel ride</button>
                 </div>
             </div>
         </div>

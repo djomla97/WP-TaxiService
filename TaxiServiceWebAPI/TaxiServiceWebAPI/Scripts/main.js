@@ -13,6 +13,7 @@ $(document).ready(function () {
     $('#orderRidesTableDiv').hide();
     $('#seeRidesButtonDiv').hide();
     $('#no-rides-message').hide();
+    $('#commentRideModal').hide(); 
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -308,21 +309,35 @@ function updateOrderTable(orderRide) {
 function addButtonListeners(orderRideID) {
     $(`#cancelOrder${orderRideID}`).click(function () {
         let orderID = $(this).attr('id').replace(/\D/g, '');
-        $.ajax({
-            method: 'POST',
-            url: `/api/rides/cancel/${orderRideID}`,
-            contentType: 'application/json'
-        }).done(function (response) {           
 
-            // odmah update tabelu
-            $('#order-rides-table-body tr').each(function () {
-                if ($(this).attr('id') == orderID) {
-                    $(this).remove();
-                    return true;
-                }
+        $('#confirmCancel').attr('id', `confirmCancel${orderID}`);
+
+        $(`#confirmCancel${orderID}`).on('click', function () {
+            let comment = $('textarea#rideCommentText').val();
+            console.log('Comment: ' + comment);
+
+            $.ajax({
+                method: 'POST',
+                url: `/api/rides/cancel/${orderRideID}`,
+                contentType: 'application/json',
+                data: JSON.stringify(comment)
+            }).done(function (response) {
+
+                // odmah update tabelu
+                $('#order-rides-table-body tr').each(function () {
+                    if ($(this).attr('id') == orderID) {
+                        $(this).remove();
+                        return true;
+                    }
+                });
+                checkRidesTables();
+                $('#commentRideModal').modal('hide');
+                $('textarea#rideCommentText').val('');
             });
-            checkRidesTables();
         });
+
+        $('#commentRideModal').modal('show');
+ 
     });
 }
 
