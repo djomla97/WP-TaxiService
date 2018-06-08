@@ -520,22 +520,26 @@ function loginFromCookie(username) {
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
 
+        console.log(user.Role);
         // ako je korisnik, onda ima Ordered rides
         if (user.Role == 'Customer') {
             // update Ordered rides from web api
             $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
                 console.log(orderedRides);
+                console.log(orderedRides.length);
                 if (orderedRides !== null && orderedRides.length > 0) {
+                    console.log('updating rides')
                     orderedRides.forEach(function (ride) {
                         updateOrderTable(ride);
                     });
                 } else {
                     $('#orderRidesTableDiv').hide();
                 }
+                updateMark(user.Role);
+                checkRidesTables();
             });
         }
-        updateMark(user.Role);
-        checkRidesTables();
+        
     });
 }
 
@@ -639,17 +643,18 @@ function tryLoginUser() {
                     if (user.Role == 'Customer') {
                         // update Ordered rides from web api
                         $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
-                            if (orderedRides !== null && orderedRides.length > 0) {                                
+                            if (orderedRides !== null && orderedRides.length > 0) {   
+                                console.log('Updating table');
                                 orderedRides.forEach(function (ride) {
                                     updateOrderTable(ride);
                                 });
                             } else {
                                 $('#orderRidesTableDiv').hide();
                             }
+                            updateMark(user.Role);
+                            checkRidesTables();
                         });
                     }
-                    updateMark(user.Role);
-                    checkRidesTables();
                 });
             } else {
                 $('p.login-fail').css('text-weight', 'bold');
@@ -922,6 +927,7 @@ function clearForm(formID) {
 }
 
 function checkRidesTables() { 
+    console.log('Checking table contents ...');
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');
     else

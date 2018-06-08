@@ -36,5 +36,81 @@
     "Fare": 0.0,
     "Comment": null,
     "StatusOfRide": "CREATED_ONWAIT"
+  },
+  {
+    "ID": 2651,
+    "DateAndTime": "2018-06-08T16:20:56.09Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asdasd",
+        "City": "ada",
+        "ZipCode": "1231"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CREATED_ONWAIT"
+  },
+  {
+    "ID": 746,
+    "DateAndTime": "2018-06-08T16:21:00.908Z",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "asda",
+        "City": "asd",
+        "ZipCode": "313"
+      }
+    },
+    "RideVehicle": {
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "Username": "demo",
+      "Password": "demo",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Rides": null,
+      "Gender": "Male"
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "Comment": null,
+    "StatusOfRide": "CREATED_ONWAIT"
   }
 ]
