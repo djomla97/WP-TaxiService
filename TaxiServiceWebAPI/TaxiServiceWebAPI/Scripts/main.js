@@ -341,7 +341,11 @@ function addButtonListeners(orderRideID) {
                 // inform user with snackbar
                 showSnackbar(response);
                 // reset confirmCancel button id
+                // remove event listener for click on this element
+                $(`#confirmCancel${orderID}`).off('click');
                 $(`#confirmCancel${orderID}`).attr('id', 'confirmCancel');
+                $('confirmCancel').off('click');
+
             });
         });
 
