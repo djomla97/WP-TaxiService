@@ -227,7 +227,8 @@ function orderRide() {
                     Email: user.Email,
                     ContactPhone: user.ContactPhone,
                     JMBG: user.JMBG,
-                    Gender: user.Gender
+                    Gender: user.Gender,
+                    Rides: user.Rides
                 },
                 DateAndTime: jsonDate,
                 RideVehicle: {
@@ -319,34 +320,42 @@ function addButtonListeners(orderRideID) {
 
         $(`#confirmCancel${orderID}`).on('click', function () {
             let comment = $('textarea#rideCommentText').val();
-            console.log('Comment: ' + comment);
+            let canCancelRide = true;
+            if (comment == null || !comment)
+                canCancelRide = false;
 
-            $.ajax({
-                method: 'POST',
-                url: `/api/rides/cancel/${orderRideID}`,
-                contentType: 'application/json',
-                data: JSON.stringify(comment)
-            }).success(function (response) {
+            if (canCancelRide) {
+                $.ajax({
+                    method: 'POST',
+                    url: `/api/rides/cancel/${orderRideID}`,
+                    contentType: 'application/json',
+                    data: JSON.stringify(comment)
+                }).success(function (response) {
 
-                // odmah update tabelu
-                $('#order-rides-table-body tr').each(function () {
-                    if ($(this).attr('id') == orderID) {
-                        $(this).remove();
-                        return true;
-                    }
+                    // odmah update tabelu
+                    $('#order-rides-table-body tr').each(function () {
+                        if ($(this).attr('id') == orderID) {
+                            $(this).remove();
+                            return true;
+                        }
+                    });
+                    checkRidesTables();
+                    $('#commentRideModal').modal('hide');
+                    $('textarea#rideCommentText').val('');
+                    // inform user with snackbar
+                    showSnackbar(response);
+                    removeValidationError('rideCommentText', 'found-check');
+                    // reset confirmCancel button id
+                    // remove event listener for click on this element
+                    $(`#confirmCancel${orderID}`).off('click');
+                    $(`#confirmCancel${orderID}`).attr('id', 'confirmCancel');
+                    $('confirmCancel').off('click');
+
                 });
-                checkRidesTables();
-                $('#commentRideModal').modal('hide');
-                $('textarea#rideCommentText').val('');
-                // inform user with snackbar
-                showSnackbar(response);
-                // reset confirmCancel button id
-                // remove event listener for click on this element
-                $(`#confirmCancel${orderID}`).off('click');
-                $(`#confirmCancel${orderID}`).attr('id', 'confirmCancel');
-                $('confirmCancel').off('click');
-
-            });
+            } else {
+                console.log('Cant do. Need a comment.');
+                addValidationError('rideCommentText', 'found-check', 'You must enter some feedback for us');
+            }
         });
 
         $('#commentRideModal').modal('show');

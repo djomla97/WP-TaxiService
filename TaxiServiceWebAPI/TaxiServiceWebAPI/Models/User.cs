@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using TaxiServiceWebAPI.Helpers;
 
 namespace TaxiServiceWebAPI.Models
@@ -13,6 +14,8 @@ namespace TaxiServiceWebAPI.Models
         public string ContactPhone { get; set; }
         public string Email { get; set; }
         public string Role { get; set; } = Roles.Customer.ToString();
+
+        [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Ignore, IsReference = true)]
         public List<Ride> Rides { get; set; }
         public string Gender { get; set; } 
 

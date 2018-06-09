@@ -34,6 +34,8 @@ namespace TaxiServiceWebAPI
                 File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
 
             List<Dispatcher> admins = new List<Dispatcher>();
+            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
+                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
 
             admins.Add(new Dispatcher()
             {
@@ -46,7 +48,7 @@ namespace TaxiServiceWebAPI
                 JMBG = "123456789321654",
                 Role = Roles.Dispatcher.ToString(),
                 Gender = Genders.Male.ToString(),
-                Rides = new List<Ride>() 
+                Rides = new List<Ride>()
             });
 
             JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
@@ -65,6 +67,9 @@ namespace TaxiServiceWebAPI
                 File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
 
             List<Driver> drivers = new List<Driver>();
+            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
+                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
+
 
             drivers.Add(new Driver()
             {
@@ -95,6 +100,27 @@ namespace TaxiServiceWebAPI
                 File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
 
             List<User> users = new List<User>();
+            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
+            
+
+            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
+                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
+
+            JSONParser jsonParserRides = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
+
+            List<Ride> rides = new List<Ride>();
+
+            try
+            {                
+                rides = jsonParserRides.ReadRides()
+                    .Where(r => r.RideCustomer.Username.ToLower().Equals("demo".ToLower()) && r.StatusOfRide != RideStatuses.CANCELED.ToString()).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                rides = new List<Ride>();
+            }
+
 
             users.Add(new User()
             {
@@ -107,10 +133,8 @@ namespace TaxiServiceWebAPI
                 JMBG = "445556978112",
                 Role = Roles.Customer.ToString(),
                 Gender = Genders.Male.ToString(),
-                Rides = new List<Ride>()
+                Rides = rides
             });
-
-            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
 
             foreach (var user in users)
                 jsonParser.WriteUser(user);

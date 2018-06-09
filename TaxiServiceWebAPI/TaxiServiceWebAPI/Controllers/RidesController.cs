@@ -69,6 +69,9 @@ namespace TaxiServiceWebAPI.Controllers
 
             Ride writtenRide = jsonParserRides.WriteRide(newRide);
 
+            newRide.RideCustomer.Rides.Add(writtenRide);
+            jsonParser.EditUser(newRide.RideCustomer.Username, newRide.RideCustomer);
+
             return Request.CreateResponse(HttpStatusCode.Created, $"{writtenRide.ID}");
         }
 
@@ -112,6 +115,8 @@ namespace TaxiServiceWebAPI.Controllers
                 foundRide.StatusOfRide = RideStatuses.CANCELED.ToString();
                 foundRide.Comment = comment;
                 jsonParserRides.EditRide(id, foundRide);
+
+
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is cancelled.");
             }

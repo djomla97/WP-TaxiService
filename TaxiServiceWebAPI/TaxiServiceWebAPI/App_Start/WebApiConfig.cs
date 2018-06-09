@@ -20,6 +20,11 @@ namespace TaxiServiceWebAPI
             //var cors = new EnableCorsAttribute("http://localhost:8080", "*", "*");
             //config.EnableCors(cors);
 
+            // self referencing loop fix 
+            // https://stackoverflow.com/questions/7397207/json-net-error-self-referencing-loop-detected-for-type
+            config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Serialize;
+            config.Formatters.JsonFormatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+
             // Route to index.html
             config.Routes.MapHttpRoute(
                 name: "Index",

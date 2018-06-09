@@ -33,6 +33,11 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             var list = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
 
+            if(userData.Rides == null)
+            {
+                userData.Rides = new List<Ride>();
+            }
+
             // doda novog
             list.Add(userData);
 
@@ -206,7 +211,16 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             }
 
             User oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
-            newUser.Rides = oldUser.Rides;
+
+            // rides update
+            foreach (var ride in oldUser.Rides)
+            {
+                if (newUser.Rides.Contains(ride))
+                    continue;
+                else
+                    newUser.Rides.Add(ride);
+            }
+
             // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
             newUser.Role = oldUser.Role; 
 
@@ -323,6 +337,19 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             var jsonData = JsonConvert.SerializeObject(rides, Formatting.Indented);
 
             File.WriteAllText(path, jsonData);
+        }
+
+        /// <summary>
+        ///     Deletes a ride from user when cancelled or forbidden by user/dispatcher
+        /// </summary>
+        /// <param name="username">user from whom we remove the ride</param>
+        /// <param name="rideID">id of ride to be removed</param>
+        public void DeleteRideFromUser(string username, int rideID)
+        {
+            User user = ReadUsers().Where(u => u.Username.Equals(username)).First();
+            Ride ride = ReadRides().Where(r => r.ID == rideID).First();
+            user.Rides.Remove(ride);
+            EditUser(user.Username, user);
         }
 
     }

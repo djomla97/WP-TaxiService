@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using TaxiServiceWebAPI.Helpers;
 
 namespace TaxiServiceWebAPI.Models
@@ -9,6 +10,8 @@ namespace TaxiServiceWebAPI.Models
         public DateTime DateAndTime { get; set; }
         public Location StartLocation { get; set; }
         public Vehicle RideVehicle { get; set; }
+
+        [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Ignore, IsReference = true)]
         public Customer RideCustomer { get; set; }
         public Location Destination { get; set; }
         public Dispatcher RideDispatcher { get; set; }
