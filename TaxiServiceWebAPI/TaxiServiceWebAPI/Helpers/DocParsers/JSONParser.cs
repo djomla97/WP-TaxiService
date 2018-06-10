@@ -299,6 +299,9 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             }
 
             Ride oldRide = rides.Where(r => r.ID == id).First();
+            newRide.ID = oldRide.ID;
+            if(newRide.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString() || newRide.StatusOfRide == null)
+                newRide.StatusOfRide = oldRide.StatusOfRide;
 
             // zamenimo ih samo
             rides.Remove(oldRide);

@@ -77,11 +77,12 @@ namespace TaxiServiceWebAPI.Controllers
 
         // PUT /api/rides/id
         [HttpPut]
+        [Route("api/rides/{id}")]
         public Ride Put(int id, [FromBody]Ride editedRide)
         {
             try
             {
-                jsonParserDrivers.EditRide(id, editedRide);
+                jsonParserRides.EditRide(id, editedRide);
 
                 return editedRide;
             }

@@ -115,9 +115,8 @@ namespace TaxiServiceWebAPI
                 rides = jsonParserRides.ReadRides()
                     .Where(r => r.RideCustomer.Username.ToLower().Equals("demo".ToLower()) && r.StatusOfRide != RideStatuses.CANCELED.ToString()).ToList();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                Console.WriteLine(e.Message);
                 rides = new List<Ride>();
             }
 

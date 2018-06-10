@@ -154,6 +154,12 @@
 
         <br>
 
+        <!-- Ako nema voznje -->
+        <div id="no-rides-message" class="text-center">
+            <h3>Oops, you don't have any done or in progress rides</h3>
+            <h4>Try <a href="" id="orderRideMark"></a>, maybe?</h4>
+        </div>
+
         <!-- Tabela sa narucenim voznjama -->
         <div id="orderRidesTableDiv" class="text-center">
             <h3>Ordered rides:</h3>
@@ -175,12 +181,6 @@
             <hr />
         </div>
 
-        <!-- Ako nema voznje -->
-        <div id="no-rides-message" class="text-center">
-            <h3>Oops, you don't have any done or in progress rides</h3>
-            <h4>Try <a href="" id="orderRideMark"></a>, maybe?</h4>
-        </div>
-
         <!-- Tabela sa svim voznjama -->
         <div class="text-center" id="ridesTableDiv">
             <h3>Your rides:</h3>
@@ -191,8 +191,10 @@
                             <th scope="col" class="col-auto">ID</th>
                             <th scope="col" class="col-md-auto">Start location</th>
                             <th scope="col" class="col-md-auto">Destination</th>
-                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
                             <th scope="col" class="col-md-auto">Status</th>
+                            <th scope="col" class="col-md-auto">Comment</th>
+                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
+                            <th scope="col" class="col-md-auto">Rating</th>
                             <th scope="col" class="col-md-auto">Options</th>
                         </tr>
                     </thead>
@@ -243,8 +245,6 @@
             </div>
             <div class="col-xs-1 col-sm-3 col-md-3"></div>
         </div>
-
-
     </div> <!-- END of Home-Customer-View div  -->
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
@@ -293,6 +293,62 @@
                 <div class="modal-footer">
                     <button id="closeCommentRideModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     <button id="confirmCancel" type="button" class="btn btn-danger">Cancel ride</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for edit order ride -->
+    <div class="modal fade" id="editOrderRideModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editOrderRideTitle"><i class="far fa-edit"></i> Edit ride order - <span id="editOrderID"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="editOrderRideModalBody" class="text-center">
+                        <div class="form-group">
+                            <label for="orderRideUser" class="text-center"><strong>User</strong></label>
+                            <input class="form-control" id="editOrderRideUser" type="text" readonly>
+                            <hr />
+                            <label><strong>Start location</strong></label>
+                            <form id="edit-order-ride-form" class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="editOrderRideStreet" autocomplete="off" />
+                                        <p id="editOrderRideStreet-check" class="found-p"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" id="editOrderRideCity" autocomplete="off" />
+                                        <p id="editOrderRideCity-check" class="found-p"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="email" class="form-control" id="editOrderRideZipCode" autocomplete="off" />
+                                        <p id="editOrderRideZipCode-check" class="found-p"></p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <select class="form-control" id="editOrderCarType">
+                                            <option value="Passenger">Passenger</option>
+                                            <option value="Van">Van</option>
+                                        </select>
+                                    </div>
+                                </div>                                
+                            </form>                           
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeEditOrderRideModal" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="confirmEditOrderRide" type="button" class="btn btn-primary">Edit ride</button>
                 </div>
             </div>
         </div>
