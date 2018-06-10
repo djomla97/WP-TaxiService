@@ -117,7 +117,9 @@ namespace TaxiServiceWebAPI.Controllers
                 foundRide.Comment = comment;
                 jsonParserRides.EditRide(id, foundRide);
 
+                var foundUser = jsonParser.ReadUsers().Where(u => u.Username.Equals(foundRide.RideCustomer.Username)).First();
 
+                jsonParser.DeleteRideFromUser(foundUser, foundRide);
 
                 return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is cancelled.");
             }

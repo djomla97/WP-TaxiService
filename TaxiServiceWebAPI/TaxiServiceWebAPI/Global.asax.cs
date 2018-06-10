@@ -138,6 +138,7 @@ namespace TaxiServiceWebAPI
             foreach (var user in users)
                 jsonParser.WriteUser(user);
 
+            jsonParserRides = null;
         }
 
     }

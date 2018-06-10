@@ -46,7 +46,6 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             // i onda upise u .json
             File.WriteAllText(path, jsonData);
-
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             do
             {
                 existsID = false;
-                rideData.ID = rand.Next(500, 3000);
+                rideData.ID = rand.Next(1000, 10000);
                 foreach (var ride in list)
                 {
                     if (ride.ID == rideData.ID)
@@ -212,14 +211,16 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
 
             User oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
 
-            // rides update
-            foreach (var ride in oldUser.Rides)
+            // provera za edit user vs. cancel ride
+            if(newUser.Rides == null)
             {
-                if (newUser.Rides.Contains(ride))
-                    continue;
-                else
+                newUser.Rides = new List<Ride>();
+                foreach(var ride in oldUser.Rides)
+                {
                     newUser.Rides.Add(ride);
+                }
             }
+            
 
             // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
             newUser.Role = oldUser.Role; 
@@ -345,14 +346,39 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         /// <summary>
         ///     Deletes a ride from user when cancelled or forbidden by user/dispatcher
         /// </summary>
-        /// <param name="username">user from whom we remove the ride</param>
-        /// <param name="rideID">id of ride to be removed</param>
-        public void DeleteRideFromUser(string username, int rideID)
+        /// <param name="user">user from whom we remove the ride</param>
+        /// <param name="ride">ride to be removed</param>
+        public void DeleteRideFromUser(User user, Ride ride)
         {
-            User user = ReadUsers().Where(u => u.Username.Equals(username)).First();
-            Ride ride = ReadRides().Where(r => r.ID == rideID).First();
-            user.Rides.Remove(ride);
-            EditUser(user.Username, user);
+            var rideToRemove = user.Rides.Where(r => r.ID == ride.ID).First();
+            user.Rides.Remove(rideToRemove);
+
+            // update korisnika
+            List<User> users = new List<User>();
+
+            if (!File.Exists(path))
+            {
+                var file = File.Create(path);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(path))
+            {
+                string json = r.ReadToEnd();
+                users = JsonConvert.DeserializeObject<List<User>>(json);
+            }
+
+            User oldUser = users.Where(u => u.Username.Equals(user.Username)).First();
+
+            users.Remove(oldUser);
+            users.Add(user);
+
+            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+
+            File.WriteAllText(path, jsonData);
+
+            // update voznje
+
         }
 
     }

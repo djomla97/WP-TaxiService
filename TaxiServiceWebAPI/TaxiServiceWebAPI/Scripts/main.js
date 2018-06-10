@@ -170,6 +170,7 @@ $(document).ready(function () {
 
     $('#closeCommentRideModal').click(function () {
         event.preventDefault();
+        $('textarea#rideCommentText').val('');
         $(this).next().attr('id', 'confirmCancel');
     });
 
@@ -434,9 +435,14 @@ function addButtonListeners(orderRide) {
                             $('#editOrderRideModal').modal('hide');
                             // inform user
                             showSnackbar('Edited ride ' + ride.ID + ' successfully.');
+                            // remove event listener for click on this element
+                            $(`#confirmEditOrderRide${orderRide.ID}`).off('click');
+                            $(`#confirmEditOrderRide${orderRide.ID}`).attr('id', 'confirmEditOrderRide');
+                            $('confirmEditOrderRide').off('click');
+
                         } else {
                             $('#editOrderRideModal').modal('hide');
-                            showSnackbar('There was an error proccesing your edit request')
+                            showSnackbar('There was an error proccesing your edit request');
                         }
                         
                     });

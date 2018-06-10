@@ -72,6 +72,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             newUser.Rides = new List<Ride>();
             newUser.Role = Roles.Customer.ToString();
+            newUser.Rides = new List<Ride>();
 
             jsonParser.WriteUser(newUser);
 
