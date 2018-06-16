@@ -11,8 +11,6 @@ namespace TaxiServiceWebAPI.Controllers
     {
         public ActionResult Index()
         {
-            User newUser = new User();
-
             return View();
         }
     }

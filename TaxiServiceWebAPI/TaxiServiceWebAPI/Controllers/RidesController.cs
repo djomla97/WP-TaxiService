@@ -12,16 +12,13 @@ namespace TaxiServiceWebAPI.Controllers
 {
     public class RidesController : ApiController
     {
-        private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
-        private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
-        private JSONParser jsonParserDrivers = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
-        private JSONParser jsonParserRides = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
+        private JSONParser jsonParser = new JSONParser();
 
         // GET /api/rides
         [HttpGet]
         public List<Ride> Get()
         {
-            return jsonParserRides.ReadRides();
+            return jsonParser.ReadRides();
         }
 
         // GET /api/rides/id
@@ -31,7 +28,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                var foundRide = jsonParserRides.ReadRides().Where(r => r.ID == id).First();
+                var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
                 return foundRide;
             }
             catch (Exception)
@@ -47,7 +44,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                var foundRide = jsonParserRides.ReadRides()
+                var foundRide = jsonParser.ReadRides()
                     .Where(r => r.RideCustomer.Username.ToLower().Equals(username.ToLower()) && r.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString());
 
                 return foundRide;
@@ -67,7 +64,7 @@ namespace TaxiServiceWebAPI.Controllers
             if (newRide.RideVehicle.VehicleType == null || newRide.RideVehicle.VehicleType == string.Empty)
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString(); 
 
-            Ride writtenRide = jsonParserRides.WriteRide(newRide);
+            Ride writtenRide = jsonParser.WriteRide(newRide);
 
             newRide.RideCustomer.Rides.Add(writtenRide);
             jsonParser.EditUser(newRide.RideCustomer.Username, newRide.RideCustomer);
@@ -82,7 +79,17 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                jsonParserRides.EditRide(id, editedRide);
+                jsonParser.EditRide(id, editedRide);
+
+                if(editedRide.RideCustomer.Role == Roles.Customer.ToString())
+                {
+                    var editedUser = editedRide.RideCustomer;
+                    var rideToRemove = editedUser.Rides.Where(r => r.ID == editedRide.ID).First();
+
+                    editedUser.Rides.Remove(rideToRemove);
+                    editedUser.Rides.Add(editedRide);
+                    jsonParser.EditUser(editedUser.Username, editedUser);
+                }
 
                 return editedRide;
             }
@@ -99,7 +106,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                jsonParserRides.DeleteRide(id);
+                jsonParser.DeleteRide(id);
                 return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is deleted.");
             }
             catch (Exception) {
@@ -112,10 +119,10 @@ namespace TaxiServiceWebAPI.Controllers
         public HttpResponseMessage Cancel(int id, [FromBody]string comment)
         {
             try {
-                var foundRide = jsonParserRides.ReadRides().Where(r => r.ID == id).First();
+                var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
                 foundRide.StatusOfRide = RideStatuses.CANCELED.ToString();
                 foundRide.Comment = comment;
-                jsonParserRides.EditRide(id, foundRide);
+                jsonParser.EditRide(id, foundRide);
 
                 var foundUser = jsonParser.ReadUsers().Where(u => u.Username.Equals(foundRide.RideCustomer.Username)).First();
 

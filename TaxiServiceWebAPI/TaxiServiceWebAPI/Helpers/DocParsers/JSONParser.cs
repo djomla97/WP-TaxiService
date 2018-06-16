@@ -4,34 +4,52 @@ using System.IO;
 using TaxiServiceWebAPI.Models;
 using System.Linq;
 using System;
+using System.Xml;
 
 namespace TaxiServiceWebAPI.Helpers.DocParsers
 {
     public class JSONParser
     {
-        private string path = string.Empty;
+        private string usersPath = string.Empty;
+        private string driversPath = string.Empty;
+        private string adminsPath = string.Empty;
+        private string ridesPath = string.Empty;
 
-        public JSONParser(string path)
+        public JSONParser()
         {
-            this.path = path;
+            ReadConfig();
+        }
+
+        /// <summary>
+        ///     Reads from a config.xml file for data paths
+        /// </summary>
+        private void ReadConfig()
+        {
+            XmlDocument configXml = new XmlDocument();
+            configXml.Load(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\TaxiServiceWebAPI\Helpers\readerConfig.xml");
+
+            usersPath = configXml.SelectSingleNode("/config/userDataPath").InnerText;
+            driversPath = configXml.SelectSingleNode("/config/driverDataPath").InnerText;
+            adminsPath = configXml.SelectSingleNode("/config/adminDataPath").InnerText;
+            ridesPath = configXml.SelectSingleNode("/config/rideDataPath").InnerText;
         }
 
         /// <summary>
         ///     Writes a single user into the specified .json file
         /// </summary>
         /// <param name="userData">user that should be saved</param>
-        public void WriteUser(User userData)
+        public void WriteUser(Customer userData)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(usersPath))
             {
-                var fileCreate = File.CreateText(path);
+                var fileCreate = File.CreateText(usersPath);
                 fileCreate.Close();
             }
 
             // cita json
-            var jsonData = File.ReadAllText(path);
+            var jsonData = File.ReadAllText(usersPath);
 
-            var list = JsonConvert.DeserializeObject<List<User>>(jsonData) ?? new List<User>();
+            var list = JsonConvert.DeserializeObject<List<Customer>>(jsonData) ?? new List<Customer>();
 
             if(userData.Rides == null)
             {
@@ -42,10 +60,74 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             list.Add(userData);
 
             // zatim u Json pretvori listu, jer nam treba niz
-            jsonData = JsonConvert.SerializeObject(list, Formatting.Indented);
+            jsonData = JsonConvert.SerializeObject(list, Newtonsoft.Json.Formatting.Indented);
 
             // i onda upise u .json
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(usersPath, jsonData);
+        }
+
+        /// <summary>
+        ///     Writes a single driver into the specified .json file
+        /// </summary>
+        /// <param name="driverData">driver that should be saved</param>
+        public void WriteDriver(Driver driverData)
+        {
+            if (!File.Exists(driversPath))
+            {
+                var fileCreate = File.CreateText(driversPath);
+                fileCreate.Close();
+            }
+
+            // cita json
+            var jsonData = File.ReadAllText(driversPath);
+
+            var list = JsonConvert.DeserializeObject<List<Driver>>(jsonData) ?? new List<Driver>();
+
+            if (driverData.Rides == null)
+            {
+                driverData.Rides = new List<Ride>();
+            }
+
+            // doda novog
+            list.Add(driverData);
+
+            // zatim u Json pretvori listu, jer nam treba niz
+            jsonData = JsonConvert.SerializeObject(list, Newtonsoft.Json.Formatting.Indented);
+
+            // i onda upise u .json
+            File.WriteAllText(driversPath, jsonData);
+        }
+
+        /// <summary>
+        ///     Writes a single admin into the specified .json file
+        /// </summary>
+        /// <param name="adminData">admin that should be saved</param>
+        public void WriteAdmin(Dispatcher adminData)
+        {
+            if (!File.Exists(adminsPath))
+            {
+                var fileCreate = File.CreateText(adminsPath);
+                fileCreate.Close();
+            }
+
+            // cita json
+            var jsonData = File.ReadAllText(adminsPath);
+
+            var list = JsonConvert.DeserializeObject<List<Dispatcher>>(jsonData) ?? new List<Dispatcher>();
+
+            if (adminData.Rides == null)
+            {
+                adminData.Rides = new List<Ride>();
+            }
+
+            // doda novog
+            list.Add(adminData);
+
+            // zatim u Json pretvori listu, jer nam treba niz
+            jsonData = JsonConvert.SerializeObject(list, Newtonsoft.Json.Formatting.Indented);
+
+            // i onda upise u .json
+            File.WriteAllText(adminsPath, jsonData);
         }
 
         /// <summary>
@@ -54,14 +136,14 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         /// <param name="rideData">ride that should be saved</param>
         public Ride WriteRide(Ride rideData)
         {
-            if (!File.Exists(path))
+            if (!File.Exists(ridesPath))
             {
-                var fileCreate = File.CreateText(path);
+                var fileCreate = File.CreateText(ridesPath);
                 fileCreate.Close();
             }
 
             // cita json
-            var jsonData = File.ReadAllText(path);
+            var jsonData = File.ReadAllText(ridesPath);
 
             var list = JsonConvert.DeserializeObject<List<Ride>>(jsonData) ?? new List<Ride>();
 
@@ -83,34 +165,33 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             list.Add(rideData);
 
             // zatim u Json pretvori listu, jer nam treba niz
-            jsonData = JsonConvert.SerializeObject(list, Formatting.Indented);
+            jsonData = JsonConvert.SerializeObject(list, Newtonsoft.Json.Formatting.Indented);
 
             // i onda upise u .json
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(ridesPath, jsonData);
 
             return rideData;
         }
-
 
         /// <summary>
         ///     Reads from a .json file for Users
         /// </summary>
         /// <returns>List of all users in specified file</returns>
-        public List<User> ReadUsers()
+        public List<Customer> ReadUsers()
         {
-            List<User> users = new List<User>();            
+            List<Customer> users = new List<Customer>();            
 
-            if (!File.Exists(path))
+            if (!File.Exists(usersPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(usersPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(usersPath))
             {
                 string json = r.ReadToEnd();
 
-                users = JsonConvert.DeserializeObject<List<User>>(json);                
+                users = JsonConvert.DeserializeObject<List<Customer>>(json);                
             }
 
             return users;
@@ -124,13 +205,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Ride> rides = new List<Ride>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(ridesPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(ridesPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(ridesPath))
             {
                 string json = r.ReadToEnd();
 
@@ -148,13 +229,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Driver> drivers = new List<Driver>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(driversPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(driversPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(driversPath))
             {
                 string json = r.ReadToEnd();
 
@@ -172,13 +253,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Dispatcher> dispatchers = new List<Dispatcher>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(adminsPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(adminsPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(adminsPath))
             {
                 string json = r.ReadToEnd();
 
@@ -193,51 +274,61 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         /// </summary>
         /// <param name="oldUsername">Username of user to be edited</param>
         /// <param name="newUser">New user to replace the old one</param>
-        public void EditUser(string oldUsername, User newUser)
+        public void EditUser(string oldUsername, Customer newUser)
         {
-            List<User> users = new List<User>();
+            List<Customer> users = new List<Customer>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(usersPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(usersPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(usersPath))
             {
                 string json = r.ReadToEnd();
-                users = JsonConvert.DeserializeObject<List<User>>(json);
+                users = JsonConvert.DeserializeObject<List<Customer>>(json);
             }
 
-            User oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
-
-            // provera za edit user vs. cancel ride
-            if(newUser.Rides == null)
-            {
-                newUser.Rides = new List<Ride>();
-                foreach(var ride in oldUser.Rides)
-                {
-                    newUser.Rides.Add(ride);
-                }
-            }
-            
+            Customer oldUser = users.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
 
             // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
-            newUser.Role = oldUser.Role; 
+            newUser.Role = oldUser.Role;
 
             // ako ne izmeni sifru
             if (newUser.Password == null || newUser.Password == string.Empty)
                 newUser.Password = oldUser.Password;
+
+            // provera za edit user vs. cancel ride
+            if (newUser.Rides == null)
+            {
+                newUser.Rides = new List<Ride>();
+                var allRides = ReadRides();
+                foreach(var ride in oldUser.Rides)
+                {
+                    newUser.Rides.Add(ride);
+                    for(int i = 0; i < allRides.Count; i++)
+                    {
+                        if(allRides[i].ID == ride.ID)
+                        {
+                            if(newUser.Role == Roles.Customer.ToString())
+                            {
+                                allRides[i].RideCustomer = newUser;
+                                EditRide(allRides[i].ID, allRides[i]);
+                            }
+                        }
+                    }
+                }
+            }
                 
             // zamenimo ih samo
             users.Remove(oldUser);
             users.Add(newUser);
 
-            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(users, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(usersPath, jsonData);
         }
-
 
         /// <summary>
         ///     Edits driver information
@@ -248,13 +339,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Driver> users = new List<Driver>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(driversPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(driversPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(driversPath))
             {
                 string json = r.ReadToEnd();
                 users = JsonConvert.DeserializeObject<List<Driver>>(json);
@@ -273,9 +364,58 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             users.Remove(oldUser);
             users.Add(newUser);
 
-            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(users, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(driversPath, jsonData);
+        }
+
+        /// <summary>
+        ///     Edits admin information
+        /// </summary>
+        /// <param name="oldUsername">Username of admin to be edited</param>
+        /// <param name="newUser">New admin to replace the old one</param>
+        public void EditDispatcher(string oldUsername, Dispatcher newAdmin)
+        {
+            List<Dispatcher> admins = new List<Dispatcher>();
+
+            if (!File.Exists(adminsPath))
+            {
+                var file = File.Create(adminsPath);
+                file.Close();
+            }
+
+            using (StreamReader r = new StreamReader(adminsPath))
+            {
+                string json = r.ReadToEnd();
+                admins = JsonConvert.DeserializeObject<List<Dispatcher>>(json);
+            }
+
+            Dispatcher oldAdmin = admins.Where(u => u.Username.ToLower().Equals(oldUsername.ToLower())).First();
+
+            // provera za edit user vs. cancel ride
+            if (newAdmin.Rides == null)
+            {
+                newAdmin.Rides = new List<Ride>();
+                foreach (var ride in oldAdmin.Rides)
+                {
+                    newAdmin.Rides.Add(ride);
+                }
+            }
+
+            // jer ponisti zbog default-a klase User + nigde se ne prosledi sa forme Rola
+            newAdmin.Role = oldAdmin.Role;
+
+            // ako ne izmeni sifru
+            if (newAdmin.Password == null || newAdmin.Password == string.Empty)
+                newAdmin.Password = oldAdmin.Password;
+
+            // zamenimo ih samo
+            admins.Remove(oldAdmin);
+            admins.Add(newAdmin);
+
+            var jsonData = JsonConvert.SerializeObject(admins, Newtonsoft.Json.Formatting.Indented);
+
+            File.WriteAllText(adminsPath, jsonData);
         }
 
         /// <summary>
@@ -287,13 +427,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Ride> rides = new List<Ride>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(ridesPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(ridesPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(ridesPath))
             {
                 string json = r.ReadToEnd();
                 rides = JsonConvert.DeserializeObject<List<Ride>>(json);
@@ -308,11 +448,11 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             rides.Remove(oldRide);
             rides.Add(newRide);
 
-            var jsonData = JsonConvert.SerializeObject(rides, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(rides, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(ridesPath, jsonData);
         }
-
+ 
         /// <summary>
         ///     Deletes a ride with id from .json file
         /// </summary>
@@ -321,13 +461,13 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         {
             List<Ride> rides = new List<Ride>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(ridesPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(ridesPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(ridesPath))
             {
                 string json = r.ReadToEnd();
                 rides = JsonConvert.DeserializeObject<List<Ride>>(json);
@@ -338,9 +478,9 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
             // zamenimo ih samo
             rides.Remove(rideToRemove);
 
-            var jsonData = JsonConvert.SerializeObject(rides, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(rides, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(ridesPath, jsonData);
         }
 
         /// <summary>
@@ -348,36 +488,35 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         /// </summary>
         /// <param name="user">user from whom we remove the ride</param>
         /// <param name="ride">ride to be removed</param>
-        public void DeleteRideFromUser(User user, Ride ride)
+        public void DeleteRideFromUser(Customer user, Ride ride)
         {
             var rideToRemove = user.Rides.Where(r => r.ID == ride.ID).First();
             user.Rides.Remove(rideToRemove);
 
             // update korisnika
-            List<User> users = new List<User>();
+            List<Customer> users = new List<Customer>();
 
-            if (!File.Exists(path))
+            if (!File.Exists(usersPath))
             {
-                var file = File.Create(path);
+                var file = File.Create(usersPath);
                 file.Close();
             }
 
-            using (StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(usersPath))
             {
                 string json = r.ReadToEnd();
-                users = JsonConvert.DeserializeObject<List<User>>(json);
+                users = JsonConvert.DeserializeObject<List<Customer>>(json);
             }
 
-            User oldUser = users.Where(u => u.Username.Equals(user.Username)).First();
+            Customer oldUser = users.Where(u => u.Username.Equals(user.Username)).First();
 
             users.Remove(oldUser);
             users.Add(user);
 
-            var jsonData = JsonConvert.SerializeObject(users, Formatting.Indented);
+            var jsonData = JsonConvert.SerializeObject(users, Newtonsoft.Json.Formatting.Indented);
 
-            File.WriteAllText(path, jsonData);
+            File.WriteAllText(usersPath, jsonData);
 
-            // update voznje
 
         }
 

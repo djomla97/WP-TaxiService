@@ -507,7 +507,6 @@ function addButtonListeners(orderRide) {
 }
 
 
-
 // Register & register validation
 function tryAddUser() {
     // ... promises, promises :)
@@ -716,6 +715,10 @@ function loginFromCookie(username) {
                 updateMark(user.Role);
                 checkRidesTables();
             });
+
+        } else if (user.Role == 'Dispatcher') {
+            updateMark(user.Role);
+            checkRidesTables();
         }
     });
 }
@@ -821,7 +824,7 @@ function tryLoginUser() {
                         // update Ordered rides from web api
                         $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
                             if (orderedRides !== null) {
-                                if (orderedRides.length > 0) {                                    
+                                if (orderedRides.length > 0) {
                                     orderedRides.forEach(function (ride) {
                                         updateOrderTable(ride);
                                     });
@@ -832,6 +835,10 @@ function tryLoginUser() {
                             updateMark(user.Role);
                             checkRidesTables();
                         });
+
+                    } else if(user.Role == 'Dispatcher') {
+                        updateMark(user.Role);
+                        checkRidesTables();
                     }
                 });
             } else {
@@ -989,6 +996,7 @@ function tryEditUser() {
                 $('#edit-message-alert').text('User information was edited successfully.');
                 $('#edit-message-alert').delay(3000).slideUp(500);
 
+                console.log(user.Role);
                 updateUserInformation(user);
                 eraseCookie('loggedInCookie');
                 setCookie('loggedInCookie', user.Username, 1);

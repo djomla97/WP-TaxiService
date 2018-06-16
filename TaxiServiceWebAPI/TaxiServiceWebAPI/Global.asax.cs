@@ -29,13 +29,7 @@ namespace TaxiServiceWebAPI
 
         private void InitializeAdmins()
         {
-            // ne zelimo vise puta iste admine da unosi
-            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json"))
-                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
-
             List<Dispatcher> admins = new List<Dispatcher>();
-            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
-                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
 
             admins.Add(new Dispatcher()
             {
@@ -51,10 +45,10 @@ namespace TaxiServiceWebAPI
                 Rides = new List<Ride>()
             });
 
-            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
+            JSONParser jsonParser = new JSONParser();
 
             foreach (var admin in admins)
-                jsonParser.WriteUser(admin);
+                jsonParser.WriteAdmin(admin);
 
             // stavimo read-only na file, da ne moze da se menja
             //File.SetAttributes(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json", FileAttributes.ReadOnly);
@@ -63,14 +57,8 @@ namespace TaxiServiceWebAPI
 
         private void InitializeDrivers()
         { 
-            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json"))
-                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
-
             List<Driver> drivers = new List<Driver>();
-            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
-                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
-
-
+           
             drivers.Add(new Driver()
             {
                 Username = "driver",
@@ -86,27 +74,19 @@ namespace TaxiServiceWebAPI
                 Rides = new List<Ride>()
             });
 
-            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
+            JSONParser jsonParser = new JSONParser();
 
             foreach (var driver in drivers)
-                jsonParser.WriteUser(driver);
+                jsonParser.WriteDriver(driver);
 
         }
 
         private void InitializeDemoUser()
         {
-            // ne zelimo vise puta iste admine da unosi
-            if (File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json"))
-                File.Delete(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
-
-            List<User> users = new List<User>();
-            JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
+            List<Customer> users = new List<Customer>();
+            JSONParser jsonParser = new JSONParser();
             
-
-            if (!File.Exists(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json"))
-                File.Create(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
-
-            JSONParser jsonParserRides = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json");
+            JSONParser jsonParserRides = new JSONParser();
 
             List<Ride> rides = new List<Ride>();
 
@@ -120,8 +100,7 @@ namespace TaxiServiceWebAPI
                 rides = new List<Ride>();
             }
 
-
-            users.Add(new User()
+            users.Add(new Customer()
             {
                 Username = "demo",
                 FirstName = "Demo",

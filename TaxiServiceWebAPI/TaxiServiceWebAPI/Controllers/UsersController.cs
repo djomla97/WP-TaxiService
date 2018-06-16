@@ -15,13 +15,11 @@ namespace TaxiServiceWebAPI.Controllers
     //[EnableCors(origins: "file:///C:/Users/Mladjo/Desktop/TaxiService/WP-TaxiService/mockup/index.html", headers: "*", methods: "*")]
     public class UsersController : ApiController
     {
-        private JSONParser jsonParser = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json");
-        private JSONParser jsonParserAdmins = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json");
-        private JSONParser jsonParserDrivers = new JSONParser(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json");
+        private JSONParser jsonParser = new JSONParser();
 
         // GET api/users
         [HttpGet]
-        public List<User> Get()
+        public List<Customer> Get()
         {
             return jsonParser.ReadUsers();
         }
@@ -42,7 +40,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var foundUser = jsonParserDrivers.ReadDrivers()
+                    var foundUser = jsonParser.ReadDrivers()
                             .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
 
                     return foundUser;
@@ -52,7 +50,7 @@ namespace TaxiServiceWebAPI.Controllers
                 {
                     try
                     {
-                        var foundUser = jsonParserAdmins.ReadDispatchers()
+                        var foundUser = jsonParser.ReadDispatchers()
                                 .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
 
                         return foundUser;
@@ -68,7 +66,7 @@ namespace TaxiServiceWebAPI.Controllers
 
         // POST api/users
         [HttpPost]
-        public HttpResponseMessage Post([FromBody]User newUser)
+        public HttpResponseMessage Post([FromBody]Customer newUser)
         {
             newUser.Rides = new List<Ride>();
             newUser.Role = Roles.Customer.ToString();
@@ -87,7 +85,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    jsonParserDrivers.EditDriver(username, editedUser);
+                    jsonParser.EditDriver(username, editedUser);
 
                     return editedUser;
                 }
@@ -100,17 +98,41 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    jsonParser.EditUser(username, editedUser);
+                    Customer castCustomer = new Customer();
+                    castCustomer.FirstName = editedUser.FirstName;
+                    castCustomer.LastName = editedUser.LastName;
+                    castCustomer.ContactPhone = editedUser.ContactPhone;
+                    castCustomer.Email = editedUser.Email;
+                    castCustomer.Gender = editedUser.Gender;
+                    castCustomer.JMBG = editedUser.JMBG;
+                    castCustomer.Password = editedUser.Password;
+                    castCustomer.Rides = editedUser.Rides;
+                    castCustomer.Username = editedUser.Username;
+                    castCustomer.Role = Roles.Customer.ToString();
 
-                    return editedUser;
+                    jsonParser.EditUser(username, castCustomer);
+
+                    return castCustomer;
                 }
                 catch (Exception)
                 {
                     try
                     {
-                        jsonParserAdmins.EditUser(username, editedUser);
+                        Dispatcher castDispatcher = new Dispatcher();
+                        castDispatcher.FirstName = editedUser.FirstName;
+                        castDispatcher.LastName = editedUser.LastName;
+                        castDispatcher.ContactPhone = editedUser.ContactPhone;
+                        castDispatcher.Email = editedUser.Email;
+                        castDispatcher.Gender = editedUser.Gender;
+                        castDispatcher.JMBG = editedUser.JMBG;
+                        castDispatcher.Password = editedUser.Password;
+                        castDispatcher.Rides = editedUser.Rides;
+                        castDispatcher.Username = editedUser.Username;
+                        castDispatcher.Role = Roles.Dispatcher.ToString();
 
-                        return editedUser;
+                        jsonParser.EditDispatcher(username, castDispatcher);
+
+                        return castDispatcher;
                     }
                     catch (Exception)
                     {
@@ -140,7 +162,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 try
                 {
-                    var foundUser = jsonParserDrivers.ReadUsers()
+                    var foundUser = jsonParser.ReadDrivers()
                                 .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
 
                     return true;
@@ -150,7 +172,7 @@ namespace TaxiServiceWebAPI.Controllers
                 {
                     try
                     {
-                        var foundUser = jsonParserAdmins.ReadUsers()
+                        var foundUser = jsonParser.ReadDispatchers()
                                     .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
 
                         return true;

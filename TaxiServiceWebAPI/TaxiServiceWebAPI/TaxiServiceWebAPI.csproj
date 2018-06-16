@@ -213,6 +213,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Helpers\readerConfig.xml" />
     <Content Include="index.html" />
     <Content Include="Scripts\animations.js" />
     <Content Include="Scripts\bootstrap.js" />

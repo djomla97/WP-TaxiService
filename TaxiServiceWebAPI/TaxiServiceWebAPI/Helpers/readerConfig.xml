@@ -1,0 +1,6 @@
+<config>
+  <userDataPath>C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\users.json</userDataPath>
+  <adminDataPath>C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json</adminDataPath>
+  <driverDataPath>C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\drivers.json</driverDataPath>
+  <rideDataPath>C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\rides.json</rideDataPath>
+</config>
