@@ -29,9 +29,9 @@ namespace TaxiServiceWebAPI
 
         private void InitializeAdmins()
         {
-            List<Dispatcher> admins = new List<Dispatcher>();
+            List<Dispatcher> newAdmins = new List<Dispatcher>();
 
-            admins.Add(new Dispatcher()
+            newAdmins.Add(new Dispatcher()
             {
                 Username = "supermladen",
                 FirstName = "Mladen",
@@ -47,19 +47,35 @@ namespace TaxiServiceWebAPI
 
             JSONParser jsonParser = new JSONParser();
 
-            foreach (var admin in admins)
-                jsonParser.WriteAdmin(admin);
-
-            // stavimo read-only na file, da ne moze da se menja
-            //File.SetAttributes(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\data\admins.json", FileAttributes.ReadOnly);
+            var admins = jsonParser.ReadDispatchers();
+            foreach (var admin in newAdmins)
+            {
+                if (admins != null)
+                {
+                    bool exists = false;
+                    foreach (var existAdmin in admins)
+                    {
+                        if (admin.Username == existAdmin.Username)
+                        {
+                            exists = true;
+                        }
+                    }
+                    if (!exists)
+                        jsonParser.WriteAdmin(admin);
+                }
+                else
+                {
+                    jsonParser.WriteAdmin(admin);
+                }
+            }
 
         }
 
         private void InitializeDrivers()
         { 
-            List<Driver> drivers = new List<Driver>();
-           
-            drivers.Add(new Driver()
+            List<Driver> newDrivers = new List<Driver>();
+
+            newDrivers.Add(new Driver()
             {
                 Username = "driver",
                 FirstName = "Mile",
@@ -76,23 +92,39 @@ namespace TaxiServiceWebAPI
 
             JSONParser jsonParser = new JSONParser();
 
-            foreach (var driver in drivers)
-                jsonParser.WriteDriver(driver);
+            var drivers = jsonParser.ReadDrivers();
+            foreach (var driver in newDrivers)
+            {
+                if (drivers != null)
+                {
+                    bool exists = false;
+                    foreach (var existsDriver in drivers)
+                    {
+                        if (driver.Username == existsDriver.Username)
+                        {
+                            exists = true;
+                        }
+                    }
+                    if (!exists)
+                        jsonParser.WriteDriver(driver);
+                }
+                else
+                {
+                    jsonParser.WriteDriver(driver);
+                }
+            }
 
         }
 
         private void InitializeDemoUser()
         {
-            List<Customer> users = new List<Customer>();
-            JSONParser jsonParser = new JSONParser();
-            
-            JSONParser jsonParserRides = new JSONParser();
-
+            List<Customer> newUsers = new List<Customer>();
+            JSONParser jsonParser = new JSONParser();     
             List<Ride> rides = new List<Ride>();
 
             try
             {                
-                rides = jsonParserRides.ReadRides()
+                rides = jsonParser.ReadRides()
                     .Where(r => r.RideCustomer.Username.ToLower().Equals("demo".ToLower()) && r.StatusOfRide != RideStatuses.CANCELED.ToString()).ToList();
             }
             catch (Exception)
@@ -100,7 +132,7 @@ namespace TaxiServiceWebAPI
                 rides = new List<Ride>();
             }
 
-            users.Add(new Customer()
+            newUsers.Add(new Customer()
             {
                 Username = "demo",
                 FirstName = "Demo",
@@ -114,10 +146,28 @@ namespace TaxiServiceWebAPI
                 Rides = rides
             });
 
-            foreach (var user in users)
-                jsonParser.WriteUser(user);
+            var users = jsonParser.ReadUsers();
+            foreach (var user in newUsers)
+            {
+                if (users != null)
+                {
+                    bool exists = false;
+                    foreach (var existsDriver in users)
+                    {
+                        if (user.Username == existsDriver.Username)
+                        {
+                            exists = true;
+                        }
+                    }
+                    if (!exists)
+                        jsonParser.WriteUser(user);
+                }
+                else
+                {
+                    jsonParser.WriteUser(user);
+                }
+            }
 
-            jsonParserRides = null;
         }
 
     }
