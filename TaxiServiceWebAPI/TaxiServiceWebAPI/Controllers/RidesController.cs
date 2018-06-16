@@ -60,6 +60,7 @@ namespace TaxiServiceWebAPI.Controllers
         public HttpResponseMessage Post([FromBody]Ride newRide)
         {
             newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
+            newRide.DateAndTime = DateTime.Now;
 
             if (newRide.RideVehicle.VehicleType == null || newRide.RideVehicle.VehicleType == string.Empty)
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString(); 
@@ -120,11 +121,18 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try {
                 var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
-                foundRide.StatusOfRide = RideStatuses.CANCELED.ToString();
-                foundRide.Comment = comment;
-                jsonParser.EditRide(id, foundRide);
-
                 var foundUser = jsonParser.ReadUsers().Where(u => u.Username.Equals(foundRide.RideCustomer.Username)).First();
+
+                foundRide.StatusOfRide = RideStatuses.CANCELED.ToString();
+                foundRide.RideComment = new Comment();
+                foundRide.RideComment.CommentRide = new Ride();
+                foundRide.RideComment.CommentRide = foundRide;
+                foundRide.RideComment.DateAndTime = DateTime.Now;
+                foundRide.RideComment.Description = comment;
+                foundRide.RideComment.RideMark = RideMarks.ZERO;
+                foundRide.RideComment.CommentUser = foundUser;
+
+                jsonParser.EditRide(id, foundRide);
 
                 jsonParser.DeleteRideFromUser(foundUser, foundRide);
 

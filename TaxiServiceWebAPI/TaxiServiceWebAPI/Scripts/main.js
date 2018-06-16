@@ -164,7 +164,6 @@ $(document).ready(function () {
     // submit ride form
     $('#submitRideButton').click(function () {
         event.preventDefault();
-        console.log('Ordering a ride');
         orderRide();
     });
 
@@ -224,9 +223,9 @@ function orderRide() {
         // uzmemo podatke o korisniku
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
 
-            // trenutno vreme
-            let date = new Date();
-            let jsonDate = date.toJSON();
+            // trenutno vreme - na API ovo
+            //let date = new Date();
+            //let jsonDate = date.toJSON();
 
             // voznja
             let newOrderRide = {
@@ -241,7 +240,6 @@ function orderRide() {
                     Gender: user.Gender,
                     Rides: user.Rides
                 },
-                DateAndTime: jsonDate,
                 RideVehicle: {
                     VehicleType: $('#orderCarType').val()
                 },
@@ -386,8 +384,8 @@ function addButtonListeners(orderRide) {
                 $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
 
                     // trenutno vreme promenim, al mozda ne treba? 
-                    let date = new Date();
-                    let jsonDate = date.toJSON();
+                    //let date = new Date();
+                    //let jsonDate = date.toJSON();
 
                     // voznja
                     let editedRide = {
@@ -402,7 +400,6 @@ function addButtonListeners(orderRide) {
                             Gender: user.Gender,
                             Rides: user.Rides
                         },
-                        DateAndTime: jsonDate,
                         RideVehicle: {
                             VehicleType: $('#editOrderCarType').val()
                         },
@@ -505,7 +502,6 @@ function addButtonListeners(orderRide) {
  
     });
 }
-
 
 // Register & register validation
 function tryAddUser() {
