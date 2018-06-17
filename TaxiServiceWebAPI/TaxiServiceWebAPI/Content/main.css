@@ -101,6 +101,16 @@ a#orderRideMark:hover {
     text-align: center;
 }
 
+.icon-b {
+    color: orange;
+}
+
+.icon-d {
+    color: yellow;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: orange;
+}
+
 .empty-check {
 }
 .not-available { }

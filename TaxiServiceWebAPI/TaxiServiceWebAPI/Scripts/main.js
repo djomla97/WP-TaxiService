@@ -909,6 +909,10 @@ function updateDetailRideInfo(ride) {
     let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
     let formatedDate = dt.toLocaleString("en-GB", options);
 
+    // da datum bude lepsi
+    dt = new Date(Date.parse(ride.RideComment.DateAndTime));
+    let commentDate = dt.toLocaleString("en-GB", options);
+
     // da status bude lepsi
     let status;
     switch (ride.StatusOfRide) {
@@ -942,14 +946,51 @@ function updateDetailRideInfo(ride) {
         rideCustomer = `${ride.RideCustomer.FirstName} ${ride.RideCustomer.LastName} (${ride.RideCustomer.Username})`;
     }
 
+    let rideDriver;
+    if (ride.RideDriver == null) {
+        rideDriver = 'Not set';
+    } else {
+        rideDriver = `${ride.RideDriver.FirstName} ${ride.RideDriver.LastName} (${ride.RideDriver.Username})`;
+    }
+
+    let rideDispatcher;
+    if (ride.RideDispatcher == null) {
+        rideDispatcher = 'Not set';
+    } else {
+        rideDispatcher = `${ride.RideDispatcher.FirstName} ${ride.RideDispatcher.LastName} (${ride.RideDispatcher.Username})`;
+    }
+
+    let rideComment;
+    if (ride.RideComment != null) {
+        rideComment = `<blockquote class="blockquote text-center">
+                            <p class="mb-0">"${ride.RideComment.Description}"</p>
+                            <footer class="blockquote-footer">${ride.RideComment.CommentUser.FirstName} ${ride.RideComment.CommentUser.LastName} (${ride.RideComment.CommentUser.Role}) on <cite>${commentDate}</cite></footer>
+                        </blockquote>`;
+    } else {
+        rideComment = 'No comment';
+    }
+
     $('#ride-info').append(`<span class="user-key">Ride ID</span>: <p>${ride.ID}</p>`);
     $('#ride-info').append(`<span class="user-key">Date &amp; Time</span>: <p>${formatedDate}</p>`);
     $('#ride-info').append(`<span class="user-key">Start Location</span>: <p>${start}</p>`);
-    $('#ride-info').append(`<span class="user-key">Destination </span>: <p>${destination}</p>`);
+    $('#ride-info').append(`<span class="user-key">Destination</span>: <p>${destination}</p>`);
     $('#ride-info').append(`<span class="user-key">Status of ride</span>: <p>${status}</p>`);
-    $('#ride-info').append(`<span class="user-key">Customer</span>: <p>${rideCustomer}</p>`);
+    $('#ride-info').append(`<span class="user-key">Fare</span>: <p>${ride.Fare.toFixed(2)} €</p>`);
     $('#ride-info').append(`<span class="user-key">Vehicle</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
-
+    console.log('Number of stars: ' + ride.RideComment.RideMark);
+    switch (ride.RideComment.RideMark) {
+        case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+        case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+        case 2: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+        case 3: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+        case 4: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="far fa-star icon-b"></i>`); break;
+        case 5: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"></i>`); break;
+    }
+    $('#ride-info').append(`<hr><span class="user-key">Customer</span>: <p>${rideCustomer}</p>`);
+    $('#ride-info').append(`<span class="user-key">Driver</span>: <p>${rideDriver}</p>`);
+    $('#ride-info').append(`<span class="user-key">Dispatcher</span>: <p>${rideDispatcher}</p><hr>`);
+    $('#ride-info').append(`<p>${rideComment}</p>`);  
+    
 }
 
 // adds listeners to buttons for edit and delete
