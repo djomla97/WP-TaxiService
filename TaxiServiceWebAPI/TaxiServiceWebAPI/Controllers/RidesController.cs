@@ -21,14 +21,13 @@ namespace TaxiServiceWebAPI.Controllers
             return jsonParser.ReadRides();
         }
 
-        // GET /api/rides/id
         [HttpGet]
-        [Route("api/rides/{id}")]
         public Ride Get(int id)
-        {
+        {          
             try
             {
                 var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
+
                 return foundRide;
             }
             catch (Exception)
@@ -39,8 +38,26 @@ namespace TaxiServiceWebAPI.Controllers
 
         // GET /api/rides/id
         [HttpGet]
-        [Route("api/rides/ordered/{username}")]
+        [Route("api/rides/{username}")]
         public IEnumerable<Ride> Get(string username)
+        {
+            try
+            {
+                var foundRides = jsonParser.ReadRides()
+                    .Where(r => r.RideCustomer.Username.ToLower().Equals(username.ToLower()) && r.StatusOfRide != RideStatuses.CREATED_ONWAIT.ToString());
+
+                return foundRides;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+        
+        // GET /api/rides/ordered/username
+        [HttpGet]
+        [Route("api/rides/ordered/{username}")]
+        public IEnumerable<Ride> Ordered(string username)
         {
             try
             {

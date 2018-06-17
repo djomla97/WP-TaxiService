@@ -145,7 +145,7 @@ namespace TaxiServiceWebAPI.Controllers
         // GET api/users/
         [HttpPost]
         [Route("api/users/login")]
-        public bool Post([FromBody]Credentials credentials)
+        public bool Login([FromBody]Credentials credentials)
         {
             string username = credentials.Username;
             string password = credentials.Password;

@@ -177,332 +177,6 @@ $(document).ready(function () {
 
 /* HELPER FUNKCIJE */
 
-function orderRide() {
-    let canOrderRide = true;
-    let checkedRadioButtons = false;
-
-    $('form#order-ride-form input').each(function () {
-
-        // ZipCode moze imati samo brojeve
-        if ($(this).attr('id') == 'orderRideZipCode') {
-            if (!$('#orderRideZipCode').val().match(/^[\d]+$/g))
-                addValidationError('orderRideZipCode', 'empty-check', 'Zip code can only have numbers');
-            else
-                removeValidationError('orderRideZipCode', 'empty-check');
-
-            if (!$(this).val()) {
-                $(this).next().show();
-                $(this).next().addClass('empty-check');
-                $(this).next().text('This field cannot be left empty.');
-            }
-
-            return true;
-        }
-
-        // text input        
-        if (!$(this).val()) {
-            $(this).next().show();
-            $(this).next().addClass('empty-check');
-            $(this).next().text('This field cannot be left empty.');
-        } else {
-            $(this).next().hide();
-            $(this).next().text('');
-            $(this).next().removeClass('empty-check');
-        }
-    });
-
-    // hack sa klasom
-    $('#order-ride-form p').each(function () {
-        if ($(this).hasClass('empty-check')) {
-            canOrderRide = false;
-        }
-    });
-
-    if (canOrderRide) {
-
-        // uzmemo podatke o korisniku
-        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
-
-            // trenutno vreme - na API ovo
-            //let date = new Date();
-            //let jsonDate = date.toJSON();
-
-            // voznja
-            let newOrderRide = {
-                RideCustomer: {
-                    Username: user.Username,
-                    Password: user.Password,
-                    FirstName: user.FirstName,
-                    LastName: user.LastName,
-                    Email: user.Email,
-                    ContactPhone: user.ContactPhone,
-                    JMBG: user.JMBG,
-                    Gender: user.Gender,
-                    Rides: user.Rides
-                },
-                RideVehicle: {
-                    VehicleType: $('#orderCarType').val()
-                },
-                StartLocation: {
-                    X: 0.0,
-                    Y: 0.0,
-                    LocationAddress: {
-                        City: $('#orderRideCity').val(),
-                        Street: $('#orderRideStreet').val(),
-                        ZipCode: $('#orderRideZipCode').val()
-                    }
-                }
-            };
-
-            // posaljemo voznju
-            $.ajax({
-                method: 'POST',
-                url: '/api/rides',
-                dataType: 'json',
-                contentType: 'application/json',
-                data: JSON.stringify(newOrderRide)
-            }).success(function (id) {
-                // ocistimo formu
-                clearForm('order-ride-form');               
-                $('#orderCarType').prop('selectedIndex', 0);
-
-                // zatrazimo nazad voznju sa dodeljenim ID
-                $.get(`/api/rides/${id}`, function (ride) {
-
-                    // update table
-                    updateOrderTable(ride);
-                    $('#orderRidesTableDiv').show();
-
-                    // update view
-                    $('#seeRidesButton').trigger('click');
-
-                    showSnackbar('Ordered ride ' + id + ' successfully.');
-                });
-            });
-        });
-    } else {
-        console.log('Can\'t order ride.');
-    }
-}
-
-function updateOrderTable(orderRide) {
-    // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
-    $('#order-rides-table-body tr').each(function () {
-        if ($(this).attr('id') == orderRide.ID) {
-            $(this).remove();
-            return true;
-        }
-    });
-
-    // da datum bude lepsi
-    let dt = new Date(Date.parse(orderRide.DateAndTime));
-    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    let formatedDate = dt.toLocaleString("en-GB", options); 
-
-    // da status bude lepsi
-    let status;
-    if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
-        status = 'Created - on wait';
-
-    $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
-                            <td>${formatedDate}</td>
-                            <td>${orderRide.RideVehicle.VehicleType}</td>
-                            <td>${status}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button id="editOrder${orderRide.ID}" type="button" class="btn btn-primary"><i class="fas fa-edit"></i></button>
-                                    <button id="cancelOrder${orderRide.ID}" name="cancelOrderButton" type="button" class="btn btn-danger"><i class="fas fa-times-circle"></i></button>
-                                </div>
-                            </td>
-                        </tr>`);
-
-    // mora jer nisu u DOM kad se desi $(document).ready
-    addButtonListeners(orderRide);
-
-}
-
-// adds listeners to buttons for edit and delete
-function addButtonListeners(orderRide) {
-    $(`#editOrder${orderRide.ID}`).click(function () {
-        // update edit formu za order ride
-        $('#editOrderID').text(orderRide.ID);
-        $('#editOrderRideUser').attr('placeholder', `${$('#fullName').text()}`);
-        $('#editOrderRideStreet').val(orderRide.StartLocation.LocationAddress.Street);
-        $('#editOrderRideCity').val(orderRide.StartLocation.LocationAddress.City);
-        $('#editOrderRideZipCode').val(orderRide.StartLocation.LocationAddress.ZipCode);
-        if (orderRide.RideVehicle.VehicleType == 'Passenger')
-            $('#editOrderCarType').prop('selectedIndex', 0);
-        else
-            $('#editOrderCarType').prop('selectedIndex', 1);
-
-        $('#confirmEditOrderRide').attr('id', `confirmEditOrderRide${orderRide.ID}`);
-        $(`#confirmEditOrderRide${orderRide.ID}`).on('click', function () {
-            let canEditOrderRide = true;
-
-            $('form#edit-order-ride-form input').each(function () {
-
-                // ZipCode moze imati samo brojeve
-                if ($(this).attr('id') == 'editOrderRideZipCode') {
-                    if (!$('#editOrderRideZipCode').val().match(/^[\d]+$/g))
-                        addValidationError('editOrderRideZipCode', 'empty-check', 'Zip code can only have numbers');
-                    else
-                        removeValidationError('editOrderRideZipCode', 'empty-check');
-
-                    if (!$(this).val()){
-                        $(this).next().show();
-                        $(this).next().addClass('empty-check');
-                        $(this).next().text('This field cannot be left empty.');
-                    }
-
-                    return true;
-                }
-
-                // text input        
-                if (!$(this).val()) {
-                    $(this).next().show();
-                    $(this).next().addClass('empty-check');
-                    $(this).next().text('This field cannot be left empty.');
-                } else {
-                    $(this).next().hide();
-                    $(this).next().text('');
-                    $(this).next().removeClass('empty-check');
-                }
-
-                
-            });
-
-            // hack sa klasom
-            $('#edit-order-ride-form p').each(function () {
-                if ($(this).hasClass('empty-check')) {
-                    canEditOrderRide = false;
-                }
-            });
-
-            if (canEditOrderRide) {
-
-                // uzmemo podatke o korisniku
-                $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
-
-                    // trenutno vreme promenim, al mozda ne treba? 
-                    //let date = new Date();
-                    //let jsonDate = date.toJSON();
-
-                    // voznja
-                    let editedRide = {
-                        RideCustomer: {
-                            Username: user.Username,
-                            Password: user.Password,
-                            FirstName: user.FirstName,
-                            LastName: user.LastName,
-                            Email: user.Email,
-                            ContactPhone: user.ContactPhone,
-                            JMBG: user.JMBG,
-                            Gender: user.Gender,
-                            Rides: user.Rides
-                        },
-                        RideVehicle: {
-                            VehicleType: $('#editOrderCarType').val()
-                        },
-                        StartLocation: {
-                            X: 0.0,
-                            Y: 0.0,
-                            LocationAddress: {
-                                City: $('#editOrderRideCity').val(),
-                                Street: $('#editOrderRideStreet').val(),
-                                ZipCode: $('#editOrderRideZipCode').val()
-                            }
-                        }
-                    };
-
-                    // posaljemo izmenjenu voznju
-                    $.ajax({
-                        method: 'PUT',
-                        url: `/api/rides/${orderRide.ID}`,
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        data: JSON.stringify(editedRide)
-                    }).success(function (ride) {
-                        if (ride != null) {
-                            // ocistimo formu
-                            clearForm('edit-order-ride-form');
-                            $('#orderCarType').prop('selectedIndex', 0);
-
-                            // update table i hide modala
-                            updateOrderTable(ride);
-                            $('#editOrderRideModal').modal('hide');
-                            // inform user
-                            showSnackbar('Edited ride ' + ride.ID + ' successfully.');
-                            // remove event listener for click on this element
-                            $(`#confirmEditOrderRide${orderRide.ID}`).off('click');
-                            $(`#confirmEditOrderRide${orderRide.ID}`).attr('id', 'confirmEditOrderRide');
-                            $('confirmEditOrderRide').off('click');
-
-                        } else {
-                            $('#editOrderRideModal').modal('hide');
-                            showSnackbar('There was an error proccesing your edit request');
-                        }
-                        
-                    });
-                 });
-            } else {
-                console.log('no');
-            }
-
-        });
-
-        $('#editOrderRideModal').modal('show');
-    });
-
-    // event listener za cancelOrder button svake voznje
-    $(`#cancelOrder${orderRide.ID}`).click(function () {
-        let orderID = $(this).attr('id').replace(/\D/g, '');
-
-        $('#confirmCancel').attr('id', `confirmCancel${orderRide.ID}`);
-        $(`#confirmCancel${orderRide.ID}`).on('click', function () {
-            let comment = $('textarea#rideCommentText').val();
-            let canCancelRide = true;
-            if (comment == null || !comment)
-                canCancelRide = false;
-
-            if (canCancelRide) {
-                $.ajax({
-                    method: 'POST',
-                    url: `/api/rides/cancel/${orderRide.ID}`,
-                    contentType: 'application/json',
-                    data: JSON.stringify(comment)
-                }).success(function (response) {
-
-                    // odmah update tabelu
-                    $('#order-rides-table-body tr').each(function () {
-                        if ($(this).attr('id') == orderRide.ID) {
-                            $(this).remove();
-                            return true;
-                        }
-                    });
-                    checkRidesTables();
-                    $('#commentRideModal').modal('hide');
-                    $('textarea#rideCommentText').val('');
-                    // inform user with snackbar
-                    showSnackbar(response);
-                    removeValidationError('rideCommentText', 'found-check');
-                    // reset confirmCancel button id
-                    // remove event listener for click on this element
-                    $(`#confirmCancel${orderRide.ID}`).off('click');
-                    $(`#confirmCancel${orderRide.ID}`).attr('id', 'confirmCancel');
-                    $('confirmCancel').off('click');
-
-                });
-            } else {
-                console.log('Cant do. Need a comment.');
-                addValidationError('rideCommentText', 'found-check', 'You must enter some feedback for us');
-            }
-        });
-
-        $('#commentRideModal').modal('show');
- 
-    });
-}
-
 // Register & register validation
 function tryAddUser() {
     // ... promises, promises :)
@@ -694,7 +368,6 @@ function loginFromCookie(username) {
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
 
-        console.log(user.Role);
         // ako je korisnik, onda ima Ordered rides
         if (user.Role == 'Customer') {
             // update Ordered rides from web api
@@ -711,6 +384,8 @@ function loginFromCookie(username) {
                 updateMark(user.Role);
                 checkRidesTables();
             });
+
+            updateAllRidesTable(user);
 
         } else if (user.Role == 'Dispatcher') {
             updateMark(user.Role);
@@ -831,6 +506,8 @@ function tryLoginUser() {
                             updateMark(user.Role);
                             checkRidesTables();
                         });
+
+                        updateAllRidesTable(user);
 
                     } else if(user.Role == 'Dispatcher') {
                         updateMark(user.Role);
@@ -992,7 +669,6 @@ function tryEditUser() {
                 $('#edit-message-alert').text('User information was edited successfully.');
                 $('#edit-message-alert').delay(3000).slideUp(500);
 
-                console.log(user.Role);
                 updateUserInformation(user);
                 eraseCookie('loggedInCookie');
                 setCookie('loggedInCookie', user.Username, 1);
@@ -1001,6 +677,403 @@ function tryEditUser() {
         } else {
             console.log('Cannot update');
         }
+    });
+}
+
+// Order ride for customer
+function orderRide() {
+    let canOrderRide = true;
+    let checkedRadioButtons = false;
+
+    $('form#order-ride-form input').each(function () {
+
+        // ZipCode moze imati samo brojeve
+        if ($(this).attr('id') == 'orderRideZipCode') {
+            if (!$('#orderRideZipCode').val().match(/^[\d]+$/g))
+                addValidationError('orderRideZipCode', 'empty-check', 'Zip code can only have numbers');
+            else
+                removeValidationError('orderRideZipCode', 'empty-check');
+
+            if (!$(this).val()) {
+                $(this).next().show();
+                $(this).next().addClass('empty-check');
+                $(this).next().text('This field cannot be left empty.');
+            }
+
+            return true;
+        }
+
+        // text input        
+        if (!$(this).val()) {
+            $(this).next().show();
+            $(this).next().addClass('empty-check');
+            $(this).next().text('This field cannot be left empty.');
+        } else {
+            $(this).next().hide();
+            $(this).next().text('');
+            $(this).next().removeClass('empty-check');
+        }
+    });
+
+    // hack sa klasom
+    $('#order-ride-form p').each(function () {
+        if ($(this).hasClass('empty-check')) {
+            canOrderRide = false;
+        }
+    });
+
+    if (canOrderRide) {
+
+        // uzmemo podatke o korisniku
+        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+
+            // trenutno vreme - na API ovo
+            //let date = new Date();
+            //let jsonDate = date.toJSON();
+
+            // voznja
+            let newOrderRide = {
+                RideCustomer: {
+                    Username: user.Username,
+                    Password: user.Password,
+                    FirstName: user.FirstName,
+                    LastName: user.LastName,
+                    Email: user.Email,
+                    ContactPhone: user.ContactPhone,
+                    JMBG: user.JMBG,
+                    Gender: user.Gender,
+                    Rides: user.Rides
+                },
+                RideVehicle: {
+                    VehicleType: $('#orderCarType').val()
+                },
+                StartLocation: {
+                    X: 0.0,
+                    Y: 0.0,
+                    LocationAddress: {
+                        City: $('#orderRideCity').val(),
+                        Street: $('#orderRideStreet').val(),
+                        ZipCode: $('#orderRideZipCode').val()
+                    }
+                }
+            };
+
+            // posaljemo voznju
+            $.ajax({
+                method: 'POST',
+                url: '/api/rides',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(newOrderRide)
+            }).success(function (id) {
+                // ocistimo formu
+                clearForm('order-ride-form');
+                $('#orderCarType').prop('selectedIndex', 0);
+
+                // zatrazimo nazad voznju sa dodeljenim ID
+                $.get(`/api/rides?id=${id}`, function (ride) {
+
+                    // update table
+                    updateOrderTable(ride);
+                    $('#orderRidesTableDiv').show();
+
+                    // update view
+                    $('#seeRidesButton').trigger('click');
+
+                    showSnackbar('Ordered ride ' + id + ' successfully.');
+                });
+            });
+        });
+    } else {
+        console.log('Can\'t order ride.');
+    }
+}
+
+// update order table
+function updateOrderTable(orderRide) {
+    // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
+    $('#order-rides-table-body tr').each(function () {
+        if ($(this).attr('id') == orderRide.ID) {
+            $(this).remove();
+            return true;
+        }
+    });
+
+    // da datum bude lepsi
+    let dt = new Date(Date.parse(orderRide.DateAndTime));
+    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    let formatedDate = dt.toLocaleString("en-GB", options);
+
+    // da status bude lepsi
+    let status;
+    if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
+        status = 'Created - on wait';
+
+    $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${formatedDate}</td>
+                            <td>${orderRide.RideVehicle.VehicleType}</td>
+                            <td>${status}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="editOrder${orderRide.ID}" type="button" class="btn btn-primary"><i class="fas fa-edit"></i></button>
+                                    <button id="cancelOrder${orderRide.ID}" name="cancelOrderButton" type="button" class="btn btn-danger"><i class="fas fa-times-circle"></i></button>
+                                </div>
+                            </td>
+                        </tr>`);
+
+    // mora jer nisu u DOM kad se desi $(document).ready
+    addButtonListeners(orderRide);
+}
+
+// update all rides table
+function updateAllRidesTable(user) {
+    // TODO: ima dole Button za ShowDetailID ride, pa treba button listener za to dodati
+
+    // update other rides if user has any
+    $.get(`/api/rides/${user.Username}`, function (rides) {
+        if (rides !== null) {
+            if (rides.length > 0) {
+                rides.forEach(function (ride) {
+
+                    // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
+                    $('#rides-table-body tr').each(function () {
+                        if ($(this).attr('id') == ride.ID) {
+                            $(this).remove();
+                            return true;
+                        }
+                    });
+
+                    // da datum bude lepsi
+                    let dt = new Date(Date.parse(ride.DateAndTime));
+                    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    let formatedDate = dt.toLocaleString("en-GB", options);
+
+                    // da status bude lepsi
+                    let status;
+                    switch (ride.StatusOfRide) {
+                        case 'FORMED': status = 'Formed'; break;
+                        case 'PROCESSED': status = 'Processed'; break;
+                        case 'ACCEPTED': status = 'Accepted'; break;
+                        case 'CANCELED': status = 'Canceled'; break;
+                        case 'FAILED': status = 'Failed'; break;
+                        case 'SUCCESSFUL': status = 'Successful'; break;
+                        default: status = 'Created - on wait'; break;
+                    }
+
+                    let destination;
+                    if (ride.Destination == null) {
+                        destination = 'Not set';
+                    } else {
+                        destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
+                    }
+
+                    $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${destination}</td>
+                            <td>${status}</td>
+                            <td>${ride.RideComment.Description}</td>
+                            <td>${formatedDate}</td>
+                            <td>${ride.RideComment.RideMark}/5</td>
+                            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
+                                </div>
+                            </td>
+                        </tr>`);
+                });
+            }
+        } else {
+            $('#ridesTableDiv').hide();
+        }
+        updateMark(user.Role);
+        checkRidesTables();
+    });
+}
+
+// adds listeners to buttons for edit and delete
+function addButtonListeners(orderRide) {
+
+    $(`#editOrder${orderRide.ID}`).click(function () {
+        // update edit formu za order ride
+        $('#editOrderID').text(orderRide.ID);
+        $('#editOrderRideUser').attr('placeholder', `${$('#fullName').text()}`);
+        $('#editOrderRideStreet').val(orderRide.StartLocation.LocationAddress.Street);
+        $('#editOrderRideCity').val(orderRide.StartLocation.LocationAddress.City);
+        $('#editOrderRideZipCode').val(orderRide.StartLocation.LocationAddress.ZipCode);
+        if (orderRide.RideVehicle.VehicleType == 'Passenger')
+            $('#editOrderCarType').prop('selectedIndex', 0);
+        else
+            $('#editOrderCarType').prop('selectedIndex', 1);
+
+        $('#confirmEditOrderRide').attr('id', `confirmEditOrderRide${orderRide.ID}`);
+        $(`#confirmEditOrderRide${orderRide.ID}`).on('click', function () {
+            let canEditOrderRide = true;
+
+            $('form#edit-order-ride-form input').each(function () {
+
+                // ZipCode moze imati samo brojeve
+                if ($(this).attr('id') == 'editOrderRideZipCode') {
+                    if (!$('#editOrderRideZipCode').val().match(/^[\d]+$/g))
+                        addValidationError('editOrderRideZipCode', 'empty-check', 'Zip code can only have numbers');
+                    else
+                        removeValidationError('editOrderRideZipCode', 'empty-check');
+
+                    if (!$(this).val()) {
+                        $(this).next().show();
+                        $(this).next().addClass('empty-check');
+                        $(this).next().text('This field cannot be left empty.');
+                    }
+
+                    return true;
+                }
+
+                // text input        
+                if (!$(this).val()) {
+                    $(this).next().show();
+                    $(this).next().addClass('empty-check');
+                    $(this).next().text('This field cannot be left empty.');
+                } else {
+                    $(this).next().hide();
+                    $(this).next().text('');
+                    $(this).next().removeClass('empty-check');
+                }
+
+
+            });
+
+            // hack sa klasom
+            $('#edit-order-ride-form p').each(function () {
+                if ($(this).hasClass('empty-check')) {
+                    canEditOrderRide = false;
+                }
+            });
+
+            if (canEditOrderRide) {
+
+                // uzmemo podatke o korisniku
+                $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+
+                    // trenutno vreme promenim, al mozda ne treba? 
+                    //let date = new Date();
+                    //let jsonDate = date.toJSON();
+
+                    // voznja
+                    let editedRide = {
+                        RideCustomer: {
+                            Username: user.Username,
+                            Password: user.Password,
+                            FirstName: user.FirstName,
+                            LastName: user.LastName,
+                            Email: user.Email,
+                            ContactPhone: user.ContactPhone,
+                            JMBG: user.JMBG,
+                            Gender: user.Gender,
+                            Rides: user.Rides
+                        },
+                        RideVehicle: {
+                            VehicleType: $('#editOrderCarType').val()
+                        },
+                        StartLocation: {
+                            X: 0.0,
+                            Y: 0.0,
+                            LocationAddress: {
+                                City: $('#editOrderRideCity').val(),
+                                Street: $('#editOrderRideStreet').val(),
+                                ZipCode: $('#editOrderRideZipCode').val()
+                            }
+                        }
+                    };
+
+                    // posaljemo izmenjenu voznju
+                    $.ajax({
+                        method: 'PUT',
+                        url: `/api/rides/${orderRide.ID}`,
+                        dataType: 'json',
+                        contentType: 'application/json',
+                        data: JSON.stringify(editedRide)
+                    }).success(function (ride) {
+                        if (ride != null) {
+                            // ocistimo formu
+                            clearForm('edit-order-ride-form');
+                            $('#orderCarType').prop('selectedIndex', 0);
+
+                            // update table i hide modala
+                            updateOrderTable(ride);
+                            $('#editOrderRideModal').modal('hide');
+                            // inform user
+                            showSnackbar('Edited ride ' + ride.ID + ' successfully.');
+                            // remove event listener for click on this element
+                            $(`#confirmEditOrderRide${orderRide.ID}`).off('click');
+                            $(`#confirmEditOrderRide${orderRide.ID}`).attr('id', 'confirmEditOrderRide');
+                            $('confirmEditOrderRide').off('click');
+
+                        } else {
+                            $('#editOrderRideModal').modal('hide');
+                            showSnackbar('There was an error proccesing your edit request');
+                        }
+
+                    });
+                });
+            } else {
+                console.log('no');
+            }
+
+        });
+
+        $('#editOrderRideModal').modal('show');
+    });
+
+    // event listener za cancelOrder button svake voznje
+    $(`#cancelOrder${orderRide.ID}`).click(function () {
+        let orderID = $(this).attr('id').replace(/\D/g, '');
+
+        $('#confirmCancel').attr('id', `confirmCancel${orderRide.ID}`);
+        $(`#confirmCancel${orderRide.ID}`).on('click', function () {
+            let comment = $('textarea#rideCommentText').val();
+            let canCancelRide = true;
+            if (comment == null || !comment)
+                canCancelRide = false;
+
+            if (canCancelRide) {
+                $.ajax({
+                    method: 'POST',
+                    url: `/api/rides/cancel/${orderRide.ID}`,
+                    contentType: 'application/json',
+                    data: JSON.stringify(comment)
+                }).success(function (response) {
+
+                    // odmah update tabelu
+                    $('#order-rides-table-body tr').each(function () {
+                        if ($(this).attr('id') == orderRide.ID) {
+                            $(this).remove();
+                            return true;
+                        }
+                    });
+                    checkRidesTables();
+                    $('#commentRideModal').modal('hide');
+                    $('textarea#rideCommentText').val('');
+                    // inform user with snackbar
+                    showSnackbar(response);
+                    removeValidationError('rideCommentText', 'found-check');
+                    // reset confirmCancel button id
+                    // remove event listener for click on this element
+                    $(`#confirmCancel${orderRide.ID}`).off('click');
+                    $(`#confirmCancel${orderRide.ID}`).attr('id', 'confirmCancel');
+                    $('confirmCancel').off('click');
+
+                    $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+                        updateAllRidesTable(user);    
+                    });
+
+                });
+            } else {
+                console.log('Cant do. Need a comment.');
+                addValidationError('rideCommentText', 'found-check', 'You must enter some feedback for us');
+            }
+        });
+
+        $('#commentRideModal').modal('show');
+
     });
 }
 
@@ -1109,6 +1182,7 @@ function clearForm(formID) {
 }
 
 function checkRidesTables() { 
+    $('#no-rides-message').hide();
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');
     else

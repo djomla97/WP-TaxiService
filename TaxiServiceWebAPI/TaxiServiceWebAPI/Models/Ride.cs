@@ -22,7 +22,9 @@ namespace TaxiServiceWebAPI.Models
 
         public Ride()
         {
-            this.RideVehicle = new Vehicle() {};
+            this.RideVehicle = new Vehicle() { };
+            this.RideComment = new Comment();
+            this.RideComment.RideMark = RideMarks.ZERO;
         }
 
     }
