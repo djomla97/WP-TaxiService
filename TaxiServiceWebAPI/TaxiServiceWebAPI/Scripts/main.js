@@ -16,6 +16,7 @@ $(document).ready(function () {
     $('#commentRideModal').hide(); 
     $('#editOrderRideModal').hide();
     $('#rideModal').hide();
+    $('#seeAllRidesButtonDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -43,6 +44,8 @@ $(document).ready(function () {
         $('#user-info').empty();
         $('#edit-form').empty();
         $('#order-rides-table-body').empty();
+        $('#rides-table-body').empty();
+        $('#orderRideMark').off('click');
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
@@ -325,7 +328,7 @@ function loginFromCookie(username) {
 
         $('#fullName').text(`${user.FirstName} ${user.LastName}`);
         $('#loggedIn-username').text(`${user.Username}`);
-
+        $('#orderRideMark').off('click');
         // svaki korisnik drugaciji view ima
         if (user.Role == 'Dispatcher') {
             $('#addRideButtonDiv').show();
@@ -333,18 +336,21 @@ function loginFromCookie(username) {
             $('#seeRidesButtonDiv').hide();
             $('#orderRidesTableDiv').hide();
             $('#orderRideFormDiv').hide();
+            $('#seeAllRidesButtonDiv').show();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
             $('#orderRidesTableDiv').hide();
             $('#orderRideFormDiv').hide();
             $('#seeRidesButtonDiv').hide();
+            $('#seeAllRidesButtonDiv').hide();
         } else {
             $('#addRideButtonDiv').hide();
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
             $('#orderRidesTableDiv').show();
             $('#orderRideFormDiv').hide();
+            $('#seeAllRidesButtonDiv').hide();
         }
 
         // obrisemo postojece informacije za modal
@@ -368,12 +374,13 @@ function loginFromCookie(username) {
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
 
+        console.log(user.Role);
         // ako je korisnik, onda ima Ordered rides
         if (user.Role == 'Customer') {
             // update Ordered rides from web api
             $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
                 if (orderedRides !== null) {
-                    if (orderedRides.length > 0) {                        
+                    if (orderedRides.length > 0) {
                         orderedRides.forEach(function (ride) {
                             updateOrderTable(ride);
                         });
@@ -390,6 +397,9 @@ function loginFromCookie(username) {
         } else if (user.Role == 'Dispatcher') {
             updateMark(user.Role);
             checkRidesTables();
+        } else if (user.Role == 'Driver') {
+            updateMark(user.Role);
+            checkRidesTables();
         }
     });
 }
@@ -399,7 +409,7 @@ function tryLoginUser() {
 
     // napravimo dummy usera
     let loginUser = {};
-
+    $('#orderRideMark').off('click');
     // username
     if (!$('#loginUsername').val())
         addValidationError('loginusername', 'empty-check', 'You must enter a username');
@@ -448,6 +458,7 @@ function tryLoginUser() {
                     $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
 
+                    console.log(user.Role);
                     // svaki korisnik drugaciji view ima
                     if (user.Role == 'Dispatcher') {
                         $('#addRideButtonDiv').show();
@@ -455,19 +466,25 @@ function tryLoginUser() {
                         $('#seeRidesButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
+                        $('#seeAllRidesButtonDiv').show();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
                         $('#seeRidesButtonDiv').hide();
+                        $('#seeAllRidesButtonDiv').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
                         $('#orderRideButtonDiv').show();
                         $('#orderRidesTableDiv').show();
                         $('#orderRideFormDiv').hide();
+                        $('#seeAllRidesButtonDiv').hide();
                     }
+
+                    // update UI size based on role
+                    updateUISize(user.Role);
 
                     // obrisemo postojece informacije za modal
                     $('#editInfoButton').show();
@@ -510,6 +527,9 @@ function tryLoginUser() {
                         updateAllRidesTable(user);
 
                     } else if(user.Role == 'Dispatcher') {
+                        updateMark(user.Role);
+                        checkRidesTables();
+                    } else if (user.Role == 'Driver') {
                         updateMark(user.Role);
                         checkRidesTables();
                     }
@@ -1278,6 +1298,73 @@ function updateEditForm() {
     $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 }
 
+function updateUISize(role) {
+    // change UI size based on role
+    if (role == 'Dispatcher') {
+        $('#addRideButtonDiv').removeClass('col-sm-4');
+        $('#addRideButtonDiv').addClass('col-sm-3');
+        $('#addRideButtonDiv').removeClass('col-md-4');
+        $('#addRideButtonDiv').addClass('col-md-3');
+
+        $('#seeAllRidesButtonDiv').removeClass('col-sm-4');
+        $('#seeAllRidesButtonDiv').addClass('col-sm-3');
+        $('#seeAllRidesButtonDiv').removeClass('col-md-4');
+        $('#seeAllRidesButtonDiv').addClass('col-md-3');
+
+        $('#logoutButtonDiv').removeClass('col-sm-4');
+        $('#logoutButtonDiv').addClass('col-sm-3');
+        $('#logoutButtonDiv').removeClass('col-md-4');
+        $('#logoutButtonDiv').addClass('col-md-3');
+
+        $('#viewProfileButtonDiv').removeClass('col-sm-4');
+        $('#viewProfileButtonDiv').addClass('col-sm-3');
+        $('#viewProfileButtonDiv').removeClass('col-md-4');
+        $('#viewProfileButtonDiv').addClass('col-md-3');
+        console.log('Updated UI for dispatcher');
+    } else if (role == 'Driver') {
+        $('#addRideButtonDiv').addClass('col-sm-4');
+        $('#addRideButtonDiv').removeClass('col-sm-3');
+        $('#addRideButtonDiv').addClass('col-md-4');
+        $('#addRideButtonDiv').removeClass('col-md-3');
+
+        $('#seeAllRidesButtonDiv').addClass('col-sm-4');
+        $('#seeAllRidesButtonDiv').removeClass('col-sm-3');
+        $('#seeAllRidesButtonDiv').addClass('col-md-4');
+        $('#seeAllRidesButtonDiv').removeClass('col-md-3');
+
+        $('#logoutButtonDiv').addClass('col-sm-4');
+        $('#logoutButtonDiv').removeClass('col-sm-3');
+        $('#logoutButtonDiv').addClass('col-md-4');
+        $('#logoutButtonDiv').removeClass('col-md-3');
+
+        $('#viewProfileButtonDiv').addClass('col-sm-4');
+        $('#viewProfileButtonDiv').removeClass('col-sm-3');
+        $('#viewProfileButtonDiv').addClass('col-md-4');
+        $('#viewProfileButtonDiv').removeClass('col-md-3');
+        console.log('Updated UI for driver');
+    } else if (role == 'Customer') {
+        $('#addRideButtonDiv').addClass('col-sm-4');
+        $('#addRideButtonDiv').removeClass('col-sm-3');
+        $('#addRideButtonDiv').addClass('col-md-4');
+        $('#addRideButtonDiv').removeClass('col-md-3');
+
+        $('#seeAllRidesButtonDiv').addClass('col-sm-4');
+        $('#seeAllRidesButtonDiv').removeClass('col-sm-3');
+        $('#seeAllRidesButtonDiv').addClass('col-md-4');
+        $('#seeAllRidesButtonDiv').removeClass('col-md-3');
+
+        $('#logoutButtonDiv').addClass('col-sm-4');
+        $('#logoutButtonDiv').removeClass('col-sm-3');
+        $('#logoutButtonDiv').addClass('col-md-4');
+        $('#logoutButtonDiv').removeClass('col-md-3');
+
+        $('#viewProfileButtonDiv').addClass('col-sm-4');
+        $('#viewProfileButtonDiv').removeClass('col-sm-3');
+        $('#viewProfileButtonDiv').addClass('col-md-4');
+        $('#viewProfileButtonDiv').removeClass('col-md-3');
+        console.log('Updated UI for customer');
+    }
+}
 
 function clearForm(formID) {
     $(`form#${formID} input`).each(function () {
@@ -1322,6 +1409,12 @@ function updateMark(role) {
         $('#orderRideMark').click(function () {
             event.preventDefault();
             $('#addRideButton').trigger('click');
+        });
+    } else if (role == 'Driver') {
+        $('#orderRideMark').text('checking out some trip requests');
+        $('#orderRideMark').click(function (e) {
+            e.preventDefault();
+            console.log('Checking out some trips ...');
         });
     }
 }
