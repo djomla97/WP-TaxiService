@@ -122,7 +122,6 @@
         </div>
     </div>
     <!-- END of login-register div -->
-
     <!-- HomePage View -->
     <div class="container" id="home-view">
         <!-- Hello message -->
@@ -246,9 +245,8 @@
             </div>
             <div class="col-xs-1 col-sm-3 col-md-3"></div>
         </div>
-    </div> 
+    </div>
     <!-- END of Home-Customer-View div  -->
-
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -269,6 +267,28 @@
                     <button id="closeModalButton" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     <button id="editInfoButton" type="button" class="btn btn-secondary">Edit profile</button>
                     <button id="saveChangesButton" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information about rides -->
+    <div class="modal fade" id="rideModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rideModalTitle"><i class="fas fa-taxi"></i> Ride information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="ride-info">
+
+                    </div>                    
+                </div>
+                <div class="modal-footer">                    
+                    <button id="closeRideModalButton" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -344,8 +364,8 @@
                                             <option value="Van">Van</option>
                                         </select>
                                     </div>
-                                </div>                                
-                            </form>                           
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

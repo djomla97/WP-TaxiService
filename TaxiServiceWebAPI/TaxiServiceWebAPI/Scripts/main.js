@@ -15,6 +15,7 @@ $(document).ready(function () {
     $('#no-rides-message').hide();
     $('#commentRideModal').hide(); 
     $('#editOrderRideModal').hide();
+    $('#rideModal').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -281,9 +282,8 @@ function tryAddUser() {
         // ako moze, neka doda
         if (canAddUser) {
 
-            let newUser = {};
-
             // novi korisnik
+            let newUser = {};            
             newUser.Username = $('#username').val();
             newUser.Password = $('#password').val();
             newUser.FirstName = $('#firstName').val();
@@ -880,6 +880,16 @@ function updateAllRidesTable(user) {
                                 </div>
                             </td>
                         </tr>`);
+
+                    // add one button event listener
+                    $(`#showDetail${ride.ID}`).on('click', function () {
+                        console.log('Getting info on ride with ID: ' + ride.ID);
+                        $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                            updateDetailRideInfo(ride);
+                            $('#rideModal').modal('show');
+                        });
+                    });
+
                 });
             }
         } else {
@@ -888,6 +898,58 @@ function updateAllRidesTable(user) {
         updateMark(user.Role);
         checkRidesTables();
     });
+}
+
+// dry
+function updateDetailRideInfo(ride) {
+    $('#ride-info').empty();
+
+    // da datum bude lepsi
+    let dt = new Date(Date.parse(ride.DateAndTime));
+    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    let formatedDate = dt.toLocaleString("en-GB", options);
+
+    // da status bude lepsi
+    let status;
+    switch (ride.StatusOfRide) {
+        case 'FORMED': status = 'Formed'; break;
+        case 'PROCESSED': status = 'Processed'; break;
+        case 'ACCEPTED': status = 'Accepted'; break;
+        case 'CANCELED': status = 'Canceled'; break;
+        case 'FAILED': status = 'Failed'; break;
+        case 'SUCCESSFUL': status = 'Successful'; break;
+        default: status = 'Created - on wait'; break;
+    }
+
+    let destination;
+    if (ride.Destination == null) {
+        destination = 'Not set';
+    } else {
+        destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
+    }
+
+    let start;
+    if (ride.StartLocation.LocationAddress !== null) {
+        start = ride.StartLocation.LocationAddress.Street + ', ' + ride.StartLocation.LocationAddress.City + ' ' + ride.StartLocation.LocationAddress.ZipCode;
+    } else {
+        start = 'Not set';
+    }
+
+    let rideCustomer;
+    if (ride.RideCustomer == null) {
+        rideCustomer = 'Not set';
+    } else {
+        rideCustomer = `${ride.RideCustomer.FirstName} ${ride.RideCustomer.LastName} (${ride.RideCustomer.Username})`;
+    }
+
+    $('#ride-info').append(`<span class="user-key">Ride ID</span>: <p>${ride.ID}</p>`);
+    $('#ride-info').append(`<span class="user-key">Date &amp; Time</span>: <p>${formatedDate}</p>`);
+    $('#ride-info').append(`<span class="user-key">Start Location</span>: <p>${start}</p>`);
+    $('#ride-info').append(`<span class="user-key">Destination </span>: <p>${destination}</p>`);
+    $('#ride-info').append(`<span class="user-key">Status of ride</span>: <p>${status}</p>`);
+    $('#ride-info').append(`<span class="user-key">Customer</span>: <p>${rideCustomer}</p>`);
+    $('#ride-info').append(`<span class="user-key">Vehicle</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
+
 }
 
 // adds listeners to buttons for edit and delete
@@ -1174,6 +1236,7 @@ function updateEditForm() {
     // za Password
     $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);
 }
+
 
 function clearForm(formID) {
     $(`form#${formID} input`).each(function () {

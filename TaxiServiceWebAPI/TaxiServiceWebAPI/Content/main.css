@@ -96,6 +96,11 @@ a#orderRideMark:hover {
     text-decoration: none;
 }
 
+#ride-info {
+    align-content: center;
+    text-align: center;
+}
+
 .empty-check {
 }
 .not-available { }
