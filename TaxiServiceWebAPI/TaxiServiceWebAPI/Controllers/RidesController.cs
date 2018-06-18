@@ -39,18 +39,63 @@ namespace TaxiServiceWebAPI.Controllers
         // GET /api/rides/id
         [HttpGet]
         [Route("api/rides/{username}")]
-        public IEnumerable<Ride> Get(string username)
+        public List<Ride> Get(string username)
         {
+            // customer
             try
             {
-                var foundRides = jsonParser.ReadRides()
-                    .Where(r => r.RideCustomer.Username.ToLower().Equals(username.ToLower()) && r.StatusOfRide != RideStatuses.CREATED_ONWAIT.ToString());
+                var foundUser = jsonParser.ReadUsers().Where(u => u.Username == username).First();
 
-                return foundRides;
+                try
+                {
+                    var foundRides = jsonParser.ReadRides().Where(r => r.RideCustomer.Username == username && r.StatusOfRide != RideStatuses.CREATED_ONWAIT.ToString());
+                    return foundRides.ToList();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
             catch (Exception)
             {
-                return null;
+                try
+                {
+                    // drivers
+                    var foundUser = jsonParser.ReadDrivers().Where(u => u.Username == username).First();
+
+                    try
+                    {
+                        var foundRides = jsonParser.ReadRides().Where(r => r.RideDriver.Username == username);
+                        return foundRides.ToList();
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        // drivers
+                        var foundUser = jsonParser.ReadDispatchers().Where(u => u.Username == username).First();
+
+                        try
+                        {
+                            var foundRides = jsonParser.ReadRides().Where(r => r.RideDispatcher.Username == username);
+                            return foundRides.ToList();
+                        }
+                        catch (Exception)
+                        {
+                            return null;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                }
+
             }
         }
         
@@ -80,11 +125,19 @@ namespace TaxiServiceWebAPI.Controllers
             newRide.DateAndTime = DateTime.Now;
 
             if (newRide.RideVehicle.VehicleType == null || newRide.RideVehicle.VehicleType == string.Empty)
-                newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString(); 
+                newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString();
+
+            if (newRide.RideCustomer == null)
+                newRide.RideCustomer = new Customer();
+            else if (newRide.RideDriver == null)
+                newRide.RideDriver = new Driver();
+            else if (newRide.RideDispatcher == null)
+                newRide.RideDispatcher = new Dispatcher();
 
             Ride writtenRide = jsonParser.WriteRide(newRide);
 
             newRide.RideCustomer.Rides.Add(writtenRide);
+            
             jsonParser.EditUser(newRide.RideCustomer.Username, newRide.RideCustomer);
 
             return Request.CreateResponse(HttpStatusCode.Created, $"{writtenRide.ID}");

@@ -182,9 +182,20 @@ $(document).ready(function () {
     $('#seeAllRidesButton').click(function (e) {
         e.preventDefault();
         console.log('Getting all rides in the system ...');
-        $('#no-rides-message').fadeOut();
+        $('#no-rides-message').hide();
         showAllRides();
+    });
 
+    $('#seeDispatcherRidesButton').click(function (e) {
+        e.preventDefault();
+        console.log('showing all dispatcher rides');
+        $('#order-rides-table-body').empty();
+        $('#rides-table-body').empty();
+        $('#seeDispatcherRidesButtonDiv').hide();
+        $('#seeAllRidesButtonDiv').show();
+        let user = { Username: $('#loggedIn-username').text()};
+        updateAllRidesTable(user);
+        checkRidesTables();
     });
 
 }); // on ready
@@ -410,9 +421,11 @@ function loginFromCookie(username) {
             updateAllRidesTable(user);
 
         } else if (user.Role == 'Dispatcher') {
+            updateAllRidesTable(user);
             updateMark(user.Role);
-            checkRidesTables();
+            checkRidesTables();   
         } else if (user.Role == 'Driver') {
+            updateAllRidesTable(user);
             updateMark(user.Role);
             checkRidesTables();
         }
@@ -503,6 +516,7 @@ function tryLoginUser() {
                     // update UI size based on role
                     updateUISize(user.Role);
 
+                    $('#no-rides-message > h3').text('Oops, you don\'t have any done or in progress rides');
                     // obrisemo postojece informacije za modal
                     $('#editInfoButton').show();
                     $('#goBackToInfoButton').hide();
@@ -543,10 +557,12 @@ function tryLoginUser() {
 
                         updateAllRidesTable(user);
 
-                    } else if(user.Role == 'Dispatcher') {
+                    } else if (user.Role == 'Dispatcher') {
+                        updateAllRidesTable(user);
                         updateMark(user.Role);
                         checkRidesTables();
                     } else if (user.Role == 'Driver') {
+                        updateAllRidesTable(user);
                         updateMark(user.Role);
                         checkRidesTables();
                     }
@@ -827,7 +843,13 @@ function orderRide() {
 }
 
 // update order table
-function updateOrderTable(orderRide, userRole = 'Customer') {
+function updateOrderTable(orderRide, userRole) {
+
+    // glupi Microsoft Edge ne podrzava ES6 za default parametre
+    if (typeof userRole === "undefined") {
+        userRole = 'Customer';
+    }
+
     // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
     $('#order-rides-table-body tr').each(function () {
         if ($(this).attr('id') == orderRide.ID) {
@@ -871,14 +893,12 @@ function updateOrderTable(orderRide, userRole = 'Customer') {
                                 </div>
                             </td>
                         </tr>`);
-    }
-
-  
-    
+    }    
 }
 
 // update all rides table
 function updateAllRidesTable(user) {
+    console.log('Trying to get user rides');
     // update other rides if user has any
     $.get(`/api/rides/${user.Username}`, function (rides) {
         if (rides !== null) {
@@ -955,10 +975,9 @@ function showAllRides() {
     $.get('/api/rides', function (rides) {
         if (rides !== null) {
             if (rides.length > 0) {
-                $('#ridesTableDiv > h3').text('Other rides:');
+                $('#ridesTableDiv > h3').text('Rides:');
                 rides.forEach(function (ride) {
 
-                    console.log(ride.StatusOfRide);
                     if (ride.StatusOfRide == 'CREATED_ONWAIT') {
                         updateOrderTable(ride, 'Dispatcher');
                         return true;
@@ -1022,6 +1041,8 @@ function showAllRides() {
                 });
             }
         } else {
+            console.log('There are no rides in the system right now.');
+            $('#no-rides-message > h3').text('Oops, there are no rides right now');
             $('#ridesTableDiv').hide();
         }
         updateMark('Dispatcher');
@@ -1488,6 +1509,7 @@ function clearForm(formID) {
 }
 
 function checkRidesTables() { 
+
     $('#no-rides-message').hide();
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');
