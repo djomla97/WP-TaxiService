@@ -18,6 +18,7 @@ $(document).ready(function () {
     $('#rideModal').hide();
     $('#seeAllRidesButtonDiv').hide();
     $('#seeDispatcherRidesButtonDiv').hide();
+    $('#addRideFormDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -47,6 +48,7 @@ $(document).ready(function () {
         $('#order-rides-table-body').empty();
         $('#rides-table-body').empty();
         $('#orderRideMark').off('click');
+        $('#addRideFormDiv').hide();
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
@@ -149,6 +151,7 @@ $(document).ready(function () {
             $('#ridesTableDiv').fadeIn('500');
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
+            $('#addRideFormDiv').hide();
             // provera sadrzaja tabela
             checkRidesTables();
         });
@@ -163,6 +166,7 @@ $(document).ready(function () {
             $('#orderRideButtonDiv').hide();
             $('#seeRidesButtonDiv').show();
             $('#no-rides-message').hide();
+            $('#addRideFormDiv').hide();
         });
     });
 
@@ -178,24 +182,75 @@ $(document).ready(function () {
         $(this).next().attr('id', 'confirmCancel');
     });
 
+    /* DISPATCHER BUTTONS */
     /* Dispatcher see all rides in system option */
     $('#seeAllRidesButton').click(function (e) {
         e.preventDefault();
         console.log('Getting all rides in the system ...');
         $('#no-rides-message').hide();
+        $('#addRideButtonDiv').show();
+        $('#addRideFormDiv').hide();
         showAllRides();
     });
 
     $('#seeDispatcherRidesButton').click(function (e) {
         e.preventDefault();
-        console.log('showing all dispatcher rides');
+        console.log('Showing all dispatcher rides');
+        $('#no-rides-message > h3').text('We\'re getting your rides ready. Please be patient.');
         $('#order-rides-table-body').empty();
         $('#rides-table-body').empty();
         $('#seeDispatcherRidesButtonDiv').hide();
         $('#seeAllRidesButtonDiv').show();
+        $('#addRideButtonDiv').show();
+        $('#addRideFormDiv').hide();
         let user = { Username: $('#loggedIn-username').text()};
         updateAllRidesTable(user);
         checkRidesTables();
+    });
+
+    /* Add new ride for dispatcher */
+    $('#addRideButton').click(function (e) {
+        e.preventDefault();
+
+        $('#orderRidesTableDiv').fadeOut('500', function () {
+
+            // fill select options
+            $.get('/api/drivers/free', function (freeDrivers) {
+                $('#addFreeDriverSelect').empty();
+                console.log('Getting free drivers for select menu');
+                //freeDrivers = null //debug
+                if (freeDrivers != null) {
+                    if (freeDrivers.length > 0) {
+                        freeDrivers.forEach(function (driver) {
+                            $('#addFreeDriverSelect').append(`<option value="${driver.Username}">${driver.FirstName} ${driver.LastName} (${driver.Username})</option>`);
+                        });
+                    } else {
+                        $('#addFreeDriverSelect').append(`<option>No free drivers</option>`);
+                        $('#addFreeDriverSelect').prop('disabled', true);
+                    }
+                } else {
+                    $('#addFreeDriverSelect').append(`<option>No free drivers</option>`);
+                    $('#addFreeDriverSelect').prop('disabled', true);
+                }
+
+                $('#ridesTableDiv').hide();
+                $('#addRideFormDiv').fadeIn('500');
+                $('#seeDispatcherRidesButtonDiv').show();
+                $('#seeAllRidesButtonDiv').show();
+                $('#addRideButtonDiv').hide();
+                $('#no-rides-message').hide();
+            });
+
+           
+        });
+    });
+
+    /* Submit new ride from dispatcher */
+    $('#submitAddRideButton').click(function (e) {
+        e.preventDefault();
+        console.log('Trying to add new ride ...');
+        addNewRide();
+
     });
 
 }); // on ready
@@ -370,7 +425,8 @@ function loginFromCookie(username) {
             $('#addRideButtonDiv').hide();
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
-            $('#orderRidesTableDiv').show();
+            $('#orderRidesTableDiv').hide();
+            $('#ridesTableDiv').hide();
             $('#orderRideFormDiv').hide();
             $('#seeAllRidesButtonDiv').hide();
             $('#seeDispatcherRidesButtonDiv').hide();
@@ -403,6 +459,7 @@ function loginFromCookie(username) {
         console.log(user.Role);
         // ako je korisnik, onda ima Ordered rides
         if (user.Role == 'Customer') {
+
             // update Ordered rides from web api
             $.get(`/api/rides/ordered/${user.Username}`, function (orderedRides) {
                 if (orderedRides !== null) {
@@ -516,7 +573,7 @@ function tryLoginUser() {
                     // update UI size based on role
                     updateUISize(user.Role);
 
-                    $('#no-rides-message > h3').text('Oops, you don\'t have any done or in progress rides');
+                    $('#no-rides-message > h3').text('We\'re getting your rides ready. Please be patient.');
                     // obrisemo postojece informacije za modal
                     $('#editInfoButton').show();
                     $('#goBackToInfoButton').hide();
@@ -842,10 +899,125 @@ function orderRide() {
     }
 }
 
+// Add new ride from dispatcher
+function addNewRide() {
+    let canAddRide = true;
+
+    $('form#add-ride-form input').each(function () {
+
+        // ZipCode moze imati samo brojeve
+        if ($(this).attr('id') == 'addRideZipCode') {
+            if (!$('#addRideZipCode').val().match(/^[\d]+$/g))
+                addValidationError('addRideZipCode', 'empty-check', 'Zip code can only have numbers');
+            else
+                removeValidationError('addRideZipCode', 'empty-check');
+
+            if (!$(this).val()) {
+                $(this).next().show();
+                $(this).next().addClass('empty-check');
+                $(this).next().text('This field cannot be left empty.');
+            }
+
+            return true;
+        }
+
+        // text input        
+        if (!$(this).val()) {
+            $(this).next().show();
+            $(this).next().addClass('empty-check');
+            $(this).next().text('This field cannot be left empty.');
+        } else {
+            $(this).next().hide();
+            $(this).next().text('');
+            $(this).next().removeClass('empty-check');
+        }
+    });
+
+    // hack sa klasom
+    $('#add-ride-form p').each(function () {
+        if ($(this).hasClass('empty-check')) {
+            canAddRide = false;
+        }
+    });
+
+    // mozda nema vozaca slobodnog?
+    if ($('#addFreeDriverSelect').prop('disabled')) {
+        canAddRide = false;
+        showSnackbar('Sorry, you need a free driver to add a new ride');
+    }
+
+    if (canAddRide) {
+
+        // uzmemo podatke o korisniku
+        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+
+            // voznja
+            let newRide = {
+                RideDispatcher: {
+                    Username: user.Username,
+                    Password: user.Password,
+                    FirstName: user.FirstName,
+                    LastName: user.LastName,
+                    Email: user.Email,
+                    ContactPhone: user.ContactPhone,
+                    JMBG: user.JMBG,
+                    Gender: user.Gender,
+                    Rides: user.Rides
+                },
+                RideDriver: {
+                    Username: $('#addFreeDriverSelect').val()
+                },
+                RideVehicle: {
+                    VehicleType: $('#addCarType').val()
+                },
+                StartLocation: {
+                    X: 0.0,
+                    Y: 0.0,
+                    LocationAddress: {
+                        City: $('#addRideCity').val(),
+                        Street: $('#addRideStreet').val(),
+                        ZipCode: $('#addRideZipCode').val()
+                    }
+                }
+            };
+
+            // posaljemo voznju
+            $.ajax({
+                method: 'POST',
+                url: '/api/rides',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify(newRide)
+            }).success(function (id) {
+                // ocistimo formu
+                clearForm('order-ride-form');
+                $('#addCarType').prop('selectedIndex', 0);
+
+                // zatrazimo nazad voznju sa dodeljenim ID
+                $.get(`/api/rides?id=${id}`, function (ride) {
+
+                    // update table
+                    updateAllRidesTable(user);
+
+                    // update view
+                    $('#seeDispatcherRidesButton').trigger('click');
+
+                    showSnackbar('Added ride ' + id + ' successfully.');
+                });
+            });
+        });
+
+    } else {
+        console.log('Cannot add ride');
+    }
+
+
+}
+
 // update order table
 function updateOrderTable(orderRide, userRole) {
 
-    // glupi Microsoft Edge ne podrzava ES6 za default parametre
+    // Microsoft Edge ne podrzava ES6 za default parametre
     if (typeof userRole === "undefined") {
         userRole = 'Customer';
     }
@@ -898,10 +1070,14 @@ function updateOrderTable(orderRide, userRole) {
 
 // update all rides table
 function updateAllRidesTable(user) {
+   
     console.log('Trying to get user rides');
     // update other rides if user has any
     $.get(`/api/rides/${user.Username}`, function (rides) {
+        console.log('Got rides from API for ' + user.Username);
+        console.log(rides);
         if (rides !== null) {
+            console.log('DEBUG - rides length: ' + rides.length);
             if (rides.length > 0) {
                 rides.forEach(function (ride) {
 
@@ -937,12 +1113,25 @@ function updateAllRidesTable(user) {
                         destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
                     }
 
+                    let description;
+                    if (ride.RideComment.Description == null)
+                        description = 'No comment';
+                    else
+                        description = `${ride.RideComment.Description}`;
+
+                    let rating;
+                    console.log('DEBUG - ride rating: ' + ride.RideComment.RideMark);
+                    if (description == 'No comment' )
+                        rating = 'Not rated';
+                    else
+                        rating = `${ride.RideComment.RideMark}/5`;
+
                     $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
-                            <td>${ride.RideComment.Description}</td>
+                            <td>${description}</td>
                             <td>${formatedDate}</td>
-                            <td>${ride.RideComment.RideMark}/5</td>
+                            <td>${rating}</td>
                             
                             <td>
                                 <div class="btn-group" role="group">
@@ -961,8 +1150,11 @@ function updateAllRidesTable(user) {
                     });
 
                 });
+            } else {
+                $('#no-rides-message > h3').text('Oops, you don\'t have any done or in progress rides');
             }
         } else {
+            $('#no-rides-message > h3').text('Oops, you don\'t have any done or in progress rides');
             $('#ridesTableDiv').hide();
         }
         updateMark(user.Role);
@@ -972,7 +1164,10 @@ function updateAllRidesTable(user) {
 
 // show all rides for dispatcher 
 function showAllRides() {
+    $('#no-rides-message').hide();
+
     $.get('/api/rides', function (rides) {
+        $('#no-rides-message').hide();
         if (rides !== null) {
             if (rides.length > 0) {
                 $('#ridesTableDiv > h3').text('Rides:');
@@ -1015,12 +1210,24 @@ function showAllRides() {
                         destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
                     }
 
+                    let description;
+                    if (ride.RideComment.Description == null)
+                        description = 'No comment';
+                    else
+                        description = `${ride.RideComment.Description}`;
+
+                    let rating;
+                    if (description == 'No comment' || ride.RideComment.RideMark == 'undefined')
+                        rating = 'Not rated';
+                    else
+                        rating = `${ride.RideComment.RideMark}/5`;
+
                     $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
-                            <td>${ride.RideComment.Description}</td>
+                            <td>${description}</td>
                             <td>${formatedDate}</td>
-                            <td>${ride.RideComment.RideMark}/5</td>
+                            <td>${rating}</td>
                             
                             <td>
                                 <div class="btn-group" role="group">
@@ -1033,11 +1240,13 @@ function showAllRides() {
                     $(`#showDetail${ride.ID}`).on('click', function () {
                         console.log('Getting info on ride with ID: ' + ride.ID);
                         $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                            console.log('Ride status: ' + ride.StatusOfRide);
                             updateDetailRideInfo(ride);
                             $('#rideModal').modal('show');
                         });
                     });
-
+                    $('#no-rides-message').hide();
+                    checkRidesTables();
                 });
             }
         } else {
@@ -1046,7 +1255,7 @@ function showAllRides() {
             $('#ridesTableDiv').hide();
         }
         updateMark('Dispatcher');
-        checkRidesTables();
+        
     });
     $('#seeAllRidesButtonDiv').hide();
     $('#seeDispatcherRidesButtonDiv').show();
@@ -1054,6 +1263,8 @@ function showAllRides() {
 
 // dry
 function updateDetailRideInfo(ride) {
+    console.log('Updating ride information: ' + ride.ID);
+
     $('#ride-info').empty();
 
     // da datum bude lepsi
@@ -1092,28 +1303,28 @@ function updateDetailRideInfo(ride) {
     }
 
     let rideCustomer;
-    if (ride.RideCustomer == null) {
+    if (ride.RideCustomer == null || ride.RideCustomer.Username == null) {
         rideCustomer = 'Not set';
     } else {
         rideCustomer = `${ride.RideCustomer.FirstName} ${ride.RideCustomer.LastName} (${ride.RideCustomer.Username})`;
     }
 
     let rideDriver;
-    if (ride.RideDriver == null) {
+    if (ride.RideDriver == null || ride.RideDispatcher.Username == null) {
         rideDriver = 'Not set';
     } else {
         rideDriver = `${ride.RideDriver.FirstName} ${ride.RideDriver.LastName} (${ride.RideDriver.Username})`;
     }
 
     let rideDispatcher;
-    if (ride.RideDispatcher == null) {
+    if (ride.RideDispatcher == null || ride.RideDispatcher.Username == null) {
         rideDispatcher = 'Not set';
     } else {
         rideDispatcher = `${ride.RideDispatcher.FirstName} ${ride.RideDispatcher.LastName} (${ride.RideDispatcher.Username})`;
     }
 
     let rideComment;
-    if (ride.RideComment != null) {
+    if (ride.RideComment != null && ride.RideComment.Description != null && ride.RideComment.CommentUser != null) {
         rideComment = `<blockquote class="blockquote text-center">
                             <p class="mb-0">"${ride.RideComment.Description}"</p>
                             <footer class="blockquote-footer">${ride.RideComment.CommentUser.FirstName} ${ride.RideComment.CommentUser.LastName} (${ride.RideComment.CommentUser.Role}) on <cite>${commentDate}</cite></footer>
@@ -1130,13 +1341,17 @@ function updateDetailRideInfo(ride) {
     $('#ride-info').append(`<span class="user-key">Fare</span>: <p>${ride.Fare.toFixed(2)} €</p>`);
     $('#ride-info').append(`<span class="user-key">Vehicle</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
     console.log('Number of stars: ' + ride.RideComment.RideMark);
-    switch (ride.RideComment.RideMark) {
-        case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-        case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-        case 2: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-        case 3: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-        case 4: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="far fa-star icon-b"></i>`); break;
-        case 5: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"></i>`); break;
+    if (ride.StatusOfRide != 'CREATED_ONWAIT' && ride.StatusOfRide != 'FORMED') {
+        switch (ride.RideComment.RideMark) {
+            case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+            case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+            case 2: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+            case 3: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
+            case 4: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="far fa-star icon-b"></i>`); break;
+            case 5: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"></i>`); break;
+        }
+    } else {
+        $('#ride-info').append(`<span class="user-key">Rating</span>:<br><p>Rating not set</p>`);
     }
     $('#ride-info').append(`<hr><span class="user-key">Customer</span>: <p>${rideCustomer}</p>`);
     $('#ride-info').append(`<span class="user-key">Driver</span>: <p>${rideDriver}</p>`);
@@ -1509,8 +1724,9 @@ function clearForm(formID) {
 }
 
 function checkRidesTables() { 
-
     $('#no-rides-message').hide();
+    console.log('DEBUG: Checking tables for rides');
+
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');
     else
@@ -1537,19 +1753,19 @@ function showSnackbar(message) {
 function updateMark(role) {
     if (role == 'Customer') {
         $('#orderRideMark').text('ordering a ride');
-        $('#orderRideMark').click(function () {
+        $('#orderRideMark').unbind('click').click(function () {
             event.preventDefault();
             $('#orderRideButton').trigger('click');
         });
     } else if (role == 'Dispatcher') {
         $('#orderRideMark').text('adding a ride');
-        $('#orderRideMark').click(function () {
+        $('#orderRideMark').unbind('click').click(function () {
             event.preventDefault();
             $('#addRideButton').trigger('click');
         });
     } else if (role == 'Driver') {
         $('#orderRideMark').text('checking out some trip requests');
-        $('#orderRideMark').click(function (e) {
+        $('#orderRideMark').unbind('click').click(function (e) {
             e.preventDefault();
             console.log('Checking out some trips ...');
         });

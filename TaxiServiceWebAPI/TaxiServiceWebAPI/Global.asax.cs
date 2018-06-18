@@ -87,8 +87,11 @@ namespace TaxiServiceWebAPI
                 Role = Roles.Driver.ToString(),
                 Gender = Genders.Male.ToString(),
                 DriverLocation = new Location() { X = 0, Y = 0, LocationAddress = new Address("Bulevar Oslobodjenja", "NoviSad", "21000") },
-                Rides = new List<Ride>()
+                Rides = new List<Ride>(),
+                DriverVehicle = new Vehicle() { NumberOfRegistration="TAXI-055-442", TaxiNumber="250", VehicleAge=2018, VehicleType=VehicleTypes.Passenger.ToString() }
             });
+
+            newDrivers[0].DriverVehicle.CarDriver = newDrivers[0];
 
             JSONParser jsonParser = new JSONParser();
 

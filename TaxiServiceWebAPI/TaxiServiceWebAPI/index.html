@@ -162,7 +162,7 @@
 
         <!-- Ako nema voznje korisnik -->
         <div id="no-rides-message" class="text-center">
-            <h3>Oops, you don't have any done or in progress rides</h3>
+            <h3>We're getting your rides ready. Please be patient.</h3>
             <h4>Try <a href="" id="orderRideMark"></a>, maybe?</h4>
         </div>
 
@@ -230,7 +230,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
-                            <input type="email" class="form-control" id="orderRideZipCode" placeholder="Zip code" autocomplete="off" />
+                            <input type="text" class="form-control" id="orderRideZipCode" placeholder="Zip code" autocomplete="off" />
                             <p id="orderRideZipCode-check" class="found-p"></p>
                         </div>
                     </div>
@@ -251,6 +251,55 @@
             </div>
             <div class="col-xs-1 col-sm-3 col-md-3"></div>
         </div>
+
+        <!-- View za Add Ride -->
+        <div class="row" id="addRideFormDiv">
+            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+            <div class="col-xs-12 col-sm-6 col-md-6 text-center">
+                <h2>Add a new ride</h2>
+                <hr>
+                <form id="add-ride-form" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addRideStreet" placeholder="Street" autocomplete="off" />
+                            <p id="addRideStreet-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addRideCity" placeholder="City" autocomplete="off" />
+                            <p id="addRideCity-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addRideZipCode" placeholder="Zip code" autocomplete="off" />
+                            <p id="addRideZipCode-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <select class="form-control" id="addCarType">
+                                <option value="Passenger">Passenger</option>
+                                <option value="Van">Van</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <select class="form-control" id="addFreeDriverSelect"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button id="submitAddRideButton" class="full-width btn btn-primary">Add ride</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+        </div>
+
     </div>
     <!-- END of Home-Customer-View div  -->
     <!-- Information about user and edit form -->

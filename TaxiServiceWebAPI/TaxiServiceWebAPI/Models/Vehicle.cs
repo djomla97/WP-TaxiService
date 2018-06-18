@@ -1,10 +1,12 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 using TaxiServiceWebAPI.Helpers;
 
 namespace TaxiServiceWebAPI.Models
 {
     public class Vehicle
     {
+        [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Ignore, IsReference = true)]
         public Driver CarDriver { get; set; }
         public int VehicleAge { get; set; }
         public string NumberOfRegistration { get; set; }

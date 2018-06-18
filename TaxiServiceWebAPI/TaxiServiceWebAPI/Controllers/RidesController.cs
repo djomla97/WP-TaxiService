@@ -82,8 +82,20 @@ namespace TaxiServiceWebAPI.Controllers
 
                         try
                         {
-                            var foundRides = jsonParser.ReadRides().Where(r => r.RideDispatcher.Username == username);
-                            return foundRides.ToList();
+                            var allRides = jsonParser.ReadRides();
+                            List<Ride> rides = new List<Ride>();
+                            foreach(var ride in allRides)
+                            {
+                                if(ride.RideDispatcher != null && ride.RideDispatcher.Username != null)
+                                {
+                                    if(ride.RideDispatcher.Username == username)
+                                    {
+                                        rides.Add(ride);
+                                    }
+                                }
+                            }
+
+                            return rides;
                         }
                         catch (Exception)
                         {
@@ -106,10 +118,21 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                var foundRide = jsonParser.ReadRides()
-                    .Where(r => r.RideCustomer.Username.ToLower().Equals(username.ToLower()) && r.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString());
+                var allRides = jsonParser.ReadRides();
 
-                return foundRide;
+                List<Ride> orderedRides = new List<Ride>();
+                foreach(var ride in allRides)
+                {
+                    if(ride.RideCustomer != null && ride.RideCustomer.Username != null)
+                    {
+                        if(ride.RideCustomer.Username == username && ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
+                        {
+                            orderedRides.Add(ride);
+                        }
+                    }
+                }
+      
+                return orderedRides;
             }
             catch (Exception)
             {
@@ -121,24 +144,42 @@ namespace TaxiServiceWebAPI.Controllers
         [HttpPost]
         public HttpResponseMessage Post([FromBody]Ride newRide)
         {
-            newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
             newRide.DateAndTime = DateTime.Now;
 
             if (newRide.RideVehicle.VehicleType == null || newRide.RideVehicle.VehicleType == string.Empty)
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString();
 
+            // ko je dodao voznju?
             if (newRide.RideCustomer == null)
-                newRide.RideCustomer = new Customer();
-            else if (newRide.RideDriver == null)
-                newRide.RideDriver = new Driver();
-            else if (newRide.RideDispatcher == null)
-                newRide.RideDispatcher = new Dispatcher();
+                newRide.RideCustomer = new Customer() {};
+            else
+                newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
 
+            if (newRide.RideDriver == null)
+                newRide.RideDriver = new Driver();
+            else
+                newRide.RideDriver = jsonParser.ReadDrivers().Where(d => d.Username == newRide.RideDriver.Username).First();
+
+            if (newRide.RideDispatcher == null)
+                newRide.RideDispatcher = new Dispatcher();
+            else
+                newRide.StatusOfRide = RideStatuses.FORMED.ToString();
+
+            // dodaj voznju
             Ride writtenRide = jsonParser.WriteRide(newRide);
 
-            newRide.RideCustomer.Rides.Add(writtenRide);
-            
-            jsonParser.EditUser(newRide.RideCustomer.Username, newRide.RideCustomer);
+            if (writtenRide.StatusOfRide == RideStatuses.FORMED.ToString())
+            {
+                newRide.RideDispatcher.Rides.Add(writtenRide);
+                jsonParser.EditDispatcher(newRide.RideDispatcher.Username, newRide.RideDispatcher);
+
+                newRide.RideDriver.Rides.Add(writtenRide);
+                jsonParser.EditDriver(newRide.RideDriver.Username, newRide.RideDriver);
+            }
+            else if (writtenRide.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString()) {
+                newRide.RideCustomer.Rides.Add(writtenRide);
+                jsonParser.EditUser(newRide.RideCustomer.Username, newRide.RideCustomer);
+            }
 
             return Request.CreateResponse(HttpStatusCode.Created, $"{writtenRide.ID}");
         }

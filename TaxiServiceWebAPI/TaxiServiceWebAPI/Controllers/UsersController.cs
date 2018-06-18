@@ -142,6 +142,24 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("api/drivers/free")]
+        public List<Driver> FreeDrivers()
+        {
+            try {
+                var freeDrivers = jsonParser.ReadDrivers().Where(d => d.IsFree == true);
+
+                foreach (var driver in freeDrivers)
+                    driver.Password = string.Empty;
+
+                return freeDrivers.ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         // GET api/users/
         [HttpPost]
         [Route("api/users/login")]
