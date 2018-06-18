@@ -339,10 +339,9 @@
                 </div>
                 <div class="modal-body">
                     <div id="ride-info">
-
-                    </div>                    
+                    </div>
                 </div>
-                <div class="modal-footer">                    
+                <div class="modal-footer">
                     <button id="closeRideModalButton" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -371,6 +370,34 @@
                 <div class="modal-footer">
                     <button id="closeCommentRideModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                     <button id="confirmCancel" type="button" class="btn btn-danger">Cancel ride</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for assigning driver -->
+    <div class="modal fade" id="assignDriverModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignDriverModalTitle"><i class="fas fa-male"></i> Assign driver</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="assignDriverDiv">
+                        <div class="form-group">
+                            <label for="assignedDriverSelect" class="text-center"><strong>Choose a driver to assign:</strong></label>
+                            <div class="col-sm-12">
+                                <select class="form-control" id="assignedDriverSelect"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeAssignDriverModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <button id="confirmAssignDriver" type="button" class="btn btn-primary">Assign driver</button>
                 </div>
             </div>
         </div>

@@ -184,16 +184,17 @@ $(document).ready(function () {
 
     /* DISPATCHER BUTTONS */
     /* Dispatcher see all rides in system option */
-    $('#seeAllRidesButton').click(function (e) {
+    $('#seeAllRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
         console.log('Getting all rides in the system ...');
         $('#no-rides-message').hide();
         $('#addRideButtonDiv').show();
         $('#addRideFormDiv').hide();
         showAllRides();
+        checkRidesTables();
     });
 
-    $('#seeDispatcherRidesButton').click(function (e) {
+    $('#seeDispatcherRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
         console.log('Showing all dispatcher rides');
         $('#no-rides-message > h3').text('We\'re getting your rides ready. Please be patient.');
@@ -240,8 +241,6 @@ $(document).ready(function () {
                 $('#addRideButtonDiv').hide();
                 $('#no-rides-message').hide();
             });
-
-           
         });
     });
 
@@ -250,7 +249,12 @@ $(document).ready(function () {
         e.preventDefault();
         console.log('Trying to add new ride ...');
         addNewRide();
+    });
 
+    $('#closeAssignDriverModal').click(function (e) {
+        e.preventDefault();
+
+        $(this).next().attr('id', 'confirmAssignDriver');
     });
 
 }); // on ready
@@ -491,7 +495,7 @@ function loginFromCookie(username) {
 
 // helper funkcija za validaciju login forme i login akcije
 function tryLoginUser() {
-
+    
     // napravimo dummy usera
     let loginUser = {};
     $('#orderRideMark').off('click');
@@ -501,6 +505,7 @@ function tryLoginUser() {
     else
         removeValidationError('loginusername', 'empty-check');
 
+    $('#ridesTableDiv').hide();
     // password
     if (!$('#loginPassword').val())
         addValidationError('loginpassword', 'empty-check', 'You must enter a password');
@@ -1060,12 +1065,96 @@ function updateOrderTable(orderRide, userRole) {
                             <td>${status}</td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button id="appointRide${orderRide.ID}" type="button" class="btn btn-primary"><i class="fas fa-user-plus"></i></button>
+                                    <button id="assignRide${orderRide.ID}" type="button" class="btn btn-primary"><i class="fas fa-user-plus"></i></button>
                                     
                                 </div>
                             </td>
                         </tr>`);
+        
+        // button listener for dispatcher
+        $(`#assignRide${orderRide.ID}`).click(function (e) {
+
+            $('#confirmAssignDriver').attr('id', `confirmAssignDriver${orderRide.ID}`);
+
+            e.preventDefault();
+            console.log('[DEBUG] Assinging ride: ' + orderRide.ID);
+
+            // fill select options
+            $.get('/api/drivers/free', function (freeDrivers) {
+                $('#assignedDriverSelect').empty();
+                console.log('Getting free drivers for assign select menu');
+                //freeDrivers = null //debug
+                if (freeDrivers != null) {
+                    if (freeDrivers.length > 0) {
+                        freeDrivers.forEach(function (driver) {
+                            $('#assignedDriverSelect').append(`<option value="${driver.Username}">${driver.FirstName} ${driver.LastName} (${driver.Username})</option>`);
+                        });
+                    } else {
+                        $('#assignedDriverSelect').append(`<option>No free drivers</option>`);
+                        $('#assignedDriverSelect').prop('disabled', true);
+                    }
+                } else {
+                    $('#assignedDriverSelect').append(`<option>No free drivers</option>`);
+                    $('#assignedDriverSelect').prop('disabled', true);
+                }
+
+                // ako nema vozaca, ne moze dodeliti
+                if ($('#assignedDriverSelect').prop('disabled'))
+                    $(`#confirmAssignDriver${orderRide.ID}`).prop('disabled', true);
+                else
+                    $(`#confirmAssignDriver${orderRide.ID}`).prop('disabled', false);
+
+                // button listener za confirm
+                $(`#confirmAssignDriver${orderRide.ID}`).click(function (e) {
+                    e.preventDefault();
+
+                    // ukoliko ima vozaca, nekog je odabrao pa moze
+                    if (!$('#assignedDriverSelect').prop('disabled')) {
+
+                        // uzmemo voznju, dodelimo vozaca i dispatchera i update preko api-a
+                        $.get(`/api/rides?id=${orderRide.ID}`, function (oldRide) {
+
+                            console.log('Assigned driver: ' + $('#assignedDriverSelect').val());
+                            console.log('Assigned dispatcher: ' + $('#loggedIn-username').text());
+
+                            // uzmemo dispatchera
+                            $.get(`/api/users/${$('#loggedIn-username').text()}`, function (dispatcher) {
+
+                                // uzmemo drivera
+                                $.get(`/api/users/${$('#assignedDriverSelect').val()}`, function (driver) {
+
+                                    // kad sve prodje, posaljemo nazad voznju na api
+                                    $.ajax({
+                                        method: 'PUT',
+                                        url: `/api/rides/assign?rideID=${oldRide.ID}&driver=${driver.Username}&dispatcher=${dispatcher.Username}`
+                                    }).done(function (response) {
+                                        console.log('Response from API after assign: ' + response);
+
+                                        $('#assignDriverModal').modal('hide');
+                                        $(`#confirmAssignDriver${orderRide.ID}`).off('click');
+                                        $(`#confirmAssignDriver${orderRide.ID}`).attr('id', 'confirmAssignDriver');
+
+                                        $('#seeAllRidesButton').trigger('click');
+                                        showSnackbar('Successfully assigned driver ' + driver.Username + ' to ride: ' + oldRide.ID);
+                                    });
+                                });
+
+                            });
+                           
+                        });
+
+                    }
+
+                });
+
+            });
+
+            $('#assignDriverModal').modal('show');
+
+        });
+        
     }    
+    checkRidesTables();
 }
 
 // update all rides table
@@ -1076,8 +1165,7 @@ function updateAllRidesTable(user) {
     $.get(`/api/rides/${user.Username}`, function (rides) {
         console.log('Got rides from API for ' + user.Username);
         console.log(rides);
-        if (rides !== null) {
-            console.log('DEBUG - rides length: ' + rides.length);
+        if (rides !== null) { 
             if (rides.length > 0) {
                 rides.forEach(function (ride) {
 
@@ -1168,6 +1256,8 @@ function showAllRides() {
 
     $.get('/api/rides', function (rides) {
         $('#no-rides-message').hide();
+        console.log('[DEBUG] Show All Rides: ' + rides.length);
+        console.log(rides);
         if (rides !== null) {
             if (rides.length > 0) {
                 $('#ridesTableDiv > h3').text('Rides:');

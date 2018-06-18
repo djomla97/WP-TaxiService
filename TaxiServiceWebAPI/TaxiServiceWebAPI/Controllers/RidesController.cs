@@ -150,17 +150,17 @@ namespace TaxiServiceWebAPI.Controllers
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString();
 
             // ko je dodao voznju?
-            if (newRide.RideCustomer == null)
+            if (newRide.RideCustomer.Username == null)
                 newRide.RideCustomer = new Customer() {};
             else
                 newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
 
-            if (newRide.RideDriver == null)
+            if (newRide.RideDriver.Username == null)
                 newRide.RideDriver = new Driver();
             else
                 newRide.RideDriver = jsonParser.ReadDrivers().Where(d => d.Username == newRide.RideDriver.Username).First();
 
-            if (newRide.RideDispatcher == null)
+            if (newRide.RideDispatcher.Username == null)
                 newRide.RideDispatcher = new Dispatcher();
             else
                 newRide.StatusOfRide = RideStatuses.FORMED.ToString();
@@ -193,14 +193,17 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 jsonParser.EditRide(id, editedRide);
 
-                if(editedRide.RideCustomer.Role == Roles.Customer.ToString())
+                if (editedRide.RideCustomer.Username != null)
                 {
-                    var editedUser = editedRide.RideCustomer;
-                    var rideToRemove = editedUser.Rides.Where(r => r.ID == editedRide.ID).First();
+                    if (editedRide.RideCustomer.Role == Roles.Customer.ToString())
+                    {
+                        var customer = jsonParser.ReadUsers().Where(u => u.Username == editedRide.RideCustomer.Username).First();
+                        var rideToRemove = customer.Rides.Where(r => r.ID == editedRide.ID).First();
 
-                    editedUser.Rides.Remove(rideToRemove);
-                    editedUser.Rides.Add(editedRide);
-                    jsonParser.EditUser(editedUser.Username, editedUser);
+                        customer.Rides.Remove(rideToRemove);
+                        customer.Rides.Add(editedRide);
+                        jsonParser.EditUser(customer.Username, customer);
+                    }
                 }
 
                 return editedRide;
@@ -253,6 +256,31 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, $"Ride {id} was not cancelled.");
             }
+        }
+
+        [HttpPut]
+        [Route("api/rides/assign")]
+        public int? Assign([FromUri]int rideID, [FromUri]string driver, [FromUri]string dispatcher) {
+
+            try
+            {
+                var editedRide = jsonParser.ReadRides().Where(r => r.ID == rideID).First();
+                var foundDriver = jsonParser.ReadDrivers().Where(d => d.Username == driver).First();
+                var foundDispatcher = jsonParser.ReadDispatchers().Where(d => d.Username == dispatcher).First();
+
+                editedRide.RideDriver = foundDriver;
+                editedRide.RideDispatcher = foundDispatcher;
+                editedRide.StatusOfRide = RideStatuses.PROCESSED.ToString();
+
+                jsonParser.EditRide(rideID, editedRide);
+
+                return editedRide.ID;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
     }
