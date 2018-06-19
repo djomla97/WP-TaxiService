@@ -41,74 +41,37 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/rides/{username}")]
         public List<Ride> Get(string username)
         {
-            // customer
-            try
-            {
-                var foundUser = jsonParser.ReadUsers().Where(u => u.Username == username).First();
+            List<Ride> allRides = jsonParser.ReadRides();
+            List<Ride> foundRides = new List<Ride>();
 
-                try
+            foreach(Ride ride in allRides)
+            {
+                if(ride.RideCustomer.Username != null)
                 {
-                    var foundRides = jsonParser.ReadRides().Where(r => r.RideCustomer.Username == username && r.StatusOfRide != RideStatuses.CREATED_ONWAIT.ToString());
-                    return foundRides.ToList();
+                    if(ride.RideCustomer.Username == username)
+                    {
+                        foundRides.Add(ride);
+                    }
                 }
-                catch (Exception)
+
+                if (ride.RideDriver.Username != null)
                 {
-                    return null;
+                    if (ride.RideDriver.Username == username)
+                    {
+                        foundRides.Add(ride);
+                    }
+                }
+
+                if (ride.RideDispatcher.Username != null)
+                {
+                    if (ride.RideDispatcher.Username == username)
+                    {
+                        foundRides.Add(ride);
+                    }
                 }
             }
-            catch (Exception)
-            {
-                try
-                {
-                    // drivers
-                    var foundUser = jsonParser.ReadDrivers().Where(u => u.Username == username).First();
 
-                    try
-                    {
-                        var foundRides = jsonParser.ReadRides().Where(r => r.RideDriver.Username == username);
-                        return foundRides.ToList();
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        // drivers
-                        var foundUser = jsonParser.ReadDispatchers().Where(u => u.Username == username).First();
-
-                        try
-                        {
-                            var allRides = jsonParser.ReadRides();
-                            List<Ride> rides = new List<Ride>();
-                            foreach(var ride in allRides)
-                            {
-                                if(ride.RideDispatcher != null && ride.RideDispatcher.Username != null)
-                                {
-                                    if(ride.RideDispatcher.Username == username)
-                                    {
-                                        rides.Add(ride);
-                                    }
-                                }
-                            }
-
-                            return rides;
-                        }
-                        catch (Exception)
-                        {
-                            return null;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                }
-
-            }
+            return foundRides; 
         }
         
         // GET /api/rides/ordered/username
@@ -150,17 +113,17 @@ namespace TaxiServiceWebAPI.Controllers
                 newRide.RideVehicle.VehicleType = VehicleTypes.Passenger.ToString();
 
             // ko je dodao voznju?
-            if (newRide.RideCustomer.Username == null)
+            if (newRide.RideCustomer == null)
                 newRide.RideCustomer = new Customer() {};
             else
                 newRide.StatusOfRide = RideStatuses.CREATED_ONWAIT.ToString();
 
-            if (newRide.RideDriver.Username == null)
+            if (newRide.RideDriver == null)
                 newRide.RideDriver = new Driver();
             else
                 newRide.RideDriver = jsonParser.ReadDrivers().Where(d => d.Username == newRide.RideDriver.Username).First();
 
-            if (newRide.RideDispatcher.Username == null)
+            if (newRide.RideDispatcher == null)
                 newRide.RideDispatcher = new Dispatcher();
             else
                 newRide.StatusOfRide = RideStatuses.FORMED.ToString();

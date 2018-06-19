@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using TaxiServiceWebAPI.Helpers.DocParsers;
+using TaxiServiceWebAPI.Models;
 
 namespace TaxiServiceWebAPI.Controllers
 {
@@ -17,37 +18,34 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/validate/username")]
         public string CheckUsername([FromUri]string username)
         {
-
-            try
+            List<Customer> foundUsers = jsonParser.ReadUsers();
+            foreach (Customer cust in foundUsers)
             {
-                var found = jsonParser.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();                
-
-                return "Found";
-            }
-            catch (Exception)
-            {
-                try
+                if (cust.Username == username)
                 {
-                    var found = jsonParser.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
-
                     return "Found";
                 }
-                catch (Exception)
+            }
+
+            List<Driver> foundDrivers = jsonParser.ReadDrivers();
+            foreach (Driver driver in foundDrivers)
+            {
+                if (driver.Username == username)
                 {
-
-                    try
-                    {
-                        var found = jsonParser.ReadUsers().Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
-
-                        return "Found";
-                    }
-                    catch (Exception)
-                    {
-
-                        return "Not Found";
-                    }
+                    return "Found";
                 }
             }
+
+            List<Dispatcher> foundDispatchers = jsonParser.ReadDispatchers();
+            foreach (Dispatcher disp in foundDispatchers)
+            {
+                if (disp.Username == username)
+                {
+                    return "Found";
+                }
+            }
+
+            return "Not Found";
         }
 
         [HttpGet]
@@ -55,36 +53,34 @@ namespace TaxiServiceWebAPI.Controllers
         public string CheckEmail(string email)
         {
 
-            try
+            List<Customer> foundUsers = jsonParser.ReadUsers();
+            foreach (Customer cust in foundUsers)
             {
-                var found = jsonParser.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
-
-                return "Found";
-            }
-            catch (Exception)
-            {
-                try
+                if (cust.Email == email)
                 {
-                    var found = jsonParser.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
-
                     return "Found";
                 }
-                catch (Exception)
+            }
+
+            List<Driver> foundDrivers = jsonParser.ReadDrivers();
+            foreach (Driver driver in foundDrivers)
+            {
+                if (driver.Email == email)
                 {
-
-                    try
-                    {
-                        var found = jsonParser.ReadUsers().Where(u => u.Email.ToLower().Equals(email.ToLower())).First();
-
-                        return "Found";
-                    }
-                    catch (Exception)
-                    {
-
-                        return "Not Found";
-                    }
+                    return "Found";
                 }
             }
+
+            List<Dispatcher> foundDispatchers = jsonParser.ReadDispatchers();
+            foreach (Dispatcher disp in foundDispatchers)
+            {
+                if (disp.Email == email)
+                {
+                    return "Found";
+                }
+            }
+
+            return "Not Found";
         }
 
     }

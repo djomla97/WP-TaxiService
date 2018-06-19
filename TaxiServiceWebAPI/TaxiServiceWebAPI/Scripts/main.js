@@ -19,6 +19,7 @@ $(document).ready(function () {
     $('#seeAllRidesButtonDiv').hide();
     $('#seeDispatcherRidesButtonDiv').hide();
     $('#addRideFormDiv').hide();
+    $('#addNewDriverButtonDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -49,6 +50,7 @@ $(document).ready(function () {
         $('#rides-table-body').empty();
         $('#orderRideMark').off('click');
         $('#addRideFormDiv').hide();
+        $('#addNewDriverButtonDiv').hide();
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
@@ -417,6 +419,7 @@ function loginFromCookie(username) {
             $('#orderRidesTableDiv').hide();
             $('#orderRideFormDiv').hide();
             $('#seeAllRidesButtonDiv').show();
+            $('#addNewDriverButtonDiv').show();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
@@ -478,7 +481,8 @@ function loginFromCookie(username) {
                 updateMark(user.Role);
                 checkRidesTables();
             });
-
+            updateMark(user.Role);
+            checkRidesTables();
             updateAllRidesTable(user);
 
         } else if (user.Role == 'Dispatcher') {
@@ -558,6 +562,7 @@ function tryLoginUser() {
                         $('#orderRideFormDiv').hide();
                         $('#seeAllRidesButtonDiv').show();
                         $('#seeDispatcherRidesButtonDiv').hide();
+                        $('#addNewDriverButtonDiv').show();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
@@ -616,7 +621,8 @@ function tryLoginUser() {
                             updateMark(user.Role);
                             checkRidesTables();
                         });
-
+                        updateMark(user.Role);
+                        checkRidesTables();
                         updateAllRidesTable(user);
 
                     } else if (user.Role == 'Dispatcher') {
@@ -1134,25 +1140,26 @@ function updateOrderTable(orderRide, userRole) {
                                         $(`#confirmAssignDriver${orderRide.ID}`).off('click');
                                         $(`#confirmAssignDriver${orderRide.ID}`).attr('id', 'confirmAssignDriver');
 
+                                        console.log('triggering see all rides button click');
                                         $('#seeAllRidesButton').trigger('click');
                                         showSnackbar('Successfully assigned driver ' + driver.Username + ' to ride: ' + oldRide.ID);
+
+                                        // uklonimo ako vec postoji ta voznja
+                                        $('#order-rides-table-body tr').each(function () {
+                                            if ($(this).attr('id') == orderRide.ID) {
+                                                $(this).remove();
+                                                return true;
+                                            }
+                                        });
                                     });
                                 });
-
                             });
-                           
                         });
-
                     }
-
                 });
-
             });
-
             $('#assignDriverModal').modal('show');
-
-        });
-        
+        }); 
     }    
     checkRidesTables();
 }
@@ -1255,64 +1262,65 @@ function showAllRides() {
     $('#no-rides-message').hide();
 
     $.get('/api/rides', function (rides) {
-        $('#no-rides-message').hide();
-        console.log('[DEBUG] Show All Rides: ' + rides.length);
-        console.log(rides);
-        if (rides !== null) {
-            if (rides.length > 0) {
-                $('#ridesTableDiv > h3').text('Rides:');
-                rides.forEach(function (ride) {
+        if (rides != null) {
+            $('#no-rides-message').hide();
+            console.log('[DEBUG] Show All Rides: ' + rides.length);
+            console.log(rides);
+            if (rides !== null) {
+                if (rides.length > 0) {
+                    $('#ridesTableDiv > h3').text('Rides:');
+                    rides.forEach(function (ride) {
 
-                    if (ride.StatusOfRide == 'CREATED_ONWAIT') {
-                        updateOrderTable(ride, 'Dispatcher');
-                        return true;
-                    }
-
-                    // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
-                    $('#rides-table-body tr').each(function () {
-                        if ($(this).attr('id') == ride.ID) {
-                            $(this).remove();
+                        if (ride.StatusOfRide == 'CREATED_ONWAIT') {
+                            updateOrderTable(ride, 'Dispatcher');
                             return true;
                         }
-                    });
 
-                    // da datum bude lepsi
-                    let dt = new Date(Date.parse(ride.DateAndTime));
-                    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-                    let formatedDate = dt.toLocaleString("en-GB", options);
+                        // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
+                        $('#rides-table-body tr').each(function () {
+                            if ($(this).attr('id') == ride.ID) {
+                                $(this).remove();
+                                return true;
+                            }
+                        });
 
-                    // da status bude lepsi
-                    let status;
-                    switch (ride.StatusOfRide) {
-                        case 'FORMED': status = 'Formed'; break;
-                        case 'PROCESSED': status = 'Processed'; break;
-                        case 'ACCEPTED': status = 'Accepted'; break;
-                        case 'CANCELED': status = 'Canceled'; break;
-                        case 'FAILED': status = 'Failed'; break;
-                        case 'SUCCESSFUL': status = 'Successful'; break;
-                        default: status = 'Created - on wait'; break;
-                    }
+                        // da datum bude lepsi
+                        let dt = new Date(Date.parse(ride.DateAndTime));
+                        let options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                        let formatedDate = dt.toLocaleString("en-GB", options);
 
-                    let destination;
-                    if (ride.Destination == null) {
-                        destination = 'Not set';
-                    } else {
-                        destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
-                    }
+                        // da status bude lepsi
+                        let status;
+                        switch (ride.StatusOfRide) {
+                            case 'FORMED': status = 'Formed'; break;
+                            case 'PROCESSED': status = 'Processed'; break;
+                            case 'ACCEPTED': status = 'Accepted'; break;
+                            case 'CANCELED': status = 'Canceled'; break;
+                            case 'FAILED': status = 'Failed'; break;
+                            case 'SUCCESSFUL': status = 'Successful'; break;
+                            default: status = 'Created - on wait'; break;
+                        }
 
-                    let description;
-                    if (ride.RideComment.Description == null)
-                        description = 'No comment';
-                    else
-                        description = `${ride.RideComment.Description}`;
+                        let destination;
+                        if (ride.Destination == null) {
+                            destination = 'Not set';
+                        } else {
+                            destination = `${ride.Destination.LocationAddress.Street}, ${ride.Destination.LocationAddress.City} ${ride.Destination.LocationAddress.ZipCode}`;
+                        }
 
-                    let rating;
-                    if (description == 'No comment' || ride.RideComment.RideMark == 'undefined')
-                        rating = 'Not rated';
-                    else
-                        rating = `${ride.RideComment.RideMark}/5`;
+                        let description;
+                        if (ride.RideComment.Description == null)
+                            description = 'No comment';
+                        else
+                            description = `${ride.RideComment.Description}`;
 
-                    $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                        let rating;
+                        if (description == 'No comment' || ride.RideComment.RideMark == 'undefined')
+                            rating = 'Not rated';
+                        else
+                            rating = `${ride.RideComment.RideMark}/5`;
+
+                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>
@@ -1326,26 +1334,30 @@ function showAllRides() {
                             </td>
                         </tr>`);
 
-                    // add one button event listener
-                    $(`#showDetail${ride.ID}`).on('click', function () {
-                        console.log('Getting info on ride with ID: ' + ride.ID);
-                        $.get(`/api/rides?id=${ride.ID}`, function (ride) {
-                            console.log('Ride status: ' + ride.StatusOfRide);
-                            updateDetailRideInfo(ride);
-                            $('#rideModal').modal('show');
+                        // add one button event listener
+                        $(`#showDetail${ride.ID}`).on('click', function () {
+                            console.log('Getting info on ride with ID: ' + ride.ID);
+                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                                console.log('Ride status: ' + ride.StatusOfRide);
+                                updateDetailRideInfo(ride);
+                                $('#rideModal').modal('show');
+                            });
                         });
+                        $('#no-rides-message').hide();
+                        checkRidesTables();
                     });
-                    $('#no-rides-message').hide();
-                    checkRidesTables();
-                });
+                }
+            } else {
+                console.log('There are no rides in the system right now.');
+                $('#no-rides-message > h3').text('Oops, there are no rides right now');
+                $('#ridesTableDiv').hide();
             }
+            updateMark('Dispatcher');
         } else {
             console.log('There are no rides in the system right now.');
             $('#no-rides-message > h3').text('Oops, there are no rides right now');
             $('#ridesTableDiv').hide();
         }
-        updateMark('Dispatcher');
-        
     });
     $('#seeAllRidesButtonDiv').hide();
     $('#seeDispatcherRidesButtonDiv').show();
@@ -1739,24 +1751,35 @@ function updateUISize(role) {
     // change UI size based on role
     if (role == 'Dispatcher') {
         $('#addRideButtonDiv').removeClass('col-sm-4');
-        $('#addRideButtonDiv').addClass('col-sm-3');
+        $('#addRideButtonDiv').addClass('col-sm-2');
         $('#addRideButtonDiv').removeClass('col-md-4');
-        $('#addRideButtonDiv').addClass('col-md-3');
+        $('#addRideButtonDiv').addClass('col-md-2');
 
         $('#seeAllRidesButtonDiv').removeClass('col-sm-4');
-        $('#seeAllRidesButtonDiv').addClass('col-sm-3');
+        $('#seeAllRidesButtonDiv').addClass('col-sm-2');
         $('#seeAllRidesButtonDiv').removeClass('col-md-4');
-        $('#seeAllRidesButtonDiv').addClass('col-md-3');
+        $('#seeAllRidesButtonDiv').addClass('col-md-2');
 
-        $('#logoutButtonDiv').removeClass('col-sm-4');
-        $('#logoutButtonDiv').addClass('col-sm-3');
-        $('#logoutButtonDiv').removeClass('col-md-4');
-        $('#logoutButtonDiv').addClass('col-md-3');
+        $('#seeDispatcherRidesButtonDiv').removeClass('col-sm-3');
+        $('#seeDispatcherRidesButtonDiv').addClass('col-sm-2');
+        $('#seeDispatcherRidesButtonDiv').removeClass('col-md-3');
+        $('#seeDispatcherRidesButtonDiv').addClass('col-md-2');
+
+        $('#addNewDriverButtonDiv').removeClass('col-sm-4');
+        $('#addNewDriverButtonDiv').addClass('col-sm-2');
+        $('#addNewDriverButtonDiv').removeClass('col-md-4');
+        $('#addNewDriverButtonDiv').addClass('col-md-2');
 
         $('#viewProfileButtonDiv').removeClass('col-sm-4');
         $('#viewProfileButtonDiv').addClass('col-sm-3');
         $('#viewProfileButtonDiv').removeClass('col-md-4');
         $('#viewProfileButtonDiv').addClass('col-md-3');
+
+        $('#logoutButtonDiv').removeClass('col-sm-4');
+        $('#logoutButtonDiv').addClass('col-sm-3');
+        $('#logoutButtonDiv').removeClass('col-md-4');
+        $('#logoutButtonDiv').addClass('col-md-3'); 
+        
         console.log('Updated UI for dispatcher');
     } else if (role == 'Driver') {
         $('#addRideButtonDiv').addClass('col-sm-4');

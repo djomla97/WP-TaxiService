@@ -27,8 +27,6 @@ namespace TaxiServiceWebAPI.Models
             this.RideVehicle = new Vehicle() { };
             this.RideComment = new Comment();
             this.RideComment.RideMark = RideMarks.ZERO;
-            this.RideDispatcher = new Dispatcher();
-            this.RideDriver = new Driver();
         }
 
     }

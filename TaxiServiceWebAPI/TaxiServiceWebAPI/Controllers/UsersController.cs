@@ -28,40 +28,34 @@ namespace TaxiServiceWebAPI.Controllers
         [HttpGet]
         public User Get(string username)
         {
-            try
+            List<Customer> foundUsers = jsonParser.ReadUsers();
+            foreach(Customer cust in foundUsers)
             {
-                var foundUser = jsonParser.ReadUsers()
-                            .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
-
-                return foundUser;
-
-            }
-            catch (Exception)
-            {
-                try
+                if(cust.Username == username)
                 {
-                    var foundUser = jsonParser.ReadDrivers()
-                            .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
-
-                    return foundUser;
-
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        var foundUser = jsonParser.ReadDispatchers()
-                                .Where(u => u.Username.ToLower().Equals(username.ToLower())).First();
-
-                        return foundUser;
-
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
+                    return cust;
                 }
             }
+
+            List<Driver> foundDrivers = jsonParser.ReadDrivers();
+            foreach (Driver driver in foundDrivers)
+            {
+                if (driver.Username == username)
+                {
+                    return driver;
+                }
+            }
+
+            List<Dispatcher> foundDispatchers = jsonParser.ReadDispatchers();
+            foreach (Dispatcher disp in foundDispatchers)
+            {
+                if (disp.Username == username)
+                {
+                    return disp;
+                }
+            }
+
+            return null;
         }
 
         // POST api/users
@@ -146,18 +140,17 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/drivers/free")]
         public List<Driver> FreeDrivers()
         {
-            try {
-                var freeDrivers = jsonParser.ReadDrivers().Where(d => d.IsFree == true);
-
-                foreach (var driver in freeDrivers)
-                    driver.Password = string.Empty;
-
-                return freeDrivers.ToList();
-            }
-            catch (Exception)
+            List<Driver> allDrivers = jsonParser.ReadDrivers();
+            List<Driver> freeDrivers = new List<Driver>();
+            foreach(Driver driver in allDrivers)
             {
-                return null;
+                if (driver.IsFree)
+                {
+                    freeDrivers.Add(driver);
+                }
             }
+
+            return freeDrivers;
         }
 
         // GET api/users/
