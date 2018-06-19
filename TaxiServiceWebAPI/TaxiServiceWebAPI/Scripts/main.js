@@ -20,6 +20,7 @@ $(document).ready(function () {
     $('#seeDispatcherRidesButtonDiv').hide();
     $('#addRideFormDiv').hide();
     $('#addNewDriverButtonDiv').hide();
+    $('#register-new-driver-form-view').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -191,7 +192,9 @@ $(document).ready(function () {
         console.log('Getting all rides in the system ...');
         $('#no-rides-message').hide();
         $('#addRideButtonDiv').show();
+        $('#addNewDriverButtonDiv').show();
         $('#addRideFormDiv').hide();
+        $('#register-new-driver-form-view').hide();
         showAllRides();
         checkRidesTables();
     });
@@ -206,6 +209,8 @@ $(document).ready(function () {
         $('#seeAllRidesButtonDiv').show();
         $('#addRideButtonDiv').show();
         $('#addRideFormDiv').hide();
+        $('#addNewDriverButtonDiv').show();
+        $('#register-new-driver-form-view').hide();
         let user = { Username: $('#loggedIn-username').text()};
         updateAllRidesTable(user);
         checkRidesTables();
@@ -242,6 +247,8 @@ $(document).ready(function () {
                 $('#seeAllRidesButtonDiv').show();
                 $('#addRideButtonDiv').hide();
                 $('#no-rides-message').hide();
+                $('#register-new-driver-form-view').hide();
+                $('#addNewDriverButtonDiv').show();
             });
         });
     });
@@ -259,9 +266,201 @@ $(document).ready(function () {
         $(this).next().attr('id', 'confirmAssignDriver');
     });
 
+    /* Add new driver button click */
+    $('#addNewDriverButton').click(function (e) {
+        e.preventDefault();
+
+        $('#ridesTableDiv').hide();
+        $('#addNewDriverButtonDiv').hide();
+        $('#orderRidesTableDiv').hide();
+        $('#addRideFormDiv').hide();
+
+        $('#seeAllRidesButtonDiv').show();
+        $('#seeDispatcherRidesButtonDiv').show();
+        $('#register-new-driver-form-view').show();
+        $('#addRideButtonDiv').show();
+    });
+
+    $('#registerNewDriverButton').click(function (e) {
+        e.preventDefault();
+
+        console.log('Trying to add a new driver from dispatcher');
+        tryAddNewDriver();
+    });
+
 }); // on ready
 
 /* HELPER FUNKCIJE */
+
+function tryAddNewDriver() {
+    
+    $.when(checkEmail($('#addDriverEmail').val()), checkUsername($('#addDriverUsername').val())).done(function (emailFound, usernameFound) {
+        let canAddDriver = true;
+        let checkedRadioButtons = 0;
+
+        // Email check
+        if (emailFound[0] === "Found") {
+            addValidationError('addDriverEmail', 'not-available', 'Email is not available.');
+        } else {
+
+            removeValidationError('addDriverEmail', 'not-available');
+
+            // email validacija '@'
+            if (!($('#addDriverEmail').val().indexOf('@') >= 0)) {
+                console.log('no @');
+                addValidationError('addDriverEmail', 'not-available', 'You must have a @ in the email address.');
+                
+            } else {
+                console.log('yes @');
+
+                // email validacija '.'
+                if (!($('#addDriverEmail').val().indexOf('.') >= ($('#addDriverEmail').val().indexOf('@')))) {
+                    console.log('no .');
+                    addValidationError('addDriverEmail', 'not-available', 'You must have a dot (.) after @ in the email address.');
+                } else {
+                    console.log('yes .');
+                    removeValidationError('addDriverEmail', 'not-available');
+                }
+            }
+                
+        }
+
+        // Username check
+        if (usernameFound[0] === "Found") {
+            addValidationError('addDriverUsername', 'not-available', 'Username is taken.');
+        } else {
+            if (!$('#addDriverUsername').val())
+                addValidationError('addDriverUsername', 'empty-check', 'This field cannot be left empty.');
+            else
+                removeValidationError('addDriverUsername', 'empty-check');
+        }
+
+        // provera inputa
+        $('#register-new-driver-form input').each(function () {
+
+            // radio button
+            if ($(this).attr('name') == 'addDriverGender') {
+                if ($(this).is(':checked')) {
+                    checkedRadioButtons++;
+                }
+            }
+
+            // JMBG moze imati samo brojeve
+            if ($(this).attr('id') == 'addDriverJMBG') {
+                if (!$('#addDriverJMBG').val().match(/^[\d]+$/g))
+                    addValidationError('addDriverJMBG', 'empty-check', 'JMBG can only have numbers');
+                else
+                    removeValidationError('addDriverJMBG', 'empty-check');
+            }
+
+            // Phone moze imati samo brojeve i opciono na pocetku '+'
+            if ($(this).attr('id') == 'addDriverPhone') {
+                if (!$('#addDriverPhone').val().match(/^\+?[\d]+$/g))
+                    addValidationError('addDriverPhone', 'empty-check', 'Phone can only have numbers and an optional starting (+)');
+                else
+                    removeValidationError('addDriverPhone', 'empty-check');
+            }
+
+            // ZipCode moze imati samo brojeve
+            if ($(this).attr('id') == 'addDriverZipCode') {
+                if (!$('#addDriverZipCode').val().match(/^[\d]+$/g))
+                    addValidationError('addDriverZipCode', 'empty-check', 'Zip code can only have numbers');
+                else
+                    removeValidationError('addDriverZipCode', 'empty-check');
+
+                if (!$(this).val()) {
+                    $(this).next().show();
+                    $(this).next().addClass('empty-check');
+                    $(this).next().text('This field cannot be left empty.');
+                }
+
+                return true;
+            }
+
+            // vehicle age samo brojeve
+            if ($(this).attr('id') == 'addDriverVehicleAge') {
+                if (!$('#addDriverVehicleAge').val().match(/^[\d]+$/g))
+                    addValidationError('addDriverVehicleAge', 'empty-check', 'Vehicle age can only have numbers');
+                else
+                    removeValidationError('addDriverVehicleAge', 'empty-check');
+
+                if ($('#addDriverVehicleAge').val() > 2018 || $('#addDriverVehicleAge').val() < 1900)
+                    addValidationError('addDriverVehicleAge', 'empty-check', 'Vehicle age must be between 1900 and 2018');
+                else
+                    removeValidationError('addDriverVehicleAge', 'empty-check');
+
+                if (!$(this).val()) {
+                    $(this).next().show();
+                    $(this).next().addClass('empty-check');
+                    $(this).next().text('This field cannot be left empty.');
+                }
+
+                return true;
+            }
+            if ($(this).attr('id') == 'addDriverTaxiNumber') {
+                if (!$('#addDriverTaxiNumber').val().match(/^[\d]+$/g))
+                    addValidationError('addDriverTaxiNumber', 'empty-check', 'Taxi number can only have numbers');
+                else
+                    removeValidationError('addDriverTaxiNumber', 'empty-check');
+
+                if (!$(this).val()) {
+                    $(this).next().show();
+                    $(this).next().addClass('empty-check');
+                    $(this).next().text('This field cannot be left empty.');
+                }
+
+                return true;
+            }
+
+            // text input        
+            if (!$(this).val()) {
+
+                $(this).next().show();
+                $(this).next().addClass('empty-check');
+                $(this).next().text('This field cannot be left empty.');
+                return true;
+            } else {
+
+                if (!$(this).next().hasClass('not-available')) {
+                    if (!($(this).attr('name') == 'addDriverGender') && !($(this).attr('id') == 'addDriverJMBG') && !($(this).attr('id') == 'addDriverPhone')
+                        && !($(this).attr('id') == 'addDriverZipCode') && !($(this).attr('id') == 'addDriverVehicleAge') && !($(this).attr('id') == 'addDriverTaxiNumber')) {                        
+                        
+                        $(this).next().hide();
+                        $(this).next().text('');
+                        $(this).next().removeClass('empty-check');
+                    }
+                }
+            }
+
+        });
+
+        // radio button provera
+        if (checkedRadioButtons === 0)
+            addValidationError('addDriverGender', 'empty-check', 'Please select a gender.');
+        else
+            removeValidationError('addDriverGender', 'empty-check');
+
+        // hack sa klasom
+        $('#register-new-driver-form p').each(function () {
+            if ($(this).hasClass('empty-check') || $(this).hasClass('not-available')) {
+                canAddDriver = false;
+            }
+        });
+
+        // sure thing
+        if (emailFound[0] === "Found" || usernameFound[0] === "Found")
+            canAddDriver = false;
+
+        // konacna provera
+        if (canAddDriver) {
+            console.log('Added new driver');
+        } else {
+            console.log('Cannot add new driver.');
+        }
+
+    });
+
+}
 
 // Register & register validation
 function tryAddUser() {
@@ -428,7 +627,9 @@ function loginFromCookie(username) {
             $('#seeRidesButtonDiv').hide();
             $('#seeAllRidesButtonDiv').hide();
             $('#seeDispatcherRidesButtonDiv').hide();
+            $('#register-new-driver-form-view').hide();
         } else {
+            $('#register-new-driver-form-view').hide();
             $('#addRideButtonDiv').hide();
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
@@ -570,6 +771,7 @@ function tryLoginUser() {
                         $('#orderRideFormDiv').hide();
                         $('#seeRidesButtonDiv').hide();
                         $('#seeAllRidesButtonDiv').hide();
+                        $('#register-new-driver-form-view').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
@@ -578,6 +780,7 @@ function tryLoginUser() {
                         $('#orderRideFormDiv').hide();
                         $('#seeAllRidesButtonDiv').hide();
                         $('#seeDispatcherRidesButtonDiv').hide();
+                        $('#register-new-driver-form-view').hide();
                     }
 
                     // update UI size based on role

@@ -72,6 +72,20 @@ namespace TaxiServiceWebAPI.Controllers
 
         }
 
+        // POST api/users
+        [HttpPost]
+        public HttpResponseMessage Post([FromBody]Driver newDriver)
+        {
+            newDriver.Rides = new List<Ride>();
+            newDriver.Role = Roles.Driver.ToString();
+            newDriver.Rides = new List<Ride>();
+
+            jsonParser.WriteDriver(newDriver);
+
+            return Request.CreateResponse(HttpStatusCode.Created, "Created");
+
+        }
+
         // PUT api/users/username
         public User Put(string username, [FromBody]Driver editedUser)
         {

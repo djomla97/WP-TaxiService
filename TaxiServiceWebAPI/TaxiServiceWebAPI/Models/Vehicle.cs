@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel;
-using TaxiServiceWebAPI.Helpers;
 
 namespace TaxiServiceWebAPI.Models
 {

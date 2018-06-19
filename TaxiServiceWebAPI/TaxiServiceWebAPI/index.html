@@ -303,8 +303,124 @@
             <div class="col-xs-1 col-sm-3 col-md-3"></div>
         </div>
 
+        <!-- Register new driver for dispatcher -->
+        <div id="register-new-driver-form-view" class="row col-xs-12 col-sm-12 col-md-12 text-center">
+            <div class="col-xs-12 col-sm-3 col-md-3" id="div-to-take-space-right"></div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <h2>Register new driver</h2>
+                <hr>
+                <form id="register-new-driver-form" class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverUsername" placeholder="Username" autocomplete="off" />
+                            <p id="addDriverUsername-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="password" class="form-control" id="addDriverPassword" placeholder="Password" autocomplete="off" />
+                            <p id="addDriverPassword-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="email" class="form-control" id="addDriverEmail" placeholder="username@email.com" autocomplete="off" />
+                            <p id="addDriverEmail-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverFirstName" placeholder="First name" autocomplete="off" />
+                            <p id="addDriverFirstName-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverLastName" placeholder="Last name" autocomplete="off" />
+                            <p id="addDriverLastName-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverJMBG" placeholder="JMBG" autocomplete="off" />
+                            <p id="addDriverJMBG-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverPhone" placeholder="Phone number" autocomplete="off" />
+                            <p id="addDriverPhone-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="addDriverGender" value="Male" /> Male
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="addDriverGender" value="Female" /> Female
+                            </label>
+                            <p id="addDriverGender-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverStreet" placeholder="Street" autocomplete="off" />
+                            <p id="addDriverStreet-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverCity" placeholder="City" autocomplete="off" />
+                            <p id="addDriverCity-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverZipCode" placeholder="Zip code" autocomplete="off" />
+                            <p id="addDriverZipCode-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverVehicleAge" placeholder="Vehicle age" autocomplete="off" />
+                            <p id="addDriverVehicleAge-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverNumRegistration" placeholder="Number of registration" autocomplete="off" />
+                            <p id="addDriverNumRegistration-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="text" class="form-control" id="addDriverTaxiNumber" placeholder="Taxi number" autocomplete="off" />
+                            <p id="addDriverTaxiNumber-check" class="found-p"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <select class="form-control" id="addDriverCarType">
+                                <option value="Passenger">Passenger</option>
+                                <option value="Van">Van</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <button id="registerNewDriverButton" class="full-width btn btn-primary">Register new driver</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3" id="div-to-take-space-right"></div>
+        </div>
     </div>
-    <!-- END of Home-Customer-View div  -->
+    <!-- END of Home-View div  -->
+   
+    <!-- MODALS -->
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
