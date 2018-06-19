@@ -453,7 +453,61 @@ function tryAddNewDriver() {
 
         // konacna provera
         if (canAddDriver) {
-            console.log('Added new driver');
+            console.log('Adding new driver');
+
+            let gender = $('#register-new-driver-form input[name=addDriverGender]:checked').val();
+            console.log('[DEBUG] Driver gender selected: ' + gender);
+
+            let newDriver = {
+                Username: $('#addDriverUsername').val(),
+                Password: $('#addDriverPassword').val(),
+                FirstName: $('#addDriverFirstName').val(),
+                LastName: $('#addDriverLastName').val(),
+                Email: $('#addDriverEmail').val(),
+                JMBG: $('#addDriverJMBG').val(),
+                ContactPhone: $('#addDriverPhone').val(),
+                Gender: gender,
+                DriverLocation: {
+                    X: 0.0,
+                    Y: 0.0,
+                    LocationAddress: {
+                        Street: $('#addDriverStreet').val(),
+                        City: $('#addDriverCity').val(),
+                        ZipCode: $('#addDriverZipCode').val()
+                    }
+                },
+                DriverVehicle: {
+                    VehicleAge: $('#addDriverVehicleAge').val(),
+                    NumberOfRegistration: $('#addDriverNumRegistration').val(),
+                    TaxiNumber: $('#addDriverTaxiNumber').val(),
+                    VehicleType: $('#addDriverVehicleType').val()
+                }
+            };
+
+            console.log(newDriver);
+
+            // Ajax za dodavanje vozaca
+            $.ajax({
+                method: "POST",
+                url: "/api/drivers",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(newDriver)
+
+            }).done(function (data) {
+                console.log('Response after adding new driver: ');
+                console.log(data);
+
+                if (data == 'Created') {
+                    clearForm('register-new-driver-form');
+                    showSnackbar(`Driver ${newDriver.Username} successfully added`);
+                    $('#seeDispatcherRidesButton').trigger('click');
+                }
+
+
+            });
+
+
         } else {
             console.log('Cannot add new driver.');
         }
@@ -566,6 +620,9 @@ function tryAddUser() {
         // ako moze, neka doda
         if (canAddUser) {
 
+            let gender = $('#register-form input[name=radioGender]:checked').val();
+            console.log('[DEBUG] Customer gender selected: ' + gender);
+
             // novi korisnik
             let newUser = {};            
             newUser.Username = $('#username').val();
@@ -575,7 +632,7 @@ function tryAddUser() {
             newUser.Email = $('#email').val();
             newUser.ContactPhone = $('#phone').val();
             newUser.JMBG = $('#jmbg').val();
-            newUser.Gender = $('input[name=radioGender]:checked').val();
+            newUser.Gender = gender
 
             // Ajax za dodavanje korisnika
             $.ajax({

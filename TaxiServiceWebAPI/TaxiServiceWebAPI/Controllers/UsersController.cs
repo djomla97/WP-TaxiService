@@ -74,11 +74,11 @@ namespace TaxiServiceWebAPI.Controllers
 
         // POST api/users
         [HttpPost]
+        [Route("api/drivers")]
         public HttpResponseMessage Post([FromBody]Driver newDriver)
         {
             newDriver.Rides = new List<Ride>();
-            newDriver.Role = Roles.Driver.ToString();
-            newDriver.Rides = new List<Ride>();
+            newDriver.DriverVehicle.CarDriver = newDriver;
 
             jsonParser.WriteDriver(newDriver);
 
