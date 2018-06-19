@@ -14,10 +14,10 @@ namespace TaxiServiceWebAPI.Models
         public string ContactPhone { get; set; }
         public string Email { get; set; }
         public string Role { get; set; } = Roles.Customer.ToString();
+        public string Gender { get; set; }
 
         [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Ignore, IsReference = true)]
         public List<Ride> Rides { get; set; }
-        public string Gender { get; set; } 
 
         public User() { }
     }

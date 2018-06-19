@@ -72,20 +72,6 @@ namespace TaxiServiceWebAPI.Controllers
 
         }
 
-        // POST api/users
-        [HttpPost]
-        [Route("api/drivers")]
-        public HttpResponseMessage Post([FromBody]Driver newDriver)
-        {
-            newDriver.Rides = new List<Ride>();
-            newDriver.DriverVehicle.CarDriver = newDriver;
-
-            jsonParser.WriteDriver(newDriver);
-
-            return Request.CreateResponse(HttpStatusCode.Created, "Created");
-
-        }
-
         // PUT api/users/username
         public User Put(string username, [FromBody]Driver editedUser)
         {
@@ -150,6 +136,7 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
+        // prakticnije da postavim u drugi controller, ali da ne pravim radi sitnice jedne
         [HttpGet]
         [Route("api/drivers/free")]
         public List<Driver> FreeDrivers()
@@ -165,6 +152,19 @@ namespace TaxiServiceWebAPI.Controllers
             }
 
             return freeDrivers;
+        }
+
+        // POST api/users
+        [HttpPost]
+        [Route("api/drivers")]
+        public HttpResponseMessage Post([FromBody]Driver newDriver)
+        {
+            newDriver.Rides = new List<Ride>();
+            newDriver.DriverVehicle.CarDriver = newDriver;
+
+            jsonParser.WriteDriver(newDriver);
+
+            return Request.CreateResponse(HttpStatusCode.Created, "Created");
         }
 
         // GET api/users/

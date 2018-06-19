@@ -77,16 +77,16 @@ namespace TaxiServiceWebAPI
 
             newDrivers.Add(new Driver()
             {
-                Username = "driver",
-                FirstName = "Mile",
-                LastName = "Vozac",
-                Password = "driver",
-                Email = "driver@taxiservice.com",
+                Username = "toretto",
+                FirstName = "Dominic",
+                LastName = "Toretto",
+                Password = "dom",
+                Email = "fast@furious.com",
                 ContactPhone = "+3816541653",
                 JMBG = "32165481522",
                 Role = Roles.Driver.ToString(),
                 Gender = Genders.Male.ToString(),
-                DriverLocation = new Location() { X = 0, Y = 0, LocationAddress = new Address("Bulevar Oslobodjenja", "NoviSad", "21000") },
+                DriverLocation = new Location() { X = 0, Y = 0, LocationAddress = new Address("Bulevar Oslobodjenja", "Novi Sad", "21000") },
                 Rides = new List<Ride>(),
                 DriverVehicle = new Vehicle() { NumberOfRegistration="TAXI-055-442", TaxiNumber="250", VehicleAge=2018, VehicleType=VehicleTypes.Passenger.ToString() }
             });
