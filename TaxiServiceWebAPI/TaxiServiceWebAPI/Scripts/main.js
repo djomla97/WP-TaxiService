@@ -232,6 +232,7 @@ $(document).ready(function () {
                 if (freeDrivers != null) {
                     if (freeDrivers.length > 0) {
                         freeDrivers.forEach(function (driver) {
+                            $('#addFreeDriverSelect').prop('disabled', false);
                             $('#addFreeDriverSelect').append(`<option value="${driver.Username}">${driver.FirstName} ${driver.LastName} (${driver.Username})</option>`);
                         });
                     } else {
@@ -297,6 +298,14 @@ $(document).ready(function () {
         $('textarea#driverRideCommentText').val('');
         $(this).next().off('click');
         $(this).next().attr('id', 'confirmFail');
+        resetRating();
+    });
+
+    $('#closeSuccessOrderRideModal').click(function () {
+        $('textarea#driverRideCommentText').val('');
+        $(this).next().off('click');
+        resetRating();
+        $(this).next().attr('id', 'confirmSuccessOrderRide');
     });
 
 }); // on ready
@@ -1538,15 +1547,11 @@ function updateAllRidesTable(user) {
                             </td>
                         </tr>`);
 
-                            // add button event listeners
+                            // FAIL
                             $(`#failRide${ride.ID}`).unbind('click').click(function (e) {
                                 e.preventDefault();
 
-                                console.log('[DEBUG] Opening fail ride modal');
-
                                 if (!$('#driverRideComment').find('div#commentRatingDiv').length) {
-                                    console.log('NE POSTOJI');
-
                                     ratingDiv = $('#commentRatingDiv').detach();
                                     $('#driverRideComment').append(ratingDiv);
                                 }
@@ -1597,6 +1602,140 @@ function updateAllRidesTable(user) {
                                 // show comment modal to driver
                                 $('#driverCommentRideModal').modal('show');
                             });
+
+                            // SUCCESS
+                            $(`#successRide${ride.ID}`).unbind('click').click(function (e) {
+                                e.preventDefault();
+
+                                //resetRating();
+                                if (!$('#successComment').find('div#commentRatingDiv').length) {
+                                    ratingDiv = $('#commentRatingDiv').detach();                              
+                                    $('#successComment').append(ratingDiv);
+                                }
+
+                                // button event listeners
+                                $('#confirmSuccessOrderRide').attr('id', `confirmSuccessOrderRide${ride.ID}`);
+                                $(`#confirmSuccessOrderRide${ride.ID}`).unbind('click').click(function (e) {
+                                    e.preventDefault();
+
+                                    // validation
+                                    console.log('[DEBUG] Confirming failed ride: ' + ride.ID);
+
+                                    let comment = $('textarea#successCommentText').val();
+                                    let canSuccess = true;
+                                    if (comment == null || !comment)
+                                        canSuccess = false;
+
+                                    $('form#success-form input').each(function () {
+
+                                        // ZipCode moze imati samo brojeve
+                                        if ($(this).attr('id') == 'successZipCode') {
+                                            if (!$('#successZipCode').val().match(/^[\d]+$/g))
+                                                addValidationError('successZipCode', 'empty-check', 'Zip code can only have numbers');
+                                            else
+                                                removeValidationError('successZipCode', 'empty-check');
+
+                                            if (!$(this).val()) {
+                                                $(this).next().show();
+                                                $(this).next().addClass('empty-check');
+                                                $(this).next().text('This field cannot be left empty.');
+                                            }
+
+                                            return true;
+                                        }
+
+                                        if ($(this).attr('id') == 'successFare') {
+                                            if (!$('#successFare').val().match(/^-?[\d]+$/g)) {
+                                                addValidationError('successFare', 'empty-check', 'Fare can only have numbers');
+                                            } else {
+                                                removeValidationError('successFare', 'empty-check');
+
+                                                if ($('#successFare').val() < 0)
+                                                    addValidationError('successFare', 'empty-check', 'Fare can\'t be a negative number');
+                                                else {
+                                                    removeValidationError('successFare', 'empty-check');
+                                                }
+                                            }
+
+                                            if (!$(this).val()) {
+                                                $(this).next().show();
+                                                $(this).next().addClass('empty-check');
+                                                $(this).next().text('This field cannot be left empty.');
+                                            }
+
+                                            return true;
+                                        }
+
+                                        // text input        
+                                        if (!$(this).val()) {
+                                            $(this).next().show();
+                                            $(this).next().addClass('empty-check');
+                                            $(this).next().text('This field cannot be left empty.');
+                                        } else {
+                                            $(this).next().hide();
+                                            $(this).next().text('');
+                                            $(this).next().removeClass('empty-check');
+                                        }
+                                    });
+
+                                    
+
+                                    // hack sa klasom
+                                    $('#order-ride-form p').each(function () {
+                                        if ($(this).hasClass('empty-check')) {
+                                            canSuccess = false;
+                                        }
+                                    });
+
+                                    let rating = $('#ratingNumber').val();
+
+                                    // ahh konacno ne mogu vise
+                                    if (canSuccess) {
+                                        console.log('success');
+                                        removeValidationError('successCommentText', 'empty-check');
+
+                                        // za API options
+                                        let options = {
+                                            Comment: comment,
+                                            RideMark: rating,
+                                            Fare: $('#successFare').val(),
+                                            Location: {
+                                                X: 0.0,
+                                                Y: 0.0,
+                                                LocationAddress: {
+                                                    Street: $('#successStreet').val(),
+                                                    City: $('#successCity').val(),
+                                                    ZipCode: $('#successZipCode').val()
+                                                }
+                                            }
+                                        };
+
+                                        // send finally
+                                        $.ajax({
+                                            method: 'PUT',
+                                            url: `/api/rides/${ride.ID}/success`,
+                                            dataType: 'json',
+                                            contentType: 'application/json',
+                                            data: JSON.stringify(options)
+                                        }).done(function (response) {
+                                            if (response != null) {
+                                                console.log(response);
+                                            }
+
+                                            $('#successOrderRideModal').modal('hide');
+                                            updateAllRidesTable(user);
+                                        });
+                                            
+                                        
+                                        
+                                    } else {
+                                        addValidationError('successCommentText', 'empty-check', 'You must enter some feedback for us');
+                                    }
+                                });
+
+                                $('#successOrderRideModal').modal('show');
+                            });
+
                         } else {
                             // info vidimo samo
                             $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
@@ -1827,6 +1966,7 @@ function updateDetailRideInfo(ride) {
     }
 
     let rideComment;
+    console.log(ride.RideComment);
     if (ride.RideComment != null && ride.RideComment.Description != null && ride.RideComment.CommentUser != null) {
         rideComment = `<blockquote class="blockquote text-center">
                             <p class="mb-0">"${ride.RideComment.Description}"</p>

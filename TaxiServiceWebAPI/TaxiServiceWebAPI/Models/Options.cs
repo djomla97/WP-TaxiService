@@ -9,6 +9,7 @@ namespace TaxiServiceWebAPI.Models
     {
         public string Comment { get; set; }
         public int RideMark { get; set; }
+        public double Fare { get; set; }
         public Location Location { get; set; }
     }
 }

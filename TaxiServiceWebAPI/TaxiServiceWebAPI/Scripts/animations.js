@@ -29,32 +29,13 @@ $(document).ready(function () {
 
         $('#login-form-view').css('opacity', 1);
 
-        });
+    });
+
 
     /* ANIMATIONS FOR RATING STARS */
 
     // reset to 0 if mouse leaves div
-    $('div#ratingStars').mouseleave(function () {
-
-        // preuzme rating
-        $('#ratingNumber').val(rating);
-        console.log($('#ratingNumber').val());
-
-        if (!clickedOnRating) {
-            $(this).children().each(function () {
-                if ($(this).hasClass('icon-d')) {
-                    $(this).removeClass('fas');
-                    $(this).removeClass('icon-d');
-                    $(this).addClass('far');
-                    $(this).addClass('icon-b');
-                }
-            });
-        } else {
-            $(this).empty();
-            $(this).append(clickedRating);
-            restartRatingListeners();
-        }
-    });
+    $('div#ratingStars').mouseleave(mouseLeaveHandler);
 
     // HOVER
     $('i#oneStar').hover(oneStarHover);
@@ -78,6 +59,26 @@ $(document).ready(function () {
 var rating = 0;
 var clickedOnRating = false;
 var clickedRating = null;
+
+function mouseLeaveHandler() {
+    // preuzme rating
+    $('#ratingNumber').val(rating);
+
+    if (!clickedOnRating) {
+        $('div#ratingStars').children().each(function () {
+            if ($(this).hasClass('icon-d')) {
+                $(this).removeClass('fas');
+                $(this).removeClass('icon-d');
+                $(this).addClass('far');
+                $(this).addClass('icon-b');
+            }
+        });
+    } else {
+        $('div#ratingStars').empty();
+        $('div#ratingStars').append(clickedRating);
+        restartRatingListeners();
+    }
+}
 
 // 1
 function oneStarHover() {
@@ -373,4 +374,10 @@ function restartRatingListeners() {
 
     $('i#fiveStar').hover(fiveStarHover);
     $('i#fiveStar').click(fiveStarClick);
+}
+
+function resetRating() {
+    rating = 0;
+    clickedOnRating = false;
+    mouseLeaveHandler();
 }
