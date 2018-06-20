@@ -1532,8 +1532,8 @@ function updateAllRidesTable(user) {
                             
                             <td>
                                 <div class="btn-group" role="group">
-                                    <button id="successRide${ride.ID}" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
-                                    <button id="failRide${ride.ID}" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>
+                                    <button id="successRide${ride.ID}" type="button" class="btn btn-success"><i class="fas fa-check fa-fw"></i></button>
+                                    <button id="failRide${ride.ID}" type="button" class="btn btn-danger"><i class="fas fa-times fa-fw"></i></button>
                                 </div>
                             </td>
                         </tr>`);
@@ -1837,12 +1837,12 @@ function updateDetailRideInfo(ride) {
     console.log('Number of stars: ' + ride.RideComment.RideMark);
     if (ride.StatusOfRide != 'CREATED_ONWAIT' && ride.StatusOfRide != 'FORMED') {
         switch (ride.RideComment.RideMark) {
-            case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-            case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-            case 2: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-            case 3: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="far fa-star icon-b"><i class="far fa-star icon-b"></i>`); break;
-            case 4: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="far fa-star icon-b"></i>`); break;
-            case 5: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"><i class="fas fa-star icon-d"></i>`); break;
+            case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
+            case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
+            case 2: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
+            case 3: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
+            case 4: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i>`); break;
+            case 5: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i><i class="fas fa-star icon-d"></i>`); break;
         }
     } else {
         $('#ride-info').append(`<span class="user-key">Rating</span>:<br><p>Rating not set</p>`);
@@ -1998,12 +1998,19 @@ function addButtonListeners(orderRide) {
             if (comment == null || !comment)
                 canCancelRide = false;
 
+            let rating = $('#ratingNumber').val();
+
+            let options = {
+                Comment: comment,
+                RideMark: rating
+            };
+
             if (canCancelRide) {
                 $.ajax({
                     method: 'POST',
                     url: `/api/rides/cancel/${orderRide.ID}`,
                     contentType: 'application/json',
-                    data: JSON.stringify(comment)
+                    data: JSON.stringify(options)
                 }).success(function (response) {
 
                     // odmah update tabelu

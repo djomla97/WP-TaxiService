@@ -257,7 +257,7 @@ namespace TaxiServiceWebAPI.Controllers
 
         [HttpPost]
         [Route("api/rides/cancel/{id}")]
-        public HttpResponseMessage Cancel(int id, [FromBody]string comment)
+        public HttpResponseMessage Cancel(int id, [FromBody]Options options)
         {
             try {
                 var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
@@ -268,8 +268,18 @@ namespace TaxiServiceWebAPI.Controllers
                 foundRide.RideComment.CommentRide = new Ride();
                 foundRide.RideComment.CommentRide = foundRide;
                 foundRide.RideComment.DateAndTime = DateTime.Now;
-                foundRide.RideComment.Description = comment;
-                foundRide.RideComment.RideMark = RideMarks.ZERO;
+                foundRide.RideComment.Description = options.Comment;
+
+                switch (options.RideMark)
+                {
+                    case 1: foundRide.RideComment.RideMark = RideMarks.ONE; break;
+                    case 2: foundRide.RideComment.RideMark = RideMarks.TWO; break;
+                    case 3: foundRide.RideComment.RideMark = RideMarks.THREE; break;
+                    case 4: foundRide.RideComment.RideMark = RideMarks.FOUR; break;
+                    case 5: foundRide.RideComment.RideMark = RideMarks.FIVE; break;
+                    default: foundRide.RideComment.RideMark = RideMarks.ZERO; break;
+                }
+                
                 foundRide.RideComment.CommentUser = foundUser;
 
                 jsonParser.EditRide(id, foundRide);

@@ -111,6 +111,10 @@ a#orderRideMark:hover {
     -webkit-text-stroke-color: orange;
 }
 
+div#ratingStars {
+    display: inline-block;
+}
+
 .empty-check {
 }
 .not-available { }
