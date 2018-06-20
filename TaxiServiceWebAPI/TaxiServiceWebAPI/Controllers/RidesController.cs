@@ -189,6 +189,72 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
+        [HttpPut]
+        [Route("api/rides/{id}/{state}")]
+        public HttpResponseMessage Put([FromUri]int id, [FromUri]string state, [FromBody]Options options)
+        {
+            if (state.ToLower() == "fail")
+            {
+                List<Ride> allRides = jsonParser.ReadRides();
+                Ride foundRide = new Ride();
+
+                foreach (var ride in allRides)
+                {
+                    if (ride.ID == id)
+                    {
+                        foundRide = ride;
+                        break;
+                    }
+                }
+
+                if (foundRide.ID == 0)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    try
+                    {
+                        foundRide.StatusOfRide = RideStatuses.FAILED.ToString();
+                        foundRide.RideComment.CommentUser = foundRide.RideDriver;
+                        foundRide.RideComment.DateAndTime = DateTime.Now;
+                        foundRide.RideComment.Description = options.Comment;
+
+                        switch (options.RideMark)
+                        {
+                            case 1: foundRide.RideComment.RideMark = RideMarks.ONE; break;
+                            case 2: foundRide.RideComment.RideMark = RideMarks.TWO; break;
+                            case 3: foundRide.RideComment.RideMark = RideMarks.THREE; break;
+                            case 4: foundRide.RideComment.RideMark = RideMarks.FOUR; break;
+                            case 5: foundRide.RideComment.RideMark = RideMarks.FIVE; break;
+                            default: foundRide.RideComment.RideMark = RideMarks.ZERO; break;
+                        }
+
+                        //foundRide.Destination.X = options.Location.X;
+                        //foundRide.Destination.Y = options.Location.Y;
+                        //foundRide.Destination.LocationAddress.Street = options.Location.LocationAddress.Street;
+                        //foundRide.Destination.LocationAddress.City = options.Location.LocationAddress.City;
+                        //foundRide.Destination.LocationAddress.ZipCode = options.Location.LocationAddress.ZipCode;
+
+                        jsonParser.EditRide(foundRide.ID, foundRide);
+
+                        // free driver
+                        foundRide.RideDriver.IsFree = true;
+                        jsonParser.EditDriver(foundRide.RideDriver.Username, foundRide.RideDriver);
+
+                        return Request.CreateResponse(HttpStatusCode.OK, foundRide.ID);
+                    }
+                    catch (Exception)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest);
+                    }
+
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.BadRequest);      
+        }
+
         [HttpPost]
         [Route("api/rides/cancel/{id}")]
         public HttpResponseMessage Cancel(int id, [FromBody]string comment)

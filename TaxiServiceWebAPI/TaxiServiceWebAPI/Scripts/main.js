@@ -211,9 +211,11 @@ $(document).ready(function () {
         $('#addRideFormDiv').hide();
         $('#addNewDriverButtonDiv').show();
         $('#register-new-driver-form-view').hide();
-        let user = { Username: $('#loggedIn-username').text()};
-        updateAllRidesTable(user);
-        checkRidesTables();
+
+        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+            updateAllRidesTable(user);
+            checkRidesTables();
+        });
     });
 
     /* Add new ride for dispatcher */
@@ -288,7 +290,18 @@ $(document).ready(function () {
         tryAddNewDriver();
     });
 
+    /* DRIVER processing rides */
+    // restart za button da bih mogao dodati nove event listenere
+    $('#closeDriverCommentRideModal').click(function () {
+        event.preventDefault();
+        $('textarea#driverRideCommentText').val('');
+        $(this).next().off('click');
+        $(this).next().attr('id', 'confirmFail');
+    });
+
 }); // on ready
+
+
 
 /* HELPER FUNKCIJE */
 
@@ -1432,6 +1445,7 @@ function updateAllRidesTable(user) {
             if (rides.length > 0) {
                 rides.forEach(function (ride) {
 
+                    // za dispatchera da bude odvojena tabela
                     if (ride.StatusOfRide == 'CREATED_ONWAIT' && user.Role == 'Dispatcher') {
                         updateOrderTable(ride, 'Dispatcher');
                         return true;
@@ -1482,7 +1496,9 @@ function updateAllRidesTable(user) {
                     else
                         rating = `${ride.RideComment.RideMark}/5`;
 
-                    $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                    // za dispatchera i za drivera su razlicite opcije -- REFACTOR ovde nekad, nema potrebe sve da se ponovi, samo buttoni
+                    if (user.Role == 'Dispatcher') {
+                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>
@@ -1496,15 +1512,130 @@ function updateAllRidesTable(user) {
                             </td>
                         </tr>`);
 
-                    // add one button event listener
-                    $(`#showDetail${ride.ID}`).on('click', function () {
-                        console.log('Getting info on ride with ID: ' + ride.ID);
-                        $.get(`/api/rides?id=${ride.ID}`, function (ride) {
-                            updateDetailRideInfo(ride);
-                            $('#rideModal').modal('show');
+                        // add one button event listener
+                        $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
+                            console.log('Getting info on ride with ID: ' + ride.ID);
+                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                                updateDetailRideInfo(ride);
+                                $('#rideModal').modal('show');
+                            });
                         });
-                    });
+                    } else if (user.Role == 'Driver') {
 
+                        if (ride.StatusOfRide == 'FORMED' || ride.StatusOfRide == 'PROCESSED' || ride.StatusOfRide == 'ACCEPTED') {
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${destination}</td>
+                            <td>${status}</td>
+                            <td>${description}</td>
+                            <td>${formatedDate}</td>
+                            <td>${rating}</td>
+                            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="successRide${ride.ID}" type="button" class="btn btn-success"><i class="fas fa-check"></i></button>
+                                    <button id="failRide${ride.ID}" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>
+                                </div>
+                            </td>
+                        </tr>`);
+
+                            // add button event listeners
+                            $(`#failRide${ride.ID}`).unbind('click').click(function (e) {
+                                e.preventDefault();
+
+                                console.log('[DEBUG] Opening fail ride modal');
+
+                                // add event listener to confirmFail{id}
+                                $('#confirmFail').attr('id', `confirmFail${ride.ID}`);
+                                $(`#confirmFail${ride.ID}`).click(function (e) {
+                                    e.preventDefault();
+                                    console.log('[DEBUG] Confirming failed ride: ' + ride.ID);
+
+                                    let comment = $('textarea#driverRideCommentText').val();
+                                    let canFailRide = true;
+                                    if (comment == null || !comment)
+                                        canFailRide = false;
+
+                                    if (canFailRide) {
+                                        console.log('Can fail');
+                                        removeValidationError('driverRideCommentText', 'empty-check');
+
+                                        let options = {
+                                            Comment: comment,
+                                            RideMark: 2
+                                        };
+
+                                        // send request to fail ride
+                                        $.ajax({
+                                            method: 'PUT',
+                                            url: `/api/rides/${ride.ID}/fail`,
+                                            contentType: 'application/json',
+                                            dataType: 'json',
+                                            data: JSON.stringify(options)
+                                        }).done(function (response) {
+                                            if (response != null) {
+                                                $('#driverCommentRideModal').modal('hide');
+                                                updateAllRidesTable(user);
+                                                showSnackbar('Ride ' + response + ' succesfully failed. (what?)')
+                                            } else {
+                                                showSnackbar('Couln\'t finish that action.');
+                                            }
+                                        });
+                                    } else {
+                                        console.log('cant fail');
+                                        addValidationError('driverRideCommentText', 'empty-check', 'You must enter some feedback for us');
+                                    }
+                                });
+                                // show comment modal to driver
+                                $('#driverCommentRideModal').modal('show');
+                            });
+                        } else {
+                            // info vidimo samo
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${destination}</td>
+                            <td>${status}</td>
+                            <td>${description}</td>
+                            <td>${formatedDate}</td>
+                            <td>${rating}</td>            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
+                                </div>
+                            </td>
+                        </tr>`);
+
+                            // add one button event listener
+                            $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
+                                console.log('Getting info on ride with ID: ' + ride.ID);
+                                $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                                    updateDetailRideInfo(ride);
+                                    $('#rideModal').modal('show');
+                                });
+                            });
+                        }
+                    } else {
+                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${destination}</td>
+                            <td>${status}</td>
+                            <td>${description}</td>
+                            <td>${formatedDate}</td>
+                            <td>${rating}</td>
+                            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
+                                </div>
+                            </td>
+                        </tr>`);
+
+                        // add one button event listener
+                        $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
+                            console.log('Getting info on ride with ID: ' + ride.ID);
+                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                                updateDetailRideInfo(ride);
+                                $('#rideModal').modal('show');
+                            });
+                        });
+                    }
                 });
             } else {
                 $('#no-rides-message > h3').text('Oops, you don\'t have any done or in progress rides');
@@ -1892,7 +2023,7 @@ function addButtonListeners(orderRide) {
                     // remove event listener for click on this element
                     $(`#confirmCancel${orderRide.ID}`).off('click');
                     $(`#confirmCancel${orderRide.ID}`).attr('id', 'confirmCancel');
-                    $('confirmCancel').off('click');
+                    $('#confirmCancel').off('click');
 
                     $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
                         updateAllRidesTable(user);    

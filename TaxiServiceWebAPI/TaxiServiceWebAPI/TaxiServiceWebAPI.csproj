@@ -195,6 +195,7 @@
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Credentials.cs" />
+    <Compile Include="Models\Options.cs" />
     <Compile Include="Models\Vehicle.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Dispatcher.cs" />
