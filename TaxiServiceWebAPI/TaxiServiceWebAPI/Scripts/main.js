@@ -1544,6 +1544,13 @@ function updateAllRidesTable(user) {
 
                                 console.log('[DEBUG] Opening fail ride modal');
 
+                                if (!$('#driverRideComment').find('div#commentRatingDiv').length) {
+                                    console.log('NE POSTOJI');
+
+                                    ratingDiv = $('#commentRatingDiv').detach();
+                                    $('#driverRideComment').append(ratingDiv);
+                                }
+
                                 // add event listener to confirmFail{id}
                                 $('#confirmFail').attr('id', `confirmFail${ride.ID}`);
                                 $(`#confirmFail${ride.ID}`).click(function (e) {
@@ -1555,13 +1562,15 @@ function updateAllRidesTable(user) {
                                     if (comment == null || !comment)
                                         canFailRide = false;
 
+                                    let rating = $('#ratingNumber').val();
+
                                     if (canFailRide) {
                                         console.log('Can fail');
                                         removeValidationError('driverRideCommentText', 'empty-check');
 
                                         let options = {
                                             Comment: comment,
-                                            RideMark: 2
+                                            RideMark: rating
                                         };
 
                                         // send request to fail ride
@@ -1990,6 +1999,13 @@ function addButtonListeners(orderRide) {
     // event listener za cancelOrder button svake voznje
     $(`#cancelOrder${orderRide.ID}`).click(function () {
         let orderID = $(this).attr('id').replace(/\D/g, '');
+
+        if (!$('#rideComment').find('div#commentRatingDiv').length) {
+            console.log('NE POSTOJI');
+
+            ratingDiv = $('#commentRatingDiv').detach();
+            $('#rideComment').append(ratingDiv);
+        }
 
         $('#confirmCancel').attr('id', `confirmCancel${orderRide.ID}`);
         $(`#confirmCancel${orderRide.ID}`).on('click', function () {
