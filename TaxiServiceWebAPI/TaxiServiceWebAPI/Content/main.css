@@ -12,6 +12,18 @@ h4.info-location {
     text-decoration: underline;
 }
 
+#dateTimeSort {
+    cursor: pointer;
+}
+
+#dateTimeSortOrdered {
+    cursor: pointer;
+}
+
+#ratingSort {
+    cursor: pointer;
+}
+
 .equal {
     display: flex;
     display: -webkit-flex;

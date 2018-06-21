@@ -1394,7 +1394,7 @@ function updateOrderTable(orderRide, userRole) {
     console.log(orderRide)
 
     if (userRole == 'Customer') {
-        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><td scope="row"><strong>${orderRide.ID}</strong></td><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
                             <td>${orderRide.RideVehicle.VehicleType}</td>
                             <td>${status}</td>
@@ -1407,7 +1407,7 @@ function updateOrderTable(orderRide, userRole) {
                         </tr>`);
         addButtonListeners(orderRide);
     } else if (userRole == 'Dispatcher') {
-        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><td scope="row"><strong>${orderRide.ID}</strong></td><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
                             <td>${orderRide.RideVehicle.VehicleType}</td>
                             <td>${status}</td>
@@ -1504,7 +1504,7 @@ function updateOrderTable(orderRide, userRole) {
             $('#assignDriverModal').modal('show');
         });
     } else if (userRole == 'Driver') {
-        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><td scope="row"><strong>${orderRide.ID}</strong></td><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
                             <td>${orderRide.RideVehicle.VehicleType}</td>
                             <td>${status}</td>
@@ -1633,7 +1633,7 @@ function updateAllRidesTable(user) {
 
                     // za dispatchera i za drivera su razlicite opcije -- REFACTOR ovde nekad, nema potrebe sve da se ponovi, samo buttoni
                     if (user.Role == 'Dispatcher') {
-                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                        $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>
@@ -1659,7 +1659,7 @@ function updateAllRidesTable(user) {
                         $('#orderRidesTableDiv').hide();
 
                         if (ride.StatusOfRide == 'FORMED' || ride.StatusOfRide == 'PROCESSED' || ride.StatusOfRide == 'ACCEPTED') {
-                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>
@@ -1849,7 +1849,7 @@ function updateAllRidesTable(user) {
 
                         } else {
                             // info vidimo samo
-                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>
@@ -1875,7 +1875,7 @@ function updateAllRidesTable(user) {
                         console.log(ride.StatusOfRide);
                         if (ride.StatusOfRide == 'SUCCESSFUL' && description == 'No comment') {
                             
-                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                                 <td>${destination}</td>
                                 <td>${status}</td>
                                 <td>${description}</td>
@@ -1966,7 +1966,7 @@ function updateAllRidesTable(user) {
                             });
 
                         } else {
-                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                                 <td>${destination}</td>
                                 <td>${status}</td>
                                 <td>${description}</td>
@@ -2068,7 +2068,7 @@ function showAllRides() {
                         else
                             rating = `${ride.RideComment.RideMark}/5`;
 
-                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                        $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${destination}</td>
                             <td>${status}</td>
                             <td>${description}</td>

@@ -184,7 +184,7 @@
                         <tr>
                             <th scope="col" class="col-auto">ID</th>
                             <th scope="col" class="col-md-auto">Start location</th>
-                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
+                            <th id="dateTimeSortOrdered" scope="col" class="col-md-auto">Date &amp; Time <i class="fa fa-sort"></i></th>
                             <th scope="col" class="col-md-auto">Vehicle type</th>
                             <th scope="col" class="col-md-auto">Status</th>
                             <th scope="col" class="col-md-auto">Options</th>
@@ -208,8 +208,8 @@
                             <th scope="col" class="col-md-auto">Destination</th>
                             <th scope="col" class="col-md-auto">Status</th>
                             <th scope="col" class="col-md-auto">Comment</th>
-                            <th scope="col" class="col-md-auto">Date &amp; Time</th>
-                            <th scope="col" class="col-md-auto">Rating</th>
+                            <th id="dateTimeSort" scope="col" class="col-md-auto">Date &amp; Time <i class="fa fa-sort"></i></th>
+                            <th id="ratingSort" scope="col" class="col-md-auto">Rating <i class="fa fa-sort"></i></th>
                             <th scope="col" class="col-md-auto">Options</th>
                         </tr>
                     </thead>
@@ -425,6 +425,7 @@
         </div>
     </div>
     <!-- END of Home-View div  -->
+
     <!-- MODALS -->
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
@@ -635,8 +636,8 @@
                 </div>
                 <div class="modal-body">
                     <div id="customerCommentModalBody" class="text-center">
-                        <div class="form-group">                            
-                            <form id="customer-comment-form" class="form-horizontal">                                
+                        <div class="form-group">
+                            <form id="customer-comment-form" class="form-horizontal">
                                 <div id="customerComment" class="text-center">
                                     <div class="form-group">
                                         <label for="customerCommentText" class="text-center"><strong>How did the ride go?</strong></label>
@@ -716,6 +717,7 @@
     <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
     <script type="text/javascript" src="Scripts/animations.js"></script>
     <script type="text/javascript" src="Scripts/validation.js"></script>
+    <script type="text/javascript" src="Scripts/sorting.js"></script>
     <script type="text/javascript" src="Scripts/main.js"></script>
 
 </body>
