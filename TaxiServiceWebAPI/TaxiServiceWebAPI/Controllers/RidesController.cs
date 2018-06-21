@@ -387,7 +387,7 @@ namespace TaxiServiceWebAPI.Controllers
         public List<Ride> Ordered()
         {
             List<Ride> allRides = jsonParser.ReadRides();
-            List<Ride> orderedRides = jsonParser.ReadRides();
+            List<Ride> orderedRides = new List<Ride>();
 
             if (allRides != null)
             {
@@ -430,6 +430,86 @@ namespace TaxiServiceWebAPI.Controllers
             catch (Exception)
             {
                 return null;
+            }
+        }
+
+        [HttpPut]
+        [Route("api/rides/take/{id}/{username}")]
+        public HttpResponseMessage Take([FromUri]int id, [FromUri]string username)
+        {
+            try
+            {
+                List<Ride> allRides = jsonParser.ReadRides();
+                Ride foundRide = new Ride();
+
+                if(allRides != null)
+                {
+                    foreach(var ride in allRides)
+                    {
+                        if (ride.ID == id)
+                        {
+                            foundRide = ride;
+                            break;
+                        }
+                    }
+
+                    if(foundRide.ID != 0)
+                    {
+                        List<Driver> allDrivers = jsonParser.ReadDrivers();
+                        Driver foundDriver = new Driver();
+
+                        if(allDrivers != null)
+                        {
+                            foreach(var driver in allDrivers)
+                            {
+                                if(driver.Username == username)
+                                {
+                                    foundDriver = driver;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return Request.CreateResponse(HttpStatusCode.NotFound);
+                        }
+
+                        if(foundDriver.Username != null)
+                        {
+                            foundRide.RideDriver = foundDriver;
+                            foundRide.RideDriver.Username = foundDriver.Username;
+                            foundRide.RideDriver.FirstName = foundDriver.FirstName;
+                            foundRide.RideDriver.LastName = foundDriver.LastName;
+                            
+                            foundRide.StatusOfRide = RideStatuses.ACCEPTED.ToString();
+
+                            jsonParser.EditRide(foundRide.ID, foundRide);
+
+                            foundDriver.IsFree = false;
+                            jsonParser.EditDriver(foundDriver.Username, foundDriver);
+
+                            return Request.CreateResponse(HttpStatusCode.OK);
+                        }
+                        else
+                        {
+                            return Request.CreateResponse(HttpStatusCode.NotFound);
+                        }
+
+                    }
+                    else
+                    {
+                        return Request.CreateResponse(HttpStatusCode.NotFound);
+                    }
+
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
         }
 

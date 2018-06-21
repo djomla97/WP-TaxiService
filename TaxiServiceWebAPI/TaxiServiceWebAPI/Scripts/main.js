@@ -307,6 +307,7 @@ $(document).ready(function () {
         $('textarea#driverRideCommentText').val('');
         $(this).next().off('click');
         resetRating();
+        clearForm('success-form');
         $(this).next().attr('id', 'confirmSuccessOrderRide');
     });
 
@@ -1508,7 +1509,42 @@ function updateOrderTable(orderRide, userRole) {
         $(`#takeRide${orderRide.ID}`).unbind('click').click(function () {
             console.log(`Ride: ${orderRide.ID} is being taken by driver`);
 
+            $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+                let canTake = true;
+                let message = "";
 
+                if (!user.IsFree) {
+                    canTake = false;
+                    message = 'You are not free to drive';
+                }
+
+                if (user.DriverVehicle.VehicleType !== orderRide.RideVehicle.VehicleType) {
+                    canTake = false;
+                    message = 'You don\'t have the required vehicle type';
+                }
+
+                //ok, mislio sam da ce biti mnogo vise provera, al ajde
+                if (canTake) {
+                    $.ajax({
+                        method: 'PUT',
+                        url: `/api/rides/take/${orderRide.ID}/${$('#loggedIn-username').text()}`
+                    }).done(function (data, statusText, xhr) {
+                        let status = xhr.status;
+                        console.log(status)
+                        if (status == 200) {
+                            showSnackbar(`You have taken ride with id: ${orderRide.ID}`);
+                            $('#seeDriverRidesButton').trigger('click');
+                        } else if (status == 404) {
+                            showSnackbar(`Couldn't find that ride or that username`);
+                        } else {
+                            showSnackbar(`There's been an error processing your request`);
+                        }
+
+                    });
+                } else {
+                    showSnackbar(`You can't take this ride. ${message}`);
+                }
+            });
         });
 
     } 
@@ -1763,6 +1799,7 @@ function updateAllRidesTable(user) {
                                     });
 
                                     let rating = $('#ratingNumber').val();
+                                    let fareAmmount = $('#successFare').val().replace(',', '.');
 
                                     // ahh konacno ne mogu vise
                                     if (canSuccess) {
@@ -1773,7 +1810,7 @@ function updateAllRidesTable(user) {
                                         let options = {
                                             Comment: comment,
                                             RideMark: rating,
-                                            Fare: $('#successFare').val(),
+                                            Fare: fareAmmount,
                                             Location: {
                                                 X: 0.0,
                                                 Y: 0.0,
@@ -1799,6 +1836,7 @@ function updateAllRidesTable(user) {
 
                                             $('#successOrderRideModal').modal('hide');
                                             updateAllRidesTable(user);
+                                            clearForm('success-form');
                                         });
                                             
                                         
@@ -2027,7 +2065,7 @@ function updateDetailRideInfo(ride) {
     }
 
     let rideDriver;
-    if (ride.RideDriver == null || ride.RideDispatcher.Username == null) {
+    if (ride.RideDriver == null || ride.RideDriver.Username == null) {
         rideDriver = 'Not set';
     } else {
         rideDriver = `${ride.RideDriver.FirstName} ${ride.RideDriver.LastName} (${ride.RideDriver.Username})`;
@@ -2057,9 +2095,9 @@ function updateDetailRideInfo(ride) {
     $('#ride-info').append(`<span class="user-key">Destination</span>: <p>${destination}</p>`);
     $('#ride-info').append(`<span class="user-key">Status of ride</span>: <p>${status}</p>`);
     $('#ride-info').append(`<span class="user-key">Fare</span>: <p>${ride.Fare.toFixed(2)} €</p>`);
-    $('#ride-info').append(`<span class="user-key">Vehicle</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
+    $('#ride-info').append(`<span class="user-key">Vehicle type</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
     console.log('Number of stars: ' + ride.RideComment.RideMark);
-    if (ride.StatusOfRide != 'CREATED_ONWAIT' && ride.StatusOfRide != 'FORMED') {
+    if (ride.StatusOfRide != 'CREATED_ONWAIT' && ride.StatusOfRide != 'FORMED' && ride.StatusOfRide != 'ACCEPTED') {
         switch (ride.RideComment.RideMark) {
             case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
             case 1: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="fas fa-star icon-d"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
