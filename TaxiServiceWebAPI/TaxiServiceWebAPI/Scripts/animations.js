@@ -123,7 +123,6 @@ function oneStarHover() {
 
 function oneStarClick() {
 
-    console.log(rating);
     rating = 1;
     clickedOnRating = true;
     clickedRating = `<i id="oneStar" class="fas fa-star fa-lg icon-d"></i>

@@ -13,7 +13,7 @@ $(document).ready(function () {
     $('#orderRidesTableDiv').hide();
     $('#seeRidesButtonDiv').hide();
     $('#no-rides-message').hide();
-    $('#commentRideModal').hide(); 
+    $('#commentRideModal').hide();
     $('#editOrderRideModal').hide();
     $('#rideModal').hide();
     $('#seeAllRidesButtonDiv').hide();
@@ -23,6 +23,7 @@ $(document).ready(function () {
     $('#register-new-driver-form-view').hide();
     $('#checkFreeRidesButtonDiv').hide();
     $('#seeDriverRidesButtonDiv').hide();
+    $('#customerCommentModal').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -140,7 +141,7 @@ $(document).ready(function () {
         $('#closeModalButton').addClass('btn-primary');
         $('#edit-message-alert').hide();
         $('#user-info').show();
-    }); 
+    });
 
     // Save changes from edit-form
     $('#saveChangesButton').click(function () {
@@ -152,7 +153,7 @@ $(document).ready(function () {
     // see rides button click
     $('#seeRidesButton').click(function () {
         clearForm('order-ride-form');
-        $('#orderRideFormDiv').fadeOut('500', function () {            
+        $('#orderRideFormDiv').fadeOut('500', function () {
             $('#ridesTableDiv').fadeIn('500');
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
@@ -333,6 +334,13 @@ $(document).ready(function () {
         });
     });
 
+    $('#closeCustomerCommentModal').click(function () {
+        $('textarea#customerCommentText').val('');
+        $(this).next().off('click');
+        resetRating();
+        clearForm('customer-comment-form');
+        $(this).next().attr('id', 'confirmCustomerComment');
+    });
 
 }); // on ready
 
@@ -1224,7 +1232,7 @@ function orderRide() {
                 $('#orderCarType').prop('selectedIndex', 0);
 
                 // zatrazimo nazad voznju sa dodeljenim ID
-                $.get(`/api/rides?id=${id}`, function (ride) {
+                $.get(`/api/rides/${id}`, function (ride) {
 
                     // update table
                     updateOrderTable(ride);
@@ -1337,7 +1345,7 @@ function addNewRide() {
                 $('#addCarType').prop('selectedIndex', 0);
 
                 // zatrazimo nazad voznju sa dodeljenim ID
-                $.get(`/api/rides?id=${id}`, function (ride) {
+                $.get(`/api/rides/${id}`, function (ride) {
 
                     // update table
                     updateAllRidesTable(user);
@@ -1382,6 +1390,8 @@ function updateOrderTable(orderRide, userRole) {
     let status;
     if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
         status = 'Created - on wait';
+
+    console.log(orderRide)
 
     if (userRole == 'Customer') {
         $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
@@ -1449,7 +1459,7 @@ function updateOrderTable(orderRide, userRole) {
                     if (!$('#assignedDriverSelect').prop('disabled')) {
 
                         // uzmemo voznju, dodelimo vozaca i dispatchera i update preko api-a
-                        $.get(`/api/rides?id=${orderRide.ID}`, function (oldRide) {
+                        $.get(`/api/rides/${orderRide.ID}`, function (oldRide) {
 
                             console.log('Assigned driver: ' + $('#assignedDriverSelect').val());
                             console.log('Assigned dispatcher: ' + $('#loggedIn-username').text());
@@ -1570,6 +1580,12 @@ function updateAllRidesTable(user) {
                         return true;
                     }
 
+                    // za dispatchera da bude odvojena tabela
+                    if (ride.StatusOfRide == 'CREATED_ONWAIT' && user.Role == 'Customer') {
+                        updateOrderTable(ride);
+                        return true;
+                    }
+
                     // uklonimo ako vec postoji ta voznja - ovo je posle dobro za edit
                     $('#rides-table-body tr').each(function () {
                         if ($(this).attr('id') == ride.ID) {
@@ -1634,7 +1650,7 @@ function updateAllRidesTable(user) {
                         // add one button event listener
                         $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
                             console.log('Getting info on ride with ID: ' + ride.ID);
-                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                            $.get(`/api/rides/${ride.ID}`, function (ride) {
                                 updateDetailRideInfo(ride);
                                 $('#rideModal').modal('show');
                             });
@@ -1718,12 +1734,6 @@ function updateAllRidesTable(user) {
                             $(`#successRide${ride.ID}`).unbind('click').click(function (e) {
                                 e.preventDefault();
 
-                                //resetRating();
-                                if (!$('#successComment').find('div#commentRatingDiv').length) {
-                                    ratingDiv = $('#commentRatingDiv').detach();                              
-                                    $('#successComment').append(ratingDiv);
-                                }
-
                                 // button event listeners
                                 $('#confirmSuccessOrderRide').attr('id', `confirmSuccessOrderRide${ride.ID}`);
                                 $(`#confirmSuccessOrderRide${ride.ID}`).unbind('click').click(function (e) {
@@ -1731,11 +1741,8 @@ function updateAllRidesTable(user) {
 
                                     // validation
                                     console.log('[DEBUG] Confirming failed ride: ' + ride.ID);
-
-                                    let comment = $('textarea#successCommentText').val();
+                              
                                     let canSuccess = true;
-                                    if (comment == null || !comment)
-                                        canSuccess = false;
 
                                     $('form#success-form input').each(function () {
 
@@ -1789,27 +1796,21 @@ function updateAllRidesTable(user) {
                                         }
                                     });
 
-                                    
-
                                     // hack sa klasom
-                                    $('#order-ride-form p').each(function () {
+                                    $('#success-form p').each(function () {
                                         if ($(this).hasClass('empty-check')) {
                                             canSuccess = false;
                                         }
                                     });
 
-                                    let rating = $('#ratingNumber').val();
                                     let fareAmmount = $('#successFare').val().replace(',', '.');
 
                                     // ahh konacno ne mogu vise
                                     if (canSuccess) {
                                         console.log('success');
-                                        removeValidationError('successCommentText', 'empty-check');
 
                                         // za API options
                                         let options = {
-                                            Comment: comment,
-                                            RideMark: rating,
                                             Fare: fareAmmount,
                                             Location: {
                                                 X: 0.0,
@@ -1837,11 +1838,8 @@ function updateAllRidesTable(user) {
                                             $('#successOrderRideModal').modal('hide');
                                             updateAllRidesTable(user);
                                             clearForm('success-form');
-                                        });
-                                            
-                                        
-                                        
-                                    } else {
+                                        });                                          
+                                } else {
                                         addValidationError('successCommentText', 'empty-check', 'You must enter some feedback for us');
                                     }
                                 });
@@ -1864,38 +1862,135 @@ function updateAllRidesTable(user) {
                             </td>
                         </tr>`);
 
-                            // add one button event listener
+                            // SHOW DETAIL
                             $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
                                 console.log('Getting info on ride with ID: ' + ride.ID);
-                                $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                                $.get(`/api/rides/${ride.ID}`, function (ride) {
                                     updateDetailRideInfo(ride);
                                     $('#rideModal').modal('show');
                                 });
                             });
                         }
                     } else {
-                        $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
-                            <td>${destination}</td>
-                            <td>${status}</td>
-                            <td>${description}</td>
-                            <td>${formatedDate}</td>
-                            <td>${rating}</td>
+                        console.log(ride.StatusOfRide);
+                        if (ride.StatusOfRide == 'SUCCESSFUL' && description == 'No comment') {
                             
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
-                                </div>
-                            </td>
-                        </tr>`);
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                                <td>${destination}</td>
+                                <td>${status}</td>
+                                <td>${description}</td>
+                                <td>${formatedDate}</td>
+                                <td>${rating}</td>
+                            
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="postComment${ride.ID}" type="button" class="btn btn-success"><i class="fas fa-comment-dots"></i></button>
+                                        <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
+                                    </div>
+                                </td>
+                            </tr>`);
 
-                        // add one button event listener
-                        $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
-                            console.log('Getting info on ride with ID: ' + ride.ID);
-                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
-                                updateDetailRideInfo(ride);
-                                $('#rideModal').modal('show');
+                            // SHOW DETAILS
+                            $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
+                                console.log('Getting info on ride with ID: ' + ride.ID);
+                                $.get(`/api/rides/${ride.ID}`, function (ride) {
+                                    updateDetailRideInfo(ride);
+                                    $('#rideModal').modal('show');
+                                });
                             });
-                        });
+
+                            // POST COMMENT
+                            $(`#postComment${ride.ID}`).unbind('click').click(function () {
+                                console.log('Posting comment');
+
+                                // pokupimo rating sa animacijama
+                                if (!$('#customerComment').find('div#commentRatingDiv').length) {
+                                    ratingDiv = $('#commentRatingDiv').detach();
+                                    $('#customerComment').append(ratingDiv);
+                                }
+                                
+                                $('#confirmCustomerComment').attr('id', `confirmCustomerComment${ride.ID}`);
+
+                                console.log('adding event listener');
+                                $(`#confirmCustomerComment${ride.ID}`).unbind('click').click(function () {
+
+                                    let comment = $('textarea#customerCommentText').val();
+                                    let canPostComment = true;
+                                    if (comment == null || !comment)
+                                        canPostComment = false;
+
+                                    let rating = $('#ratingNumber').val();
+
+                                    if (canPostComment) {
+                                        removeValidationError('customerCommentText', 'empty-check');
+
+                                        $.get(`/api/rides/${ride.ID}`, function (ride) {
+                                            if (ride != null) {
+
+                                                console.log(ride);
+                                                ride.RideComment.CommentUser = user;
+                                                ride.RideComment.Description = comment;
+                                                ride.RideComment.RideMark = rating;
+
+                                                console.log(ride);
+
+                                                // send 
+                                                $.ajax({
+                                                    method: 'PUT',
+                                                    url: `/api/rides/${ride.ID}`,
+                                                    contentType: 'application/json',
+                                                    dataType: 'json',
+                                                    data: JSON.stringify(ride)
+                                                }).done(function (response) {
+                                                    if (response != null) {
+                                                        $('#customerCommentModal').modal('hide');
+                                                        updateAllRidesTable(user);
+                                                        showSnackbar('Comment posted successfuly. Thanks for the feedback!');
+                                                    } else {
+                                                        showSnackbar('Couln\'t finish that action.');
+                                                    }
+                                                });
+
+
+                                            } else {
+                                                showSnackbar('Could not post comment due to server error');
+                                            }
+                                        });
+                                    } else {   
+                                        addValidationError('customerCommentText', 'empty-check', 'You must enter some feedback for us');
+                                    }
+
+                                });
+
+                                $('#customerCommentModal').modal('show');
+                            });
+
+                        } else {
+                            $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
+                                <td>${destination}</td>
+                                <td>${status}</td>
+                                <td>${description}</td>
+                                <td>${formatedDate}</td>
+                                <td>${rating}</td>
+                            
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button id="showDetail${ride.ID}" type="button" class="btn btn-primary"><i class="fas fa-info-circle"></i></button>                                    
+                                    </div>
+                                </td>
+                            </tr>`);
+
+                            // add one button event listener
+                            $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
+                                console.log('Getting info on ride with ID: ' + ride.ID);
+                                $.get(`/api/rides/${ride.ID}`, function (ride) {
+                                    updateDetailRideInfo(ride);
+                                    $('#rideModal').modal('show');
+                                });
+                            });
+                        }
+
+                        
                     }
                 });
             } else {
@@ -1990,7 +2085,7 @@ function showAllRides() {
                         // add one button event listener
                         $(`#showDetail${ride.ID}`).on('click', function () {
                             console.log('Getting info on ride with ID: ' + ride.ID);
-                            $.get(`/api/rides?id=${ride.ID}`, function (ride) {
+                            $.get(`/api/rides/${ride.ID}`, function (ride) {
                                 console.log('Ride status: ' + ride.StatusOfRide);
                                 updateDetailRideInfo(ride);
                                 $('#rideModal').modal('show');

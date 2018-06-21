@@ -29,6 +29,7 @@ namespace TaxiServiceWebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("api/rides/{id:int}")]
         public Ride Get(int id)
         {          
             try
@@ -151,6 +152,11 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
+                if(editedRide.RideComment.Description != null)
+                {
+                    editedRide.RideComment.DateAndTime = DateTime.Now;
+                }
+
                 jsonParser.EditRide(id, editedRide);
 
                 if (editedRide.RideCustomer.Username != null)
@@ -216,7 +222,11 @@ namespace TaxiServiceWebAPI.Controllers
                     try
                     {
                         foundRide.StatusOfRide = RideStatuses.FAILED.ToString();
-                        foundRide.RideComment.CommentUser = foundRide.RideDriver;
+                        foundRide.RideComment.CommentUser = new User();
+                        foundRide.RideComment.CommentUser.FirstName = foundRide.RideDriver.FirstName;
+                        foundRide.RideComment.CommentUser.LastName = foundRide.RideDriver.LastName;
+                        foundRide.RideComment.CommentUser.Username = foundRide.RideDriver.Username;
+                        foundRide.RideComment.CommentUser.Role = foundRide.RideDriver.Role;
                         foundRide.RideComment.DateAndTime = DateTime.Now;
                         foundRide.RideComment.Description = options.Comment;
 
@@ -268,13 +278,13 @@ namespace TaxiServiceWebAPI.Controllers
                     try
                     {
                         foundRide.StatusOfRide = RideStatuses.SUCCESSFUL.ToString();
-                        foundRide.RideComment.CommentUser = new User();
-                        foundRide.RideComment.CommentUser.FirstName = foundRide.RideDriver.FirstName;
-                        foundRide.RideComment.CommentUser.LastName = foundRide.RideDriver.LastName;
-                        foundRide.RideComment.CommentUser.Username = foundRide.RideDriver.Username;
-                        foundRide.RideComment.CommentUser.Role = foundRide.RideDriver.Role;
-                        foundRide.RideComment.DateAndTime = DateTime.Now;
-                        foundRide.RideComment.Description = options.Comment;
+                        //foundRide.RideComment.CommentUser = new User();
+                        //foundRide.RideComment.CommentUser.FirstName = foundRide.RideDriver.FirstName;
+                        //foundRide.RideComment.CommentUser.LastName = foundRide.RideDriver.LastName;
+                        //foundRide.RideComment.CommentUser.Username = foundRide.RideDriver.Username;
+                        //foundRide.RideComment.CommentUser.Role = foundRide.RideDriver.Role;
+                        //foundRide.RideComment.DateAndTime = DateTime.Now;
+                        //foundRide.RideComment.Description = options.Comment;
                         foundRide.Fare = options.Fare;
 
                         switch (options.RideMark)
