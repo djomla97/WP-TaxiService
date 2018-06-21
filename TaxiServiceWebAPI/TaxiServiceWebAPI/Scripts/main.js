@@ -21,6 +21,8 @@ $(document).ready(function () {
     $('#addRideFormDiv').hide();
     $('#addNewDriverButtonDiv').hide();
     $('#register-new-driver-form-view').hide();
+    $('#checkFreeRidesButtonDiv').hide();
+    $('#seeDriverRidesButtonDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -307,6 +309,29 @@ $(document).ready(function () {
         resetRating();
         $(this).next().attr('id', 'confirmSuccessOrderRide');
     });
+
+    // za dobijanje ordered rides za vozaca
+    $('#checkFreeRidesButton').click(function (e) {
+        e.preventDefault();
+
+        $.get('/api/rides/ordered', function (orderedRides) {
+            if (orderedRides != null) {
+                if (orderedRides.length > 0) {
+                    orderedRides.forEach(function (orderedRide) {
+                        updateOrderTable(orderedRide, 'Driver');
+                    });
+                    $('#ridesTableDiv').hide();
+                    $('#checkFreeRidesButtonDiv').hide();
+                    $('#seeDriverRidesButtonDiv').show();
+                } else {
+                    showSnackbar('Sorry, there are no ordered rides right now');
+                }
+            } else {
+                showSnackbar('Sorry, there are no ordered rides right now');
+            }
+        });
+    });
+
 
 }); // on ready
 
@@ -702,6 +727,7 @@ function loginFromCookie(username) {
             $('#seeAllRidesButtonDiv').hide();
             $('#seeDispatcherRidesButtonDiv').hide();
             $('#register-new-driver-form-view').hide();
+            $('#checkFreeRidesButtonDiv').show();
         } else {
             $('#register-new-driver-form-view').hide();
             $('#addRideButtonDiv').hide();
@@ -712,6 +738,7 @@ function loginFromCookie(username) {
             $('#orderRideFormDiv').hide();
             $('#seeAllRidesButtonDiv').hide();
             $('#seeDispatcherRidesButtonDiv').hide();
+            $('#checkFreeRidesButtonDiv').hide();
         }
 
         // update UI size based on role
@@ -765,6 +792,17 @@ function loginFromCookie(username) {
             updateMark(user.Role);
             checkRidesTables();   
         } else if (user.Role == 'Driver') {
+
+            // da ne uzimam opet usera 
+            $('#seeDriverRidesButton').unbind('click').click(function (e) {
+                e.preventDefault();
+                $('#order-rides-table-body').empty();
+                $('#orderRidesTableDiv').hide();
+                updateAllRidesTable(user);
+                $('#checkFreeRidesButtonDiv').show();
+                $('#seeDriverRidesButtonDiv').hide();
+            });
+
             updateAllRidesTable(user);
             updateMark(user.Role);
             checkRidesTables();
@@ -838,6 +876,8 @@ function tryLoginUser() {
                         $('#seeAllRidesButtonDiv').show();
                         $('#seeDispatcherRidesButtonDiv').hide();
                         $('#addNewDriverButtonDiv').show();
+                        $('#checkFreeRidesButtonDiv').hide();
+                        $('#seeDriverRidesButtonDiv').hide();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
@@ -846,6 +886,8 @@ function tryLoginUser() {
                         $('#seeRidesButtonDiv').hide();
                         $('#seeAllRidesButtonDiv').hide();
                         $('#register-new-driver-form-view').hide();
+                        $('#checkFreeRidesButtonDiv').show();
+                        $('#seeDriverRidesButtonDiv').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
@@ -855,6 +897,8 @@ function tryLoginUser() {
                         $('#seeAllRidesButtonDiv').hide();
                         $('#seeDispatcherRidesButtonDiv').hide();
                         $('#register-new-driver-form-view').hide();
+                        $('#checkFreeRidesButtonDiv').hide();
+                        $('#seeDriverRidesButtonDiv').hide();
                     }
 
                     // update UI size based on role
@@ -907,6 +951,16 @@ function tryLoginUser() {
                         updateMark(user.Role);
                         checkRidesTables();
                     } else if (user.Role == 'Driver') {
+                        // da ne uzimam opet usera 
+                        $('#seeDriverRidesButton').unbind('click').click(function (e) {
+                            e.preventDefault();
+                            $('#orderRidesTableDiv').hide();
+                            $('#order-rides-table-body').empty();
+                            updateAllRidesTable(user);
+                            $('#checkFreeRidesButtonDiv').show();
+                            $('#seeDriverRidesButtonDiv').hide();
+                        });
+
                         updateAllRidesTable(user);
                         updateMark(user.Role);
                         checkRidesTables();
@@ -1341,7 +1395,7 @@ function updateOrderTable(orderRide, userRole) {
                             </td>
                         </tr>`);
         addButtonListeners(orderRide);
-    } else {
+    } else if (userRole == 'Dispatcher') {
         $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
                             <td>${orderRide.RideVehicle.VehicleType}</td>
@@ -1352,7 +1406,7 @@ function updateOrderTable(orderRide, userRole) {
                                 </div>
                             </td>
                         </tr>`);
-        
+
         // button listener for dispatcher
         $(`#assignRide${orderRide.ID}`).click(function (e) {
 
@@ -1437,8 +1491,28 @@ function updateOrderTable(orderRide, userRole) {
                 });
             });
             $('#assignDriverModal').modal('show');
-        }); 
-    }    
+        });
+    } else if (userRole == 'Driver') {
+        $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><th scope="row">${orderRide.ID}</th><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
+                            <td>${formatedDate}</td>
+                            <td>${orderRide.RideVehicle.VehicleType}</td>
+                            <td>${status}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button id="takeRide${orderRide.ID}" type="button" class="btn btn-primary"><i class="fas fa-check"><i class="fas fa-taxi"></i></i></button>            
+                                </div>
+                            </td>
+                        </tr>`);
+
+        // add button event listeners
+        $(`#takeRide${orderRide.ID}`).unbind('click').click(function () {
+            console.log(`Ride: ${orderRide.ID} is being taken by driver`);
+
+
+        });
+
+    } 
+
     checkRidesTables();
 }
 
@@ -1530,6 +1604,7 @@ function updateAllRidesTable(user) {
                             });
                         });
                     } else if (user.Role == 'Driver') {
+                        $('#orderRidesTableDiv').hide();
 
                         if (ride.StatusOfRide == 'FORMED' || ride.StatusOfRide == 'PROCESSED' || ride.StatusOfRide == 'ACCEPTED') {
                             $('#rides-table-body').append(`<tr id="${ride.ID}"><th scope="row">${ride.ID}</th><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
@@ -2435,7 +2510,7 @@ function updateMark(role) {
         $('#orderRideMark').text('checking out some trip requests');
         $('#orderRideMark').unbind('click').click(function (e) {
             e.preventDefault();
-            console.log('Checking out some trips ...');
+            $('#checkFreeRidesButton').trigger('click');
         });
     }
 }

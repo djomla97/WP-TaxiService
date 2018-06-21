@@ -389,12 +389,18 @@ namespace TaxiServiceWebAPI.Controllers
             List<Ride> allRides = jsonParser.ReadRides();
             List<Ride> orderedRides = jsonParser.ReadRides();
 
-            foreach (Ride ride in allRides)
+            if (allRides != null)
             {
-                if (ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
-                    orderedRides.Add(ride);
+                foreach (Ride ride in allRides)
+                {
+                    if (ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
+                        orderedRides.Add(ride);
+                }
             }
-
+            else
+            {
+                return null;
+            }
             return orderedRides;
         }
 
