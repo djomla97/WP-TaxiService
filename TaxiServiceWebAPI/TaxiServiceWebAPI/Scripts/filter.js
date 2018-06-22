@@ -5,6 +5,9 @@
 
 $(document).ready(function () {
 
+    // hide filter message
+    $('#filter-message').hide();
+
     // inital values
     $('input[name="startDate"]').val('');
     $('input[name="startDate"]').attr('placeholder', 'Start date');
@@ -22,13 +25,15 @@ $(document).ready(function () {
 
     // reset all filter values
     $('#resetFiltersButton').click(function () {
-        $('#clearDatesButton').trigger('click');
+        $('input[name="startDate"]').val('');
+        $('input[name="startDate"]').attr('placeholder', 'Start date');
+        $('input[name="endDate"]').val('');
+        $('input[name="endDate"]').attr('placeholder', 'End date');
         $('#minRatingFilter').val('0');
         $('#maxRatingFilter').val('5');
         $('#minFareFilter').val('');
         $('#maxFareFilter').val('');
 
-        // ovde dodati mozda da vrati tabele sve ??
         filterRides();
     });
 
@@ -133,7 +138,24 @@ function filterRides() {
         contentType: 'application/json',
         data: JSON.stringify(filterOptions)
     }).done(function (filteredRides) {
+
         console.log(filteredRides);
+
+        if (filteredRides != null) {
+            $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+                if (filteredRides.length > 0) {
+                    $('#filter-message').hide();
+                    updateRidesTables(filteredRides, user);
+                } else {      
+                    $('#ridesTableDiv').hide();
+                    $('#orderRidesTableDiv').hide();
+                    $('#filter-message').show();
+                }
+            });           
+        } else {
+            showSnackbar('Something went wrong with your request to filter rides');
+        }
+
     });    
 
 }
