@@ -31,7 +31,7 @@ namespace TaxiServiceWebAPI.Controllers
         [HttpGet]
         [Route("api/rides/{id:int}")]
         public Ride Get(int id)
-        {          
+        {
             try
             {
                 var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
@@ -56,11 +56,11 @@ namespace TaxiServiceWebAPI.Controllers
 
             List<Ride> foundRides = new List<Ride>();
 
-            foreach(Ride ride in allRides)
+            foreach (Ride ride in allRides)
             {
-                if(ride.RideCustomer != null)
+                if (ride.RideCustomer != null)
                 {
-                    if(ride.RideCustomer.Username == username)
+                    if (ride.RideCustomer.Username == username)
                     {
                         foundRides.Add(ride);
                     }
@@ -83,7 +83,7 @@ namespace TaxiServiceWebAPI.Controllers
                 }
             }
 
-            return foundRides; 
+            return foundRides;
         }
 
 
@@ -152,7 +152,7 @@ namespace TaxiServiceWebAPI.Controllers
         {
             try
             {
-                if(editedRide.RideComment.Description != null)
+                if (editedRide.RideComment.Description != null)
                 {
                     editedRide.RideComment.DateAndTime = DateTime.Now;
                 }
@@ -190,7 +190,8 @@ namespace TaxiServiceWebAPI.Controllers
                 jsonParser.DeleteRide(id);
                 return Request.CreateResponse(HttpStatusCode.OK, $"Ride {id} is deleted.");
             }
-            catch (Exception) {
+            catch (Exception)
+            {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, $"Ride {id} was not deleted.");
             }
         }
@@ -323,14 +324,15 @@ namespace TaxiServiceWebAPI.Controllers
 
 
 
-            return Request.CreateResponse(HttpStatusCode.BadRequest);      
+            return Request.CreateResponse(HttpStatusCode.BadRequest);
         }
 
         [HttpPost]
         [Route("api/rides/cancel/{id}")]
         public HttpResponseMessage Cancel(int id, [FromBody]Options options)
         {
-            try {
+            try
+            {
                 var foundRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
                 var foundUser = jsonParser.ReadUsers().Where(u => u.Username.Equals(foundRide.RideCustomer.Username)).First();
 
@@ -350,7 +352,7 @@ namespace TaxiServiceWebAPI.Controllers
                     case 5: foundRide.RideComment.RideMark = RideMarks.FIVE; break;
                     default: foundRide.RideComment.RideMark = RideMarks.ZERO; break;
                 }
-                
+
                 foundRide.RideComment.CommentUser = foundUser;
 
                 jsonParser.EditRide(id, foundRide);
@@ -452,9 +454,9 @@ namespace TaxiServiceWebAPI.Controllers
                 List<Ride> allRides = jsonParser.ReadRides();
                 Ride foundRide = new Ride();
 
-                if(allRides != null)
+                if (allRides != null)
                 {
-                    foreach(var ride in allRides)
+                    foreach (var ride in allRides)
                     {
                         if (ride.ID == id)
                         {
@@ -463,16 +465,16 @@ namespace TaxiServiceWebAPI.Controllers
                         }
                     }
 
-                    if(foundRide.ID != 0)
+                    if (foundRide.ID != 0)
                     {
                         List<Driver> allDrivers = jsonParser.ReadDrivers();
                         Driver foundDriver = new Driver();
 
-                        if(allDrivers != null)
+                        if (allDrivers != null)
                         {
-                            foreach(var driver in allDrivers)
+                            foreach (var driver in allDrivers)
                             {
-                                if(driver.Username == username)
+                                if (driver.Username == username)
                                 {
                                     foundDriver = driver;
                                     break;
@@ -484,13 +486,13 @@ namespace TaxiServiceWebAPI.Controllers
                             return Request.CreateResponse(HttpStatusCode.NotFound);
                         }
 
-                        if(foundDriver.Username != null)
+                        if (foundDriver.Username != null)
                         {
                             foundRide.RideDriver = foundDriver;
                             foundRide.RideDriver.Username = foundDriver.Username;
                             foundRide.RideDriver.FirstName = foundDriver.FirstName;
                             foundRide.RideDriver.LastName = foundDriver.LastName;
-                            
+
                             foundRide.StatusOfRide = RideStatuses.ACCEPTED.ToString();
 
                             jsonParser.EditRide(foundRide.ID, foundRide);
@@ -522,6 +524,157 @@ namespace TaxiServiceWebAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.BadRequest);
             }
         }
+
+        [HttpPut]
+        [Route("api/rides/{username}/filter")]
+        public List<Ride> Get(string username, [FromBody]FilterOptions filterOptions)
+        {
+            try
+            {
+                List<Ride> allRides = jsonParser.ReadRides();
+                List<Ride> userRides = new List<Ride>();
+
+                foreach (var ride in allRides)
+                {
+                    if (ride.RideCustomer != null)
+                    {
+                        if (ride.RideCustomer.Username != null)
+                        {
+                            if (ride.RideCustomer.Username == username)
+                            {
+                                userRides.Add(ride);
+                            }
+                        }
+                    }
+
+                    if (ride.RideDriver != null)
+                    {
+                        if (ride.RideDriver.Username != null)
+                        {
+                            if (ride.RideDriver.Username == username)
+                            {
+                                userRides.Add(ride);
+                            }
+                        }
+                    }
+
+                    if (ride.RideDispatcher != null)
+                    {
+                        if (ride.RideDispatcher.Username != null)
+                        {
+                            if (ride.RideDispatcher.Username == username)
+                            {
+                                userRides.Add(ride);
+                            }
+                        }
+                    }
+                }
+
+                if (userRides.Count == 0)
+                    return null;
+
+                bool checkStartDate = false;
+                bool checkEndDate = false;
+                bool checkMinRating = false;
+                bool checkMaxRating = false;
+                bool checkMinFare = false;
+                bool checkMaxFare = false;
+
+                DateTime startDateParsed = filterOptions.startDate.ToLocalTime();
+                if (filterOptions.startDate.Year != 1)
+                    checkStartDate = true;
+
+                DateTime endDateParsed = filterOptions.endDate.ToLocalTime().AddHours(23).AddMinutes(59).AddSeconds(59);
+                if (filterOptions.endDate.Year != 1)
+                    checkEndDate = true;  
+                
+
+                if (filterOptions.minRating > 0)
+                    checkMinRating = true;
+                if (filterOptions.maxRating < 5)
+                    checkMaxRating = true;
+                if (filterOptions.minFare > 0)
+                    checkMinFare = true;
+                if (filterOptions.maxFare > 0)
+                    checkMaxFare = true;
+
+
+                List<Ride> filteredRides = new List<Ride>(userRides);
+                if (checkStartDate)
+                {
+                    foreach(var ride in userRides)
+                        if (ride.DateAndTime < startDateParsed)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+
+                }
+
+                if (checkEndDate)
+                {
+                    foreach (var ride in userRides)
+                        if (ride.DateAndTime > endDateParsed)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+                }
+
+                if (checkMinRating)
+                {
+                    foreach(var ride in userRides)
+                    {
+                        if(ride.RideComment != null)
+                        {
+                            if ((int)ride.RideComment.RideMark < filterOptions.minRating)                            
+                                if (filteredRides.Contains(ride))
+                                    filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkMaxRating)
+                {
+                    foreach (var ride in userRides)
+                    {
+                        if (ride.RideComment != null)
+                        {
+                            if ((int)ride.RideComment.RideMark > filterOptions.maxRating)
+                                if (filteredRides.Contains(ride))
+                                    filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkMinFare)
+                {
+                    foreach (var ride in userRides)
+                    {                        
+                        if (ride.Fare < filterOptions.minFare)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+                        
+                    }
+                }
+
+                if (checkMaxFare)
+                {
+                    foreach (var ride in userRides)
+                    {
+                        if (ride.Fare > filterOptions.maxFare)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+
+                    }
+                }
+
+                return filteredRides;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
 
     }
 }

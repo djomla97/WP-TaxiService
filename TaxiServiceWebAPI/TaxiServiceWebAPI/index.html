@@ -169,34 +169,51 @@
         <hr />
 
         <!-- Filter row -->
-        <div class="row center-text">
+        <div class="row center-text" id="filterRow">
             <form>
                 <div class="form-row">
                     <div class="col-xs-12 col-md-1 col-sm-1">
                         <button id="clearDatesButton" type="button" class="btn btn-primary btn-block"><i class="fas fa-calendar-times"></i></button>
                     </div>
                     <div class="col-xs-12 col-md-2 col-sm-2">
-                        <input name="startDate" class="form-control">
+                        <input name="startDate" class="form-control" placeholder="Start date">
                     </div>
                     <div class="col-xs-12 col-md-2 col-sm-2">
-                        <input name="endDate" class="form-control">
+                        <input name="endDate" class="form-control" placeholder="End date">
                     </div>
-                    <div class="col-xs-12 col-md-3 col-sm-3">
-                        <select class="custom-select mr-sm-2" id="filterRating">
-                            <option selected>No rating filter</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                    <div class="col-xs-12 col-md-1 col-sm-1">
+                        <select class="custom-select mr-sm-2" id="minRatingFilter">
+                            <option value="0" selected>0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
-                    <div class="col-xs-12 col-md-3 col-sm-3">
-                        <input type="text" class="form-control" placeholder="Zip">
+                    <div class="col-xs-12 col-md-1 col-sm-1">
+                        <select class="custom-select mr-sm-2" id="maxRatingFilter">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5" selected>5</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-2 col-sm-2">
+                        <input id="minFareFilter" type="number" class="form-control" placeholder="Min fare €">
+                    </div>
+                    <div class="col-xs-12 col-md-2 col-sm-2">
+                        <input id="maxFareFilter" type="number" class="form-control" placeholder="Max fare €">
+                    </div>
+                    <div class="col-xs-12 col-md-1 col-sm-1">
+                        <button id="resetFiltersButton" type="button" class="btn btn-primary btn-block"><i class="fas fa-filter"></i> Reset</button>
                     </div>
                 </div>
             </form>
         </div>
         <hr />
-
         <br>
 
         <!-- Ako nema voznje korisnik -->
@@ -749,8 +766,8 @@
     <script type="text/javascript" src="Scripts/animations.js"></script>
     <script type="text/javascript" src="Scripts/validation.js"></script>
     <script type="text/javascript" src="Scripts/sorting.js"></script>
-    <script type="text/javascript" src="Scripts/filter.js"></script>
     <script type="text/javascript" src="Scripts/main.js"></script>
+    <script type="text/javascript" src="Scripts/filter.js"></script>
 
 </body>
 </html>

@@ -17,6 +17,19 @@ $(document).ready(function () {
         $('input[name="startDate"]').attr('placeholder', 'Start date');
         $('input[name="endDate"]').val('');
         $('input[name="endDate"]').attr('placeholder', 'End date');
+        filterRides();
+    });
+
+    // reset all filter values
+    $('#resetFiltersButton').click(function () {
+        $('#clearDatesButton').trigger('click');
+        $('#minRatingFilter').val('0');
+        $('#maxRatingFilter').val('5');
+        $('#minFareFilter').val('');
+        $('#maxFareFilter').val('');
+
+        // ovde dodati mozda da vrati tabele sve ??
+        filterRides();
     });
 
     // start date picker
@@ -42,11 +55,12 @@ $(document).ready(function () {
 
         $('input[name="endDate"]').data('daterangepicker').minDate = this.startDate;
 
-        if ($('input[name="endDate"]').data('daterangepicker').startDate < $('input[name="endDate"]').data('daterangepicker').minDate) {
+        if ($('input[name="endDate"]').val() && $('input[name="endDate"]').data('daterangepicker').startDate < $('input[name="endDate"]').data('daterangepicker').minDate) {
             $('input[name="endDate"]').data('daterangepicker').startDate = $('input[name="endDate"]').data('daterangepicker').minDate;
             $('input[name="endDate"]').val($('input[name="endDate"]').data('daterangepicker').startDate.format('DD/MM/YYYY'));
         }
 
+        filterRides();
     });
 
     // end date picker
@@ -68,7 +82,58 @@ $(document).ready(function () {
         console.log("A new end date selection was made: " + formatedEnd);
         $('input[name="endDate"]').val(start.format('DD/MM/YYYY'));
         $('input[name="endDate"]').attr('placeholder', '');
+
+        filterRides();
     });
 
+    $('#minRatingFilter').change(filterRides);
+    $('#maxRatingFilter').change(filterRides);
+    $('#minFareFilter').change(filterRides);
+    $('#maxFareFilter').change(filterRides);
 
 });
+
+// filter
+function filterRides() {
+
+    let filterOptions = {};
+
+    if ($('input[name="startDate"]').val()) {
+        let startDateInput = $('input[name="startDate"]').val();
+        let switchedDateInput = `${startDateInput.split('/')[1]}/${startDateInput.split('/')[0]}/${startDateInput.split('/')[2]}`;
+        let startDateFormated = new Date(switchedDateInput);
+        filterOptions.startDate = startDateFormated;
+    }
+
+    if ($('input[name="endDate"]').val()) {
+        let endDateInput = $('input[name="endDate"]').val();
+        let switchedDateInput = `${endDateInput.split('/')[1]}/${endDateInput.split('/')[0]}/${endDateInput.split('/')[2]}`;
+        let endDateFormated = new Date(switchedDateInput);
+        filterOptions.endDate = endDateFormated;
+    }
+
+    if ($('#minRatingFilter').val())
+        filterOptions.minRating = $('#minRatingFilter').val();
+
+    if ($('#maxRatingFilter').val())
+        filterOptions.maxRating = $('#maxRatingFilter').val();
+
+    if ($('#minFareFilter').val())
+        filterOptions.minFare = $('#minFareFilter').val();
+
+    if ($('#maxFareFilter').val())
+        filterOptions.maxFare = $('#maxFareFilter').val();
+
+    console.log(filterOptions);
+
+    $.ajax({
+        method: 'PUT',
+        url: `/api/rides/${$('#loggedIn-username').text()}/filter`,
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(filterOptions)
+    }).done(function (filteredRides) {
+        console.log(filteredRides);
+    });    
+
+}

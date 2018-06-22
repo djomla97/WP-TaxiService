@@ -24,6 +24,7 @@ $(document).ready(function () {
     $('#checkFreeRidesButtonDiv').hide();
     $('#seeDriverRidesButtonDiv').hide();
     $('#customerCommentModal').hide();
+    $('#filterRow').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -173,6 +174,7 @@ $(document).ready(function () {
             $('#seeRidesButtonDiv').show();
             $('#no-rides-message').hide();
             $('#addRideFormDiv').hide();
+            $('#filterRow').hide();
         });
     });
 
@@ -244,6 +246,7 @@ $(document).ready(function () {
                     $('#addFreeDriverSelect').prop('disabled', true);
                 }
 
+                $('#filterRow').hide();
                 $('#ridesTableDiv').hide();
                 $('#addRideFormDiv').fadeIn('500');
                 $('#seeDispatcherRidesButtonDiv').show();
@@ -272,6 +275,7 @@ $(document).ready(function () {
     $('#addNewDriverButton').click(function (e) {
         e.preventDefault();
 
+        $('#filterRow').hide();
         $('#ridesTableDiv').hide();
         $('#addNewDriverButtonDiv').hide();
         $('#orderRidesTableDiv').hide();
@@ -319,6 +323,7 @@ $(document).ready(function () {
                     $('#ridesTableDiv').hide();
                     $('#checkFreeRidesButtonDiv').hide();
                     $('#seeDriverRidesButtonDiv').show();
+                    $('#filterRow').hide();
                 } else {
                     showSnackbar('Sorry, there are no ordered rides right now');
                 }
@@ -2543,23 +2548,32 @@ function clearForm(formID) {
     });
 }
 
-function checkRidesTables() { 
+function checkRidesTables() {
     $('#no-rides-message').hide();
 
-    if ($('#order-rides-table-body tr').length !== 0) 
+    if ($('#order-rides-table-body tr').length !== 0) {
         $('#orderRidesTableDiv').fadeIn('500');
-    else
+        $('#filterRow').show();
+    }
+    else {
         $('#orderRidesTableDiv').hide();
-    
-    if ($('#rides-table-body tr').length !== 0) 
+        $('#filterRow').show();
+    }
+
+    if ($('#rides-table-body tr').length !== 0) {
         $('#ridesTableDiv').fadeIn('500');
-    else
+        $('#filterRow').show();
+    }
+    else {
         $('#ridesTableDiv').hide();
+        $('#filterRow').show();
+    }
 
     if ($('#order-rides-table-body tr').length == 0 && $('#rides-table-body tr').length == 0) {
         $('#orderRidesTableDiv').hide();
         $('#ridesTableDiv').hide();
         $('#no-rides-message').show();
+        $('#filterRow').hide();
     }
 }
 
