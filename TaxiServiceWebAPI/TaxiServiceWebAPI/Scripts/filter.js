@@ -129,33 +129,51 @@ function filterRides() {
     if ($('#maxFareFilter').val())
         filterOptions.maxFare = $('#maxFareFilter').val();
 
-    console.log(filterOptions);
-
-    $.ajax({
-        method: 'PUT',
-        url: `/api/rides/${$('#loggedIn-username').text()}/filter`,
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify(filterOptions)
-    }).done(function (filteredRides) {
-
-        console.log(filteredRides);
-
-        if (filteredRides != null) {
-            $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
-                if (filteredRides.length > 0) {
-                    $('#filter-message').hide();
-                    updateRidesTables(filteredRides, user);
-                } else {      
-                    $('#ridesTableDiv').hide();
-                    $('#orderRidesTableDiv').hide();
-                    $('#filter-message').show();
-                }
-            });           
-        } else {
-            showSnackbar('Something went wrong with your request to filter rides');
-        }
-
-    });    
-
+    if (!$('#seeAllRidesButton').data('clicked')) {
+        $.ajax({
+            method: 'PUT',
+            url: `/api/rides/${$('#loggedIn-username').text()}/filter`,
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(filterOptions)
+        }).done(function (filteredRides) {
+            if (filteredRides != null) {
+                $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+                    if (filteredRides.length > 0) {
+                        $('#filter-message').hide();
+                        updateRidesTables(filteredRides, user);
+                    } else {
+                        $('#ridesTableDiv').hide();
+                        $('#orderRidesTableDiv').hide();
+                        $('#filter-message').show();
+                    }
+                });
+            } else {
+                showSnackbar('Something went wrong with your request to filter rides');
+            }
+        });
+    } else {
+        $.ajax({
+            method: 'PUT',
+            url: `/api/rides/filter`,
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify(filterOptions)
+        }).done(function (filteredRides) {
+            if (filteredRides != null) {
+                $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+                    if (filteredRides.length > 0) {
+                        $('#filter-message').hide();
+                        updateRidesTables(filteredRides, user);
+                    } else {
+                        $('#ridesTableDiv').hide();
+                        $('#orderRidesTableDiv').hide();
+                        $('#filter-message').show();
+                    }
+                });
+            } else {
+                showSnackbar('Something went wrong with your request to filter rides');
+            }
+        });
+    }
 }

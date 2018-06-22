@@ -25,11 +25,13 @@ $(document).ready(function () {
     $('#seeDriverRidesButtonDiv').hide();
     $('#customerCommentModal').hide();
     $('#filterRow').hide();
+    $('#seeAllRidesButton').data('clicked', false);
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
 
     if (loggedInUsername !== null) {
+        clearFilters();
         loginFromCookie(loggedInUsername);
     } else {
         $('#login-register-view').show();
@@ -39,6 +41,7 @@ $(document).ready(function () {
     $('#loginButton').click(function (e) {
         e.preventDefault();
         removeValidationErrors('register');
+        clearFilters();
         tryLoginUser();
     });
 
@@ -56,6 +59,7 @@ $(document).ready(function () {
         $('#orderRideMark').off('click');
         $('#addRideFormDiv').hide();
         $('#addNewDriverButtonDiv').hide();
+        clearFilters();
 
         $('#login-register-view').show();
         $('#login-register-view').slideDown(500);
@@ -159,6 +163,7 @@ $(document).ready(function () {
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
             $('#addRideFormDiv').hide();
+            $('#seeAllRidesButton').data('clicked', false);
             // provera sadrzaja tabela
             checkRidesTables();
         });
@@ -175,6 +180,7 @@ $(document).ready(function () {
             $('#no-rides-message').hide();
             $('#addRideFormDiv').hide();
             $('#filterRow').hide();
+            clearFilters();
         });
     });
 
@@ -182,6 +188,7 @@ $(document).ready(function () {
     $('#submitRideButton').click(function () {
         event.preventDefault();
         orderRide();
+        clearFilters();
     });
 
     $('#closeCommentRideModal').click(function () {
@@ -194,17 +201,20 @@ $(document).ready(function () {
     /* Dispatcher see all rides in system option */
     $('#seeAllRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
+        $('#seeAllRidesButton').data('clicked', true); // ovde sam stavio da bih mogao prepoznati koji filter koristi posle
         $('#no-rides-message').hide();
         $('#addRideButtonDiv').show();
         $('#addNewDriverButtonDiv').show();
         $('#addRideFormDiv').hide();
         $('#register-new-driver-form-view').hide();
+        clearFilters();
         showAllRides();
         checkRidesTables();
     });
 
     $('#seeDispatcherRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
+        clearFilters();
         $('#no-rides-message > h3').text('We\'re getting your rides ready. Please be patient.');
         $('#order-rides-table-body').empty();
         $('#rides-table-body').empty();
@@ -214,6 +224,7 @@ $(document).ready(function () {
         $('#addRideFormDiv').hide();
         $('#addNewDriverButtonDiv').show();
         $('#register-new-driver-form-view').hide();
+        $('#seeAllRidesButton').data('clicked', false);
 
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
             updateAllRidesTable(user);
@@ -224,6 +235,7 @@ $(document).ready(function () {
     /* Add new ride for dispatcher */
     $('#addRideButton').click(function (e) {
         e.preventDefault();
+        $('#seeAllRidesButton').data('clicked', false);
 
         $('#orderRidesTableDiv').fadeOut('500', function () {
 
@@ -255,6 +267,7 @@ $(document).ready(function () {
                 $('#no-rides-message').hide();
                 $('#register-new-driver-form-view').hide();
                 $('#addNewDriverButtonDiv').show();
+                clearFilters();
             });
         });
     });
@@ -263,6 +276,7 @@ $(document).ready(function () {
     $('#submitAddRideButton').click(function (e) {
         e.preventDefault();
         addNewRide();
+        clearFilters();
     });
 
     $('#closeAssignDriverModal').click(function (e) {
@@ -285,11 +299,14 @@ $(document).ready(function () {
         $('#seeDispatcherRidesButtonDiv').show();
         $('#register-new-driver-form-view').show();
         $('#addRideButtonDiv').show();
+        $('#seeAllRidesButton').data('clicked', false);
+        clearFilters();
     });
 
     $('#registerNewDriverButton').click(function (e) {
         e.preventDefault();
         tryAddNewDriver();
+        clearFilters();
     });
 
     /* DRIVER processing rides */
@@ -324,6 +341,7 @@ $(document).ready(function () {
                     $('#checkFreeRidesButtonDiv').hide();
                     $('#seeDriverRidesButtonDiv').show();
                     $('#filterRow').hide();
+                    clearFilters();
                 } else {
                     showSnackbar('Sorry, there are no ordered rides right now');
                 }
@@ -1543,20 +1561,18 @@ function updateAllRidesTable(user) {
     // update other rides if user has any
     $.get(`/api/rides/${user.Username}`, function (allRides) {
         console.log('updating with user')
-        updateRidesTables(allRides, user.Role);
+        updateRidesTables(allRides, user);
     });
 }
 
-// direktno preko voznji
+// direktno preko voznji da bi mogli drugi da koriste
 function updateRidesTables(rides, user) {
-
 
     if (rides !== null) {
         $('#rides-table-body').empty();
         $('#order-rides-table-body').empty();
         if (rides.length > 0) {
             rides.forEach(function (ride) {
-                console.log(ride);
 
                 // za dispatchera da bude odvojena tabela
                 if (ride.StatusOfRide == 'CREATED_ONWAIT' && user.Role == 'Dispatcher') {
@@ -2576,7 +2592,6 @@ function checkRidesTables() {
     if ($('#rides-table-body tr').length !== 0) {
         $('#ridesTableDiv').fadeIn('500');
         $('#filterRow').show();
-        console.log('ima al nema')
     }
     else {
         $('#ridesTableDiv').hide();
@@ -2617,6 +2632,18 @@ function updateMark(role) {
             $('#checkFreeRidesButton').trigger('click');
         });
     }
+}
+
+function clearFilters() {
+    $('input[name="startDate"]').val('');
+    $('input[name="startDate"]').attr('placeholder', 'Start date');
+    $('input[name="endDate"]').val('');
+    $('input[name="endDate"]').attr('placeholder', 'End date');
+    $('#minRatingFilter').val('0');
+    $('#maxRatingFilter').val('5');
+    $('#minFareFilter').val('');
+    $('#maxFareFilter').val('');
+    $('#filter-message').hide();
 }
 
 /* Cookie logika */

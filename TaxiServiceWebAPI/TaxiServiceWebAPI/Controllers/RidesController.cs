@@ -527,7 +527,7 @@ namespace TaxiServiceWebAPI.Controllers
 
         [HttpPut]
         [Route("api/rides/{username}/filter")]
-        public List<Ride> Get(string username, [FromBody]FilterOptions filterOptions)
+        public List<Ride> Filter(string username, [FromBody]FilterOptions filterOptions)
         {
             try
             {
@@ -675,6 +675,118 @@ namespace TaxiServiceWebAPI.Controllers
 
         }
 
+        [HttpPut]
+        [Route("api/rides/filter")]
+        public List<Ride> Filter([FromBody]FilterOptions filterOptions)
+        {
+            try
+            {
+                List<Ride> allRides = jsonParser.ReadRides();
+
+                if (allRides.Count == 0)
+                    return null;
+
+                bool checkStartDate = false;
+                bool checkEndDate = false;
+                bool checkMinRating = false;
+                bool checkMaxRating = false;
+                bool checkMinFare = false;
+                bool checkMaxFare = false;
+
+                DateTime startDateParsed = filterOptions.startDate.ToLocalTime();
+                if (filterOptions.startDate.Year != 1)
+                    checkStartDate = true;
+
+                DateTime endDateParsed = filterOptions.endDate.ToLocalTime().AddHours(23).AddMinutes(59).AddSeconds(59);
+                if (filterOptions.endDate.Year != 1)
+                    checkEndDate = true;
+
+
+                if (filterOptions.minRating > 0)
+                    checkMinRating = true;
+                if (filterOptions.maxRating < 5)
+                    checkMaxRating = true;
+                if (filterOptions.minFare > 0)
+                    checkMinFare = true;
+                if (filterOptions.maxFare > 0)
+                    checkMaxFare = true;
+
+
+                List<Ride> filteredRides = new List<Ride>(allRides);
+                if (checkStartDate)
+                {
+                    foreach (var ride in allRides)
+                        if (DateTime.Compare(ride.DateAndTime, startDateParsed) < 0)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+
+                }
+
+                if (checkEndDate)
+                {
+                    foreach (var ride in allRides)
+                        if (DateTime.Compare(ride.DateAndTime, endDateParsed) > 0)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+                }
+
+                if (checkMinRating)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideComment != null)
+                        {
+                            if ((int)ride.RideComment.RideMark < filterOptions.minRating)
+                                if (filteredRides.Contains(ride))
+                                    filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkMaxRating)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideComment != null)
+                        {
+                            if ((int)ride.RideComment.RideMark > filterOptions.maxRating)
+                                if (filteredRides.Contains(ride))
+                                    filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkMinFare)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.Fare < filterOptions.minFare)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+
+                    }
+                }
+
+                if (checkMaxFare)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.Fare > filterOptions.maxFare)
+                            if (filteredRides.Contains(ride))
+                                filteredRides.Remove(ride);
+
+                    }
+                }
+
+                return filteredRides;
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
 
     }
 }

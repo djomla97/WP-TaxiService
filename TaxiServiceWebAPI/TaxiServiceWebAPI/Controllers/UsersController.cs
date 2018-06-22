@@ -33,6 +33,8 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 if(cust.Username == username)
                 {
+                    // pass postaviti na empty ?
+                    cust.Password = "";
                     return cust;
                 }
             }
@@ -42,6 +44,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 if (driver.Username == username)
                 {
+                    driver.Password = "";
                     return driver;
                 }
             }
@@ -51,6 +54,7 @@ namespace TaxiServiceWebAPI.Controllers
             {
                 if (disp.Username == username)
                 {
+                    disp.Password = "";
                     return disp;
                 }
             }
@@ -175,40 +179,22 @@ namespace TaxiServiceWebAPI.Controllers
             string username = credentials.Username;
             string password = credentials.Password;
 
-            try
-            {
-                var foundUser = jsonParser.ReadUsers()
-                            .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
-
-                return true;
-
-            }
-            catch (Exception)
-            {
-                try
-                {
-                    var foundUser = jsonParser.ReadDrivers()
-                                .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
-
+            List<Customer> allUsers = jsonParser.ReadUsers();
+            foreach (var user in allUsers)
+                if (user.Username.ToLower() == username && user.Password == password)
                     return true;
 
-                }
-                catch (Exception)
-                {
-                    try
-                    {
-                        var foundUser = jsonParser.ReadDispatchers()
-                                    .Where(u => u.Username.ToLower().Equals(username.ToLower()) && u.Password.Equals(password)).First();
+            List<Driver> allDrivers = jsonParser.ReadDrivers();
+            foreach (var user in allDrivers)
+                if (user.Username.ToLower() == username && user.Password == password)
+                    return true;
 
-                        return true;
+            List<Dispatcher> allDispatchers = jsonParser.ReadDispatchers();
+            foreach (var user in allDispatchers)
+                if (user.Username.ToLower() == username && user.Password == password)
+                    return true;
 
-                    }
-                    catch (Exception)
-                    {
-                        return false;
-                    }
-                }
-            }
+            return false;
         }
 
     }
