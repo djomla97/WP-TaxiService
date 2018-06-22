@@ -192,7 +192,6 @@ $(document).ready(function () {
     /* Dispatcher see all rides in system option */
     $('#seeAllRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
-        console.log('Getting all rides in the system ...');
         $('#no-rides-message').hide();
         $('#addRideButtonDiv').show();
         $('#addNewDriverButtonDiv').show();
@@ -204,7 +203,6 @@ $(document).ready(function () {
 
     $('#seeDispatcherRidesButton').unbind('click').click(function (e) {
         e.preventDefault();
-        console.log('Showing all dispatcher rides');
         $('#no-rides-message > h3').text('We\'re getting your rides ready. Please be patient.');
         $('#order-rides-table-body').empty();
         $('#rides-table-body').empty();
@@ -230,7 +228,6 @@ $(document).ready(function () {
             // fill select options
             $.get('/api/drivers/free', function (freeDrivers) {
                 $('#addFreeDriverSelect').empty();
-                console.log('Getting free drivers for select menu');
                 //freeDrivers = null //debug
                 if (freeDrivers != null) {
                     if (freeDrivers.length > 0) {
@@ -262,7 +259,6 @@ $(document).ready(function () {
     /* Submit new ride from dispatcher */
     $('#submitAddRideButton').click(function (e) {
         e.preventDefault();
-        console.log('Trying to add new ride ...');
         addNewRide();
     });
 
@@ -289,8 +285,6 @@ $(document).ready(function () {
 
     $('#registerNewDriverButton').click(function (e) {
         e.preventDefault();
-
-        console.log('Trying to add a new driver from dispatcher');
         tryAddNewDriver();
     });
 
@@ -453,7 +447,6 @@ function tryAddUser() {
         if (canAddUser) {
 
             let gender = $('#register-form input[name=radioGender]:checked').val();
-            console.log('[DEBUG] Customer gender selected: ' + gender);
 
             // novi korisnik
             let newUser = {};            
@@ -505,18 +498,13 @@ function tryAddNewDriver() {
 
             // email validacija '@'
             if (!($('#addDriverEmail').val().indexOf('@') >= 0)) {
-                console.log('no @');
                 addValidationError('addDriverEmail', 'not-available', 'You must have a @ in the email address.');
-
             } else {
-                console.log('yes @');
 
                 // email validacija '.'
                 if (!($('#addDriverEmail').val().indexOf('.') >= ($('#addDriverEmail').val().indexOf('@')))) {
-                    console.log('no .');
                     addValidationError('addDriverEmail', 'not-available', 'You must have a dot (.) after @ in the email address.');
                 } else {
-                    console.log('yes .');
                     removeValidationError('addDriverEmail', 'not-available');
                 }
             }
@@ -651,10 +639,8 @@ function tryAddNewDriver() {
 
         // konacna provera
         if (canAddDriver) {
-            console.log('Adding new driver');
 
             let gender = $('#register-new-driver-form input[name=addDriverGender]:checked').val();
-            console.log('[DEBUG] Driver gender selected: ' + gender);
 
             let newDriver = {
                 Username: $('#addDriverUsername').val(),
@@ -682,7 +668,6 @@ function tryAddNewDriver() {
                 }
             };
 
-            console.log(newDriver);
 
             // Ajax za dodavanje vozaca
             $.ajax({
@@ -693,8 +678,6 @@ function tryAddNewDriver() {
                 data: JSON.stringify(newDriver)
 
             }).done(function (data) {
-                console.log('Response after adding new driver: ');
-                console.log(data);
 
                 if (data == 'Created') {
                     clearForm('register-new-driver-form');
@@ -774,7 +757,6 @@ function loginFromCookie(username) {
         // sklonimo onaj login-fail
         $('p.login-fail').hide();
 
-        console.log(user.Role);
         // ako je korisnik, onda ima Ordered rides
         if (user.Role == 'Customer') {
 
@@ -874,7 +856,6 @@ function tryLoginUser() {
                     $('#fullName').text(`${user.FirstName} ${user.LastName}`);
                     $('#loggedIn-username').text(`${user.Username}`);
 
-                    console.log(user.Role);
                     // svaki korisnik drugaciji view ima
                     if (user.Role == 'Dispatcher') {
                         $('#addRideButtonDiv').show();
@@ -1391,8 +1372,6 @@ function updateOrderTable(orderRide, userRole) {
     if (orderRide.StatusOfRide == 'CREATED_ONWAIT')
         status = 'Created - on wait';
 
-    console.log(orderRide)
-
     if (userRole == 'Customer') {
         $('#order-rides-table-body').append(`<tr id="${orderRide.ID}"><td scope="row"><strong>${orderRide.ID}</strong></td><td>${orderRide.StartLocation.LocationAddress.Street}, ${orderRide.StartLocation.LocationAddress.City} ${orderRide.StartLocation.LocationAddress.ZipCode}</td>
                             <td>${formatedDate}</td>
@@ -1461,29 +1440,22 @@ function updateOrderTable(orderRide, userRole) {
                         // uzmemo voznju, dodelimo vozaca i dispatchera i update preko api-a
                         $.get(`/api/rides/${orderRide.ID}`, function (oldRide) {
 
-                            console.log('Assigned driver: ' + $('#assignedDriverSelect').val());
-                            console.log('Assigned dispatcher: ' + $('#loggedIn-username').text());
-
                             // uzmemo dispatchera
                             $.get(`/api/users/${$('#loggedIn-username').text()}`, function (dispatcher) {
 
                                 // uzmemo drivera
                                 $.get(`/api/users/${$('#assignedDriverSelect').val()}`, function (driver) {
 
-                                    console.log(`Request: PUT /api/rides/assign?rideID=${oldRide.ID}&driver=${driver.Username}&dispatcher=${dispatcher.Username}`);
-
                                     // kad sve prodje, posaljemo nazad voznju na api
                                     $.ajax({
                                         method: 'PUT',
                                         url: `/api/rides/assign?rideID=${oldRide.ID}&driver=${driver.Username}&dispatcher=${dispatcher.Username}`
                                     }).done(function (response) {
-                                        console.log('Response from API after assign: ' + response);
 
                                         $('#assignDriverModal').modal('hide');
                                         $(`#confirmAssignDriver${orderRide.ID}`).off('click');
                                         $(`#confirmAssignDriver${orderRide.ID}`).attr('id', 'confirmAssignDriver');
 
-                                        console.log('triggering see all rides button click');
                                         $('#seeAllRidesButton').trigger('click');
                                         showSnackbar('Successfully assigned driver ' + driver.Username + ' to ride: ' + oldRide.ID);
 
@@ -1540,7 +1512,6 @@ function updateOrderTable(orderRide, userRole) {
                         url: `/api/rides/take/${orderRide.ID}/${$('#loggedIn-username').text()}`
                     }).done(function (data, statusText, xhr) {
                         let status = xhr.status;
-                        console.log(status)
                         if (status == 200) {
                             showSnackbar(`You have taken ride with id: ${orderRide.ID}`);
                             $('#seeDriverRidesButton').trigger('click');
@@ -1565,11 +1536,8 @@ function updateOrderTable(orderRide, userRole) {
 // update all rides table
 function updateAllRidesTable(user) {
    
-    console.log('Trying to get user rides');
     // update other rides if user has any
     $.get(`/api/rides/${user.Username}`, function (rides) {
-        console.log('Got rides from API for ' + user.Username);
-        console.log(rides);
         if (rides !== null) { 
             if (rides.length > 0) {
                 rides.forEach(function (ride) {
@@ -1625,7 +1593,6 @@ function updateAllRidesTable(user) {
                         description = `${ride.RideComment.Description}`;
 
                     let rating;
-                    console.log('DEBUG - ride rating: ' + ride.RideComment.RideMark);
                     if (description == 'No comment' )
                         rating = 'Not rated';
                     else
@@ -1649,7 +1616,6 @@ function updateAllRidesTable(user) {
 
                         // add one button event listener
                         $(`#showDetail${ride.ID}`).unbind('click').on('click', function () {
-                            console.log('Getting info on ride with ID: ' + ride.ID);
                             $.get(`/api/rides/${ride.ID}`, function (ride) {
                                 updateDetailRideInfo(ride);
                                 $('#rideModal').modal('show');
@@ -1687,7 +1653,6 @@ function updateAllRidesTable(user) {
                                 $('#confirmFail').attr('id', `confirmFail${ride.ID}`);
                                 $(`#confirmFail${ride.ID}`).click(function (e) {
                                     e.preventDefault();
-                                    console.log('[DEBUG] Confirming failed ride: ' + ride.ID);
 
                                     let comment = $('textarea#driverRideCommentText').val();
                                     let canFailRide = true;
@@ -1697,7 +1662,6 @@ function updateAllRidesTable(user) {
                                     let rating = $('#ratingNumber').val();
 
                                     if (canFailRide) {
-                                        console.log('Can fail');
                                         removeValidationError('driverRideCommentText', 'empty-check');
 
                                         let options = {
@@ -1722,7 +1686,6 @@ function updateAllRidesTable(user) {
                                             }
                                         });
                                     } else {
-                                        console.log('cant fail');
                                         addValidationError('driverRideCommentText', 'empty-check', 'You must enter some feedback for us');
                                     }
                                 });
@@ -1738,9 +1701,6 @@ function updateAllRidesTable(user) {
                                 $('#confirmSuccessOrderRide').attr('id', `confirmSuccessOrderRide${ride.ID}`);
                                 $(`#confirmSuccessOrderRide${ride.ID}`).unbind('click').click(function (e) {
                                     e.preventDefault();
-
-                                    // validation
-                                    console.log('[DEBUG] Confirming failed ride: ' + ride.ID);
                               
                                     let canSuccess = true;
 
@@ -1807,7 +1767,6 @@ function updateAllRidesTable(user) {
 
                                     // ahh konacno ne mogu vise
                                     if (canSuccess) {
-                                        console.log('success');
 
                                         // za API options
                                         let options = {
@@ -1832,7 +1791,7 @@ function updateAllRidesTable(user) {
                                             data: JSON.stringify(options)
                                         }).done(function (response) {
                                             if (response != null) {
-                                                console.log(response);
+                                                showSnackbar('Thanks for your feedback');
                                             }
 
                                             $('#successOrderRideModal').modal('hide');
@@ -1872,7 +1831,6 @@ function updateAllRidesTable(user) {
                             });
                         }
                     } else {
-                        console.log(ride.StatusOfRide);
                         if (ride.StatusOfRide == 'SUCCESSFUL' && description == 'No comment') {
                             
                             $('#rides-table-body').append(`<tr id="${ride.ID}"><td scope="row"><strong>${ride.ID}</strong></td><td>${ride.StartLocation.LocationAddress.Street}, ${ride.StartLocation.LocationAddress.City} ${ride.StartLocation.LocationAddress.ZipCode}</td>
@@ -1901,7 +1859,6 @@ function updateAllRidesTable(user) {
 
                             // POST COMMENT
                             $(`#postComment${ride.ID}`).unbind('click').click(function () {
-                                console.log('Posting comment');
 
                                 // pokupimo rating sa animacijama
                                 if (!$('#customerComment').find('div#commentRatingDiv').length) {
@@ -1911,7 +1868,6 @@ function updateAllRidesTable(user) {
                                 
                                 $('#confirmCustomerComment').attr('id', `confirmCustomerComment${ride.ID}`);
 
-                                console.log('adding event listener');
                                 $(`#confirmCustomerComment${ride.ID}`).unbind('click').click(function () {
 
                                     let comment = $('textarea#customerCommentText').val();
@@ -1927,12 +1883,9 @@ function updateAllRidesTable(user) {
                                         $.get(`/api/rides/${ride.ID}`, function (ride) {
                                             if (ride != null) {
 
-                                                console.log(ride);
                                                 ride.RideComment.CommentUser = user;
                                                 ride.RideComment.Description = comment;
                                                 ride.RideComment.RideMark = rating;
-
-                                                console.log(ride);
 
                                                 // send 
                                                 $.ajax({
@@ -2012,8 +1965,6 @@ function showAllRides() {
     $.get('/api/rides', function (rides) {
         if (rides != null) {
             $('#no-rides-message').hide();
-            console.log('[DEBUG] Show All Rides: ' + rides.length);
-            console.log(rides);
             if (rides !== null) {
                 if (rides.length > 0) {
                     $('#ridesTableDiv > h3').text('Rides:');
@@ -2086,7 +2037,6 @@ function showAllRides() {
                         $(`#showDetail${ride.ID}`).on('click', function () {
                             console.log('Getting info on ride with ID: ' + ride.ID);
                             $.get(`/api/rides/${ride.ID}`, function (ride) {
-                                console.log('Ride status: ' + ride.StatusOfRide);
                                 updateDetailRideInfo(ride);
                                 $('#rideModal').modal('show');
                             });
@@ -2096,13 +2046,11 @@ function showAllRides() {
                     });
                 }
             } else {
-                console.log('There are no rides in the system right now.');
                 $('#no-rides-message > h3').text('Oops, there are no rides right now');
                 $('#ridesTableDiv').hide();
             }
             updateMark('Dispatcher');
         } else {
-            console.log('There are no rides in the system right now.');
             $('#no-rides-message > h3').text('Oops, there are no rides right now');
             $('#ridesTableDiv').hide();
         }
@@ -2174,7 +2122,6 @@ function updateDetailRideInfo(ride) {
     }
 
     let rideComment;
-    console.log(ride.RideComment);
     if (ride.RideComment != null && ride.RideComment.Description != null && ride.RideComment.CommentUser != null) {
         rideComment = `<blockquote class="blockquote text-center">
                             <p class="mb-0">"${ride.RideComment.Description}"</p>
@@ -2191,7 +2138,6 @@ function updateDetailRideInfo(ride) {
     $('#ride-info').append(`<span class="user-key">Status of ride</span>: <p>${status}</p>`);
     $('#ride-info').append(`<span class="user-key">Fare</span>: <p>${ride.Fare.toFixed(2)} €</p>`);
     $('#ride-info').append(`<span class="user-key">Vehicle type</span>: <p>${ride.RideVehicle.VehicleType}</p>`);
-    console.log('Number of stars: ' + ride.RideComment.RideMark);
     if (ride.StatusOfRide != 'CREATED_ONWAIT' && ride.StatusOfRide != 'FORMED' && ride.StatusOfRide != 'ACCEPTED') {
         switch (ride.RideComment.RideMark) {
             case 0: $('#ride-info').append(`<span class="user-key">Rating</span>:<br><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i><i class="far fa-star icon-b"></i>`); break;
@@ -2349,8 +2295,6 @@ function addButtonListeners(orderRide) {
         let orderID = $(this).attr('id').replace(/\D/g, '');
 
         if (!$('#rideComment').find('div#commentRatingDiv').length) {
-            console.log('NE POSTOJI');
-
             ratingDiv = $('#commentRatingDiv').detach();
             $('#rideComment').append(ratingDiv);
         }
@@ -2601,7 +2545,6 @@ function clearForm(formID) {
 
 function checkRidesTables() { 
     $('#no-rides-message').hide();
-    console.log('DEBUG: Checking tables for rides');
 
     if ($('#order-rides-table-body tr').length !== 0) 
         $('#orderRidesTableDiv').fadeIn('500');

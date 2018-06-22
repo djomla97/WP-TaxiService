@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="Content/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="Content/fontawesome-all.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="Content/daterangepicker.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="Content/main.css" />
 </head>
 
@@ -164,6 +165,35 @@
             <div class="col-xs-12 col-sm-4 col-md-4" id="logoutButtonDiv">
                 <button id="logoutButton" type="button" class="btn btn-primary btn-lg btn-block"><i class="fas fa-sign-out-alt"></i> Log out</button>
             </div>
+        </div>
+        <hr />
+
+        <!-- Filter row -->
+        <div class="row center-text">
+            <form>
+                <div class="form-row">
+                    <div class="col-xs-12 col-md-1 col-sm-1">
+                        <button id="clearDatesButton" type="button" class="btn btn-primary btn-block"><i class="fas fa-calendar-times"></i></button>
+                    </div>
+                    <div class="col-xs-12 col-md-2 col-sm-2">
+                        <input name="startDate" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-md-2 col-sm-2">
+                        <input name="endDate" class="form-control">
+                    </div>
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <select class="custom-select mr-sm-2" id="filterRating">
+                            <option selected>No rating filter</option>
+                            <option value="1">One</option>
+                            <option value="2">Two</option>
+                            <option value="3">Three</option>
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <input type="text" class="form-control" placeholder="Zip">
+                    </div>
+                </div>
+            </form>
         </div>
         <hr />
 
@@ -425,7 +455,6 @@
         </div>
     </div>
     <!-- END of Home-View div  -->
-
     <!-- MODALS -->
     <!-- Information about user and edit form -->
     <div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
@@ -715,9 +744,12 @@
     <!-- Javascript -->
     <script type="text/javascript" src="Scripts/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="Scripts/daterangepicker.js"></script>
     <script type="text/javascript" src="Scripts/animations.js"></script>
     <script type="text/javascript" src="Scripts/validation.js"></script>
     <script type="text/javascript" src="Scripts/sorting.js"></script>
+    <script type="text/javascript" src="Scripts/filter.js"></script>
     <script type="text/javascript" src="Scripts/main.js"></script>
 
 </body>
