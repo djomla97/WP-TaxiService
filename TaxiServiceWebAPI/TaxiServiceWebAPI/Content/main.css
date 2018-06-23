@@ -21,6 +21,11 @@ h4.info-location {
     cursor: pointer;
 }
 
+.map {
+    height: 300px;
+    width: 300px;
+}
+
 #ratingSort {
     cursor: pointer;
 }

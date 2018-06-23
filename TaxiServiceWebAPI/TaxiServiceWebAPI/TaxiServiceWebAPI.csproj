@@ -216,6 +216,7 @@
     <Content Include="Content\images\favicon.ico" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\main.css" />
+    <Content Include="Content\ol.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -252,8 +253,10 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Scripts\main.js" />
+    <Content Include="Scripts\map.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\ol.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\sorting.js" />
