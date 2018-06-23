@@ -579,6 +579,10 @@ namespace TaxiServiceWebAPI.Controllers
                 bool checkMaxRating = false;
                 bool checkMinFare = false;
                 bool checkMaxFare = false;
+                bool checkDriverFirstName = false;
+                bool checkDriverLastName = false;
+                bool checkUserFirstName = false;
+                bool checkUserLastName = false;
 
                 DateTime startDateParsed = filterOptions.startDate.ToLocalTime();
                 if (filterOptions.startDate.Year != 1)
@@ -597,6 +601,15 @@ namespace TaxiServiceWebAPI.Controllers
                     checkMinFare = true;
                 if (filterOptions.maxFare > 0)
                     checkMaxFare = true;
+
+                if (filterOptions.driverFirstName != null)
+                    checkDriverFirstName = true;
+                if (filterOptions.driverLastName != null)
+                    checkDriverLastName = true;
+                if (filterOptions.userFirstName != null)
+                    checkUserFirstName = true;
+                if (filterOptions.userLastName != null)
+                    checkUserLastName = true;
 
 
                 List<Ride> filteredRides = new List<Ride>(userRides);
@@ -665,6 +678,98 @@ namespace TaxiServiceWebAPI.Controllers
                     }
                 }
 
+                if (checkDriverFirstName)
+                {
+                    foreach(var ride in userRides)
+                    {
+                        if(ride.RideDriver != null)
+                        {
+                            if(ride.RideDriver.FirstName != null)
+                            {
+                                if (!ride.RideDriver.FirstName.ToLower().Contains(filterOptions.driverFirstName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }                        
+                    }
+                }
+
+                if (checkDriverLastName)
+                {
+                    foreach (var ride in userRides)
+                    {
+                        if (ride.RideDriver != null)
+                        {
+                            if (ride.RideDriver.LastName != null)
+                            {
+                                if (!ride.RideDriver.LastName.ToLower().Contains(filterOptions.driverLastName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkUserFirstName)
+                {
+                    foreach (var ride in userRides)
+                    {
+                        if (ride.RideCustomer != null)
+                        {
+                            if (ride.RideCustomer.FirstName != null)
+                            {
+                                if (!ride.RideCustomer.FirstName.ToLower().Contains(filterOptions.userFirstName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkUserLastName)
+                {
+                    foreach (var ride in userRides)
+                    {
+                        if (ride.RideCustomer != null)
+                        {
+                            if (ride.RideCustomer.LastName != null)
+                            {
+                                if (!ride.RideCustomer.LastName.ToLower().Contains(filterOptions.userLastName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
                 return filteredRides;
 
             }
@@ -692,6 +797,10 @@ namespace TaxiServiceWebAPI.Controllers
                 bool checkMaxRating = false;
                 bool checkMinFare = false;
                 bool checkMaxFare = false;
+                bool checkDriverFirstName = false;
+                bool checkDriverLastName = false;
+                bool checkUserFirstName = false;
+                bool checkUserLastName = false;
 
                 DateTime startDateParsed = filterOptions.startDate.ToLocalTime();
                 if (filterOptions.startDate.Year != 1)
@@ -711,6 +820,14 @@ namespace TaxiServiceWebAPI.Controllers
                 if (filterOptions.maxFare > 0)
                     checkMaxFare = true;
 
+                if (filterOptions.driverFirstName != null)
+                    checkDriverFirstName = true;
+                if (filterOptions.driverLastName != null)
+                    checkDriverLastName = true;
+                if (filterOptions.userFirstName != null)
+                    checkUserFirstName = true;
+                if (filterOptions.userLastName != null)
+                    checkUserLastName = true;
 
                 List<Ride> filteredRides = new List<Ride>(allRides);
                 if (checkStartDate)
@@ -775,6 +892,98 @@ namespace TaxiServiceWebAPI.Controllers
                             if (filteredRides.Contains(ride))
                                 filteredRides.Remove(ride);
 
+                    }
+                }
+
+                if (checkDriverFirstName)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideDriver != null)
+                        {
+                            if (ride.RideDriver.FirstName != null)
+                            {
+                                if (!ride.RideDriver.FirstName.ToLower().Contains(filterOptions.driverFirstName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkDriverLastName)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideDriver != null)
+                        {
+                            if (ride.RideDriver.LastName != null)
+                            {
+                                if (!ride.RideDriver.LastName.ToLower().Contains(filterOptions.driverLastName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkUserFirstName)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideCustomer != null)
+                        {
+                            if (ride.RideCustomer.FirstName != null)
+                            {
+                                if (!ride.RideCustomer.FirstName.ToLower().Contains(filterOptions.userFirstName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
+                    }
+                }
+
+                if (checkUserLastName)
+                {
+                    foreach (var ride in allRides)
+                    {
+                        if (ride.RideCustomer != null)
+                        {
+                            if (ride.RideCustomer.LastName != null)
+                            {
+                                if (!ride.RideCustomer.LastName.ToLower().Contains(filterOptions.userLastName.ToLower()))
+                                    filteredRides.Remove(ride);
+                            }
+                            else
+                            {
+                                filteredRides.Remove(ride);
+                            }
+                        }
+                        else
+                        {
+                            filteredRides.Remove(ride);
+                        }
                     }
                 }
 

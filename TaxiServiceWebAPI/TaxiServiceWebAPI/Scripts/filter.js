@@ -7,6 +7,8 @@ $(document).ready(function () {
 
     // hide filter message
     $('#filter-message').hide();
+    $('#advancedFilterRow').hide();
+    $('#showAdvancedFiltersDiv').hide();
 
     // inital values
     $('input[name="startDate"]').val('');
@@ -36,6 +38,7 @@ $(document).ready(function () {
 
         filterRides();
     });
+
 
     // start date picker
     $('input[name="startDate"]').daterangepicker({
@@ -95,6 +98,10 @@ $(document).ready(function () {
     $('#maxRatingFilter').change(filterRides);
     $('#minFareFilter').change(filterRides);
     $('#maxFareFilter').change(filterRides);
+    $('#driverFirstNameFilter').change(filterRides);
+    $('#driverLastNameFilter').change(filterRides);
+    $('#userFirstNameFilter').change(filterRides);
+    $('#userLastNameFilter').change(filterRides);
 
 });
 
@@ -129,7 +136,20 @@ function filterRides() {
     if ($('#maxFareFilter').val())
         filterOptions.maxFare = $('#maxFareFilter').val();
 
+    if ($('#driverFirstNameFilter').val())
+        filterOptions.driverFirstName = $('#driverFirstNameFilter').val();
+
+    if ($('#driverLastNameFilter').val())
+        filterOptions.driverLastName = $('#driverLastNameFilter').val();
+
+    if ($('#userFirstNameFilter').val())
+        filterOptions.userFirstName = $('#userFirstNameFilter').val();
+
+    if ($('#userLastNameFilter').val())
+        filterOptions.userLastName = $('#userLastNameFilter').val();
+
     if (!$('#seeAllRidesButton').data('clicked')) {
+        console.log('normal filter');
         $.ajax({
             method: 'PUT',
             url: `/api/rides/${$('#loggedIn-username').text()}/filter`,
@@ -137,7 +157,7 @@ function filterRides() {
             contentType: 'application/json',
             data: JSON.stringify(filterOptions)
         }).done(function (filteredRides) {
-            if (filteredRides != null) {
+            if (filteredRides !== null) {
                 $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
                     if (filteredRides.length > 0) {
                         $('#filter-message').hide();
@@ -153,6 +173,7 @@ function filterRides() {
             }
         });
     } else {
+        console.log('all rides filter');
         $.ajax({
             method: 'PUT',
             url: `/api/rides/filter`,
@@ -160,7 +181,7 @@ function filterRides() {
             contentType: 'application/json',
             data: JSON.stringify(filterOptions)
         }).done(function (filteredRides) {
-            if (filteredRides != null) {
+            if (filteredRides !== null) {
                 $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
                     if (filteredRides.length > 0) {
                         $('#filter-message').hide();

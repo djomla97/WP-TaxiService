@@ -26,6 +26,8 @@ $(document).ready(function () {
     $('#customerCommentModal').hide();
     $('#filterRow').hide();
     $('#seeAllRidesButton').data('clicked', false);
+    $('#showAdvancedFiltersDiv').hide();
+    $('#advHR').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -207,6 +209,8 @@ $(document).ready(function () {
         $('#addNewDriverButtonDiv').show();
         $('#addRideFormDiv').hide();
         $('#register-new-driver-form-view').hide();
+        $('#showAdvancedFiltersButton').data('clicked', true);
+        $('#showAdvancedFiltersButton').trigger('click');
         clearFilters();
         showAllRides();
         checkRidesTables();
@@ -225,6 +229,8 @@ $(document).ready(function () {
         $('#addNewDriverButtonDiv').show();
         $('#register-new-driver-form-view').hide();
         $('#seeAllRidesButton').data('clicked', false);
+        $('#showAdvancedFiltersButton').data('clicked', true);
+        $('#showAdvancedFiltersButton').trigger('click');
 
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
             updateAllRidesTable(user);
@@ -308,6 +314,33 @@ $(document).ready(function () {
         tryAddNewDriver();
         clearFilters();
     });
+
+    // Advanced filters for dispatcher
+    $('#showAdvancedFiltersButton').data('clicked', false);
+    $('#showAdvancedFiltersButton').click(function () {
+        if (!$('#showAdvancedFiltersButton').data('clicked')) {
+            $('#adv-arrow').removeClass('fa-angle-right');
+            $('#adv-arrow').addClass('fa-angle-down');
+            $('#advHR').show();
+            $('#advancedFilterRow').slideDown(500);
+            $('#showAdvancedFiltersButton').data('clicked', true);
+        } else {
+            $('#adv-arrow').removeClass('fa-angle-down');
+            $('#adv-arrow').addClass('fa-angle-right'); 
+            $('#advancedFilterRow').slideUp(500, function () {
+                $('#advHR').hide();
+            });
+            $('#showAdvancedFiltersButton').data('clicked', false);
+
+            // clear advanced filters
+            $('#driverFirstNameFilter').val('');
+            $('#driverLastNameFilter').val('');
+            $('#userFirstNameFilter').val('');
+            $('#userLastNameFilter').val('');
+            filterRides(); // ovde ce mozda greska biti ?
+        }
+    });
+
 
     /* DRIVER processing rides */
     // restart za button da bih mogao dodati nove event listenere
@@ -731,8 +764,12 @@ function loginFromCookie(username) {
             $('#seeRidesButtonDiv').hide();
             $('#orderRidesTableDiv').hide();
             $('#orderRideFormDiv').hide();
+            $('#clearDatesButtonDiv').hide();
             $('#seeAllRidesButtonDiv').show();
             $('#addNewDriverButtonDiv').show();
+            $('#showAdvancedFiltersDiv').show();
+            $('#checkFreeRidesButtonDiv').hide();
+            $('#advancedFilterRow').hide();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
@@ -743,8 +780,12 @@ function loginFromCookie(username) {
             $('#seeDispatcherRidesButtonDiv').hide();
             $('#register-new-driver-form-view').hide();
             $('#checkFreeRidesButtonDiv').show();
+            $('#clearDatesButtonDiv').show();
+            $('#showAdvancedFiltersDiv').hide();
+            $('#advancedFilterRow').hide();
         } else {
             $('#register-new-driver-form-view').hide();
+            $('#checkFreeRidesButtonDiv').hide();
             $('#addRideButtonDiv').hide();
             $('#seeRidesButtonDiv').hide();
             $('#orderRideButtonDiv').show();
@@ -754,6 +795,9 @@ function loginFromCookie(username) {
             $('#seeAllRidesButtonDiv').hide();
             $('#seeDispatcherRidesButtonDiv').hide();
             $('#checkFreeRidesButtonDiv').hide();
+            $('#clearDatesButtonDiv').show();
+            $('#showAdvancedFiltersDiv').hide();
+            $('#advancedFilterRow').hide();
         }
 
         // update UI size based on role
@@ -884,23 +928,29 @@ function tryLoginUser() {
                         $('#addRideButtonDiv').show();
                         $('#orderRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
+                        $('#seeDispatcherRidesButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
+                        $('#clearDatesButtonDiv').hide();
                         $('#seeAllRidesButtonDiv').show();
-                        $('#seeDispatcherRidesButtonDiv').hide();
                         $('#addNewDriverButtonDiv').show();
+                        $('#showAdvancedFiltersDiv').show();
                         $('#checkFreeRidesButtonDiv').hide();
-                        $('#seeDriverRidesButtonDiv').hide();
+                        $('#advancedFilterRow').hide();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
                         $('#orderRidesTableDiv').hide();
                         $('#orderRideFormDiv').hide();
                         $('#seeRidesButtonDiv').hide();
+                        $('#seeDispatcherRidesButtonDiv').hide();
                         $('#seeAllRidesButtonDiv').hide();
                         $('#register-new-driver-form-view').hide();
                         $('#checkFreeRidesButtonDiv').show();
                         $('#seeDriverRidesButtonDiv').hide();
+                        $('#clearDatesButtonDiv').show();
+                        $('#showAdvancedFiltersDiv').hide();
+                        $('#advancedFilterRow').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
@@ -912,6 +962,9 @@ function tryLoginUser() {
                         $('#register-new-driver-form-view').hide();
                         $('#checkFreeRidesButtonDiv').hide();
                         $('#seeDriverRidesButtonDiv').hide();
+                        $('#clearDatesButtonDiv').show();
+                        $('#showAdvancedFiltersDiv').hide();
+                        $('#advancedFilterRow').hide();
                     }
 
                     // update UI size based on role

@@ -11,6 +11,11 @@ namespace TaxiServiceWebAPI.Models
         public double minFare { get; set; }
         public double maxFare { get; set; }
 
+        public string driverFirstName { get; set; }
+        public string driverLastName { get; set; }
+        public string userFirstName { get; set; }
+        public string userLastName { get; set; }
+
         public FilterOptions() { }
     }
 }

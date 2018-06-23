@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <link rel='shortcut icon' type='image/x-icon' href='Content/images/favicon.ico' />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="Mladen Milosevic">
     <meta name="description" content="A simple taxi service single page web app">
@@ -20,6 +21,8 @@
         <!-- Title -->
         <div class="row text-center">
             <div class="col-xs-12 col-sm-12 col-md-12">
+                <br />
+                <img src="Content/images/logo.png" width="250" height="105" />
                 <h1 id="site-title">Taxi Service</h1>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">
@@ -172,8 +175,11 @@
         <div class="row center-text" id="filterRow">
             <form>
                 <div class="form-row">
-                    <div class="col-xs-12 col-md-1 col-sm-1">
+                    <div class="col-xs-12 col-md-1 col-sm-1" id="clearDatesButtonDiv">
                         <button id="clearDatesButton" type="button" class="btn btn-primary btn-block"><i class="fas fa-calendar-times"></i></button>
+                    </div>
+                    <div class="col-xs-12 col-md-1 col-sm-1" id="showAdvancedFiltersDiv">
+                        <button id="showAdvancedFiltersButton" type="button" class="btn btn-primary btn-block"><i class="fas fa-cogs"></i>     <i id="adv-arrow" class="fas fa-angle-right fa-lg"></i></button>
                     </div>
                     <div class="col-xs-12 col-md-2 col-sm-2">
                         <input name="startDate" class="form-control" placeholder="Start date">
@@ -213,8 +219,27 @@
                 </div>
             </form>
         </div>
+        <hr id="advHR"/>  
+        <!-- Advanced Filter row -->
+        <div class="row center-text" id="advancedFilterRow">
+            <form>
+                <div class="form-row">
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <input id="driverFirstNameFilter" type="text" class="form-control" placeholder="Driver first name">
+                    </div>
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <input id="driverLastNameFilter" type="text" class="form-control" placeholder="Driver last name">
+                    </div>
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <input id="userFirstNameFilter" type="text" class="form-control" placeholder="User first name">
+                    </div>
+                    <div class="col-xs-12 col-md-3 col-sm-3">
+                        <input id="userLastNameFilter" type="text" class="form-control" placeholder="User last name">
+                    </div>
+                </div>
+            </form>
+        </div>
         <hr />
-        <br>
 
         <!-- Ako nema voznje korisnik -->
         <div id="no-rides-message" class="text-center">
