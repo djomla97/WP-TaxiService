@@ -34,7 +34,6 @@ namespace TaxiServiceWebAPI.Models
         {
             this.RideVehicle = new Vehicle() { };
             this.RideComment = new Comment();
-            this.RideComment.RideMark = RideMarks.ZERO;
         }
 
     }

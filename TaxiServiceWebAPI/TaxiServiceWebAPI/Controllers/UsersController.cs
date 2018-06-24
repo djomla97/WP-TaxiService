@@ -140,7 +140,6 @@ namespace TaxiServiceWebAPI.Controllers
             }
         }
 
-        // prakticnije da postavim u drugi controller, ali da ne pravim radi sitnice jedne
         [HttpGet]
         [Route("api/drivers/free")]
         public List<Driver> FreeDrivers()
@@ -156,6 +155,45 @@ namespace TaxiServiceWebAPI.Controllers
             }
 
             return freeDrivers;
+        }
+
+        // prakticnije da postavim u drugi controller, ali da ne pravim radi sitnice jedne
+        [HttpGet]
+        [Route("api/drivers/closest")]
+        public List<Driver> ClosestDrivers(double x, double y)
+        {
+            List<Driver> allDrivers = jsonParser.ReadDrivers();
+            List<Driver> freeDrivers = new List<Driver>();
+            foreach (Driver driver in allDrivers)
+            {
+                if (driver.IsFree)
+                {
+                    freeDrivers.Add(driver);
+                }
+            }
+
+            ///////
+            List<Driver> closestDrivers = new List<Driver>();
+            Dictionary<Driver, double> distances = new Dictionary<Driver, double>();
+
+            foreach(var driver in freeDrivers)
+            {
+                double distance = CalculateDistance(x, y, driver.DriverLocation.X, driver.DriverLocation.Y);
+                distances.Add(driver, distance);
+            }
+
+            foreach(var distance in distances.OrderBy(val => val.Value))
+            {
+                closestDrivers.Add(distance.Key);
+            }
+
+
+            return closestDrivers;
+        }
+
+        private double CalculateDistance(double x1, double y1, double x2, double y2)
+        {
+            return Math.Sqrt(Math.Pow(Math.Abs(x1-x2), 2) + Math.Pow(Math.Abs(y1 - y2), 2));
         }
 
         // POST api/users

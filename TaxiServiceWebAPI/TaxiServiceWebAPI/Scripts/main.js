@@ -1983,27 +1983,31 @@ function updateRidesTables(rides, user) {
                                     $.get(`/api/rides/${ride.ID}`, function (ride) {
                                         if (ride != null) {
 
-                                            ride.RideComment.CommentUser = user;
-                                            ride.RideComment.Description = comment;
-                                            ride.RideComment.RideMark = rating;
+                                            let userComment = {
+                                                Description: comment,
+                                                RideMark: rating,
+                                                CommentUser: ride.RideCustomer
+                                            }
 
+                                            console.log('pre');
                                             // send 
                                             $.ajax({
-                                                method: 'PUT',
-                                                url: `/api/rides/${ride.ID}`,
+                                                method: 'POST',
+                                                url: `/api/rides/${ride.ID}/comment`,
                                                 contentType: 'application/json',
                                                 dataType: 'json',
-                                                data: JSON.stringify(ride)
-                                            }).done(function (response) {
-                                                if (response != null) {
+                                                data: JSON.stringify(userComment)
+                                            }).done(function (response) { 
+                                                if (response == 'OK') {
                                                     $('#customerCommentModal').modal('hide');
+                                                    $('textarea#customerCommentText').val('');
                                                     updateAllRidesTable(user);
                                                     showSnackbar('Comment posted successfuly. Thanks for the feedback!');
                                                 } else {
-                                                    showSnackbar('Couln\'t finish that action.');
-                                                }
-                                            });
-
+                                                    showSnackbar('Bad request');
+                                                }                                                
+                                               
+                                             });
 
                                         } else {
                                             showSnackbar('Could not post comment due to server error');
@@ -2012,7 +2016,6 @@ function updateRidesTables(rides, user) {
                                 } else {
                                     addValidationError('customerCommentText', 'empty-check', 'You must enter some feedback for us');
                                 }
-
                             });
 
                             $('#customerCommentModal').modal('show');

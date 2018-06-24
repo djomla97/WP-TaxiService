@@ -150,12 +150,16 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/rides/{id}")]
         public Ride Put(int id, [FromBody]Ride editedRide)
         {
-            editedRide.DateAndTime = DateTime.Now;
+            
             try
             {
                 if (editedRide.RideComment.Description != null)
                 {
                     editedRide.RideComment.DateAndTime = DateTime.Now;
+                }
+                else
+                {
+                    editedRide.DateAndTime = DateTime.Now;
                 }
 
                 jsonParser.EditRide(id, editedRide);
@@ -280,13 +284,6 @@ namespace TaxiServiceWebAPI.Controllers
                     try
                     {
                         foundRide.StatusOfRide = RideStatuses.SUCCESSFUL.ToString();
-                        //foundRide.RideComment.CommentUser = new User();
-                        //foundRide.RideComment.CommentUser.FirstName = foundRide.RideDriver.FirstName;
-                        //foundRide.RideComment.CommentUser.LastName = foundRide.RideDriver.LastName;
-                        //foundRide.RideComment.CommentUser.Username = foundRide.RideDriver.Username;
-                        //foundRide.RideComment.CommentUser.Role = foundRide.RideDriver.Role;
-                        //foundRide.RideComment.DateAndTime = DateTime.Now;
-                        //foundRide.RideComment.Description = options.Comment;
                         foundRide.Fare = options.Fare;
 
                         switch (options.RideMark)
@@ -327,6 +324,36 @@ namespace TaxiServiceWebAPI.Controllers
 
             return Request.CreateResponse(HttpStatusCode.BadRequest);
         }
+
+        [HttpPost]
+        [Route("api/rides/{id:int}/comment")]
+        public HttpResponseMessage Comment(int id, [FromBody]Comment userComment)
+        {
+            try
+            {        
+                Ride userRide = jsonParser.ReadRides().Where(r => r.ID == id).First();
+
+                if (userRide.StatusOfRide == RideStatuses.SUCCESSFUL.ToString())
+                {
+                    userRide.RideComment = new Comment();
+                    userRide.RideComment.DateAndTime = DateTime.Now;
+                    userRide.RideComment.RideMark = userComment.RideMark;
+                    userRide.RideComment.CommentUser = userComment.CommentUser;
+                    userRide.RideComment.Description = userComment.Description;
+
+                    jsonParser.EditRide(userRide.ID, userRide);
+                    return Request.CreateResponse(HttpStatusCode.OK, "OK");
+                }
+                else {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request");
+                }
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, "Bad request");
+            }
+        }
+
 
         [HttpPost]
         [Route("api/rides/cancel/{id}")]
