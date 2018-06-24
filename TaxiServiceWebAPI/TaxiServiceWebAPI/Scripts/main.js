@@ -28,6 +28,7 @@ $(document).ready(function () {
     $('#seeAllRidesButton').data('clicked', false);
     $('#showAdvancedFiltersDiv').hide();
     $('#advHR').hide();
+    $('#seeUsersButtonDiv').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -344,6 +345,11 @@ $(document).ready(function () {
             $('#userLastNameFilter').val('');
             filterRides(); // ovde ce mozda greska biti ?
         }
+    });
+
+    $('#seeUsersButtonDiv').click(function () {
+        listUsers();
+        $('#allUsersModal').modal('show');
     });
 
 
@@ -775,6 +781,7 @@ function loginFromCookie(username) {
             $('#showAdvancedFiltersDiv').show();
             $('#checkFreeRidesButtonDiv').hide();
             $('#advancedFilterRow').hide();
+            $('#seeUsersButtonDiv').show();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
@@ -788,6 +795,7 @@ function loginFromCookie(username) {
             $('#clearDatesButtonDiv').show();
             $('#showAdvancedFiltersDiv').hide();
             $('#advancedFilterRow').hide();
+            $('#seeUsersButtonDiv').hide();
         } else {
             $('#register-new-driver-form-view').hide();
             $('#checkFreeRidesButtonDiv').hide();
@@ -803,6 +811,7 @@ function loginFromCookie(username) {
             $('#clearDatesButtonDiv').show();
             $('#showAdvancedFiltersDiv').hide();
             $('#advancedFilterRow').hide();
+            $('#seeUsersButtonDiv').hide();
         }
 
         // update UI size based on role
@@ -942,6 +951,7 @@ function tryLoginUser() {
                         $('#showAdvancedFiltersDiv').show();
                         $('#checkFreeRidesButtonDiv').hide();
                         $('#advancedFilterRow').hide();
+                        $('#seeUsersButtonDiv').show();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
@@ -956,6 +966,7 @@ function tryLoginUser() {
                         $('#clearDatesButtonDiv').show();
                         $('#showAdvancedFiltersDiv').hide();
                         $('#advancedFilterRow').hide();
+                        $('#seeUsersButtonDiv').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
@@ -970,6 +981,7 @@ function tryLoginUser() {
                         $('#clearDatesButtonDiv').show();
                         $('#showAdvancedFiltersDiv').hide();
                         $('#advancedFilterRow').hide();
+                        $('#seeUsersButtonDiv').hide();
                     }
 
                     // update UI size based on role
@@ -2544,6 +2556,44 @@ function updateUserInformation(user) {
     }
 }
 
+// to refresh instantly
+function listUsers() {
+    $.get('/api/users', function (users) {
+        $('#allUsersTableBody').empty();
+
+        users.forEach(function (user) {
+            if (user.Role == 'Dispatcher')
+                return true;
+
+            if (user.IsBanned) {
+                $('#allUsersTableBody').append(`<tr id="${user.Username}"><td scope="row"><strong>${user.Username}</strong></td><td>${user.Role}</td><td><button id="unbanUser${user.Username}" type="button" class="btn btn-success"><i class="fas fa-ban"></i> Unban</button></td>`);
+            } else {
+                $('#allUsersTableBody').append(`<tr id="${user.Username}"><td scope="row"><strong>${user.Username}</strong></td><td>${user.Role}</td><td><button id="banUser${user.Username}" type="button" class="btn btn-danger"><i class="fas fa-ban"></i> Ban</button></td>`);
+            }
+
+            // ban user
+            $(`#banUser${user.Username}`).unbind('click').click(function () {
+                $.ajax({
+                    method: 'PUT',
+                    url: `/api/users/${user.Username}/ban`
+                }).done(function () {
+                    listUsers();
+                });
+            });
+
+            // unban user
+            $(`#unbanUser${user.Username}`).unbind('click').click(function () {
+                $.ajax({
+                    method: 'PUT',
+                    url: `/api/users/${user.Username}/unban`
+                }).done(function () {
+                    listUsers();
+                });
+            });
+        });
+    });
+}
+
 // dry
 function updateEditForm() {
     $('#edit-form').empty();
@@ -2614,14 +2664,14 @@ function updateUISize(role) {
         $('#addNewDriverButtonDiv').addClass('col-md-2');
 
         $('#viewProfileButtonDiv').removeClass('col-sm-4');
-        $('#viewProfileButtonDiv').addClass('col-sm-3');
+        $('#viewProfileButtonDiv').addClass('col-sm-2');
         $('#viewProfileButtonDiv').removeClass('col-md-4');
-        $('#viewProfileButtonDiv').addClass('col-md-3');
+        $('#viewProfileButtonDiv').addClass('col-md-2');
 
         $('#logoutButtonDiv').removeClass('col-sm-4');
-        $('#logoutButtonDiv').addClass('col-sm-3');
+        $('#logoutButtonDiv').addClass('col-sm-2');
         $('#logoutButtonDiv').removeClass('col-md-4');
-        $('#logoutButtonDiv').addClass('col-md-3');
+        $('#logoutButtonDiv').addClass('col-md-2');
 
         console.log('Updated UI for dispatcher');
     } else if (role == 'Driver') {

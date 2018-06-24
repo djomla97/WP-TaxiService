@@ -9,11 +9,13 @@ namespace TaxiServiceWebAPI.Models
         [JsonProperty(ReferenceLoopHandling = ReferenceLoopHandling.Ignore, IsReference = true)]
         public Vehicle DriverVehicle { get; set; }
         public bool IsFree { get; set; }
+        public bool IsBanned { get; set; }
 
         public Driver()
         {
             this.Role = Roles.Driver.ToString();
             IsFree = true;
+            IsBanned = false;
         }
 
     }

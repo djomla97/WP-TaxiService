@@ -19,9 +19,21 @@ namespace TaxiServiceWebAPI.Controllers
 
         // GET api/users
         [HttpGet]
-        public List<Customer> Get()
+        public List<User> Get()
         {
-            return jsonParser.ReadUsers();
+            List<User> allUsers = new List<User>();
+
+            var allCustomers = jsonParser.ReadUsers();
+            var allDrivers = jsonParser.ReadDrivers();
+
+            foreach(var cust in allCustomers)
+                allUsers.Add(cust);
+
+            foreach (var driver in allDrivers)
+                allUsers.Add(driver);
+
+            return allUsers;
+
         }
 
         // GET api/users/username
@@ -207,6 +219,74 @@ namespace TaxiServiceWebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.Created, "Created");
         }
 
+        [HttpPut]
+        [Route("api/users/{username}/{banStatus}")]
+        public HttpResponseMessage ChangeBan(string username, string banStatus) {
+            try
+            {
+                if (banStatus.ToLower() == "ban")
+                {
+                    var allUsers = jsonParser.ReadUsers();
+                    foreach (var user in allUsers)
+                    {
+                        if (user.Username == username && user.IsBanned == false)
+                        {
+                            user.IsBanned = true;
+                            jsonParser.EditUser(user.Username, user);
+                            return Request.CreateResponse(HttpStatusCode.OK);
+                        }
+                    }
+
+                    var allDrivers = jsonParser.ReadDrivers();
+                    foreach (var driver in allDrivers)
+                    {
+                        if (driver.Username == username && driver.IsBanned == false)
+                        {
+                            driver.IsBanned = true;
+                            jsonParser.EditDriver(driver.Username, driver);
+                            return Request.CreateResponse(HttpStatusCode.OK);
+                        }
+                    }
+
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+                else if (banStatus.ToLower() == "unban") {
+                    var allUsers = jsonParser.ReadUsers();
+                    foreach (var user in allUsers)
+                    {
+                        if (user.Username == username && user.IsBanned == true)
+                        {
+                            user.IsBanned = false;
+                            jsonParser.EditUser(user.Username, user);
+                            return Request.CreateResponse(HttpStatusCode.OK);
+                        }
+                    }
+
+                    var allDrivers = jsonParser.ReadDrivers();
+                    foreach (var driver in allDrivers)
+                    {
+                        if (driver.Username == username && driver.IsBanned == true)
+                        {
+                            driver.IsBanned = false;
+                            jsonParser.EditDriver(driver.Username, driver);
+                            return Request.CreateResponse(HttpStatusCode.OK);
+                        }
+                    }
+
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest);
+                }
+
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+        }
+
         // GET api/users/
         [HttpPost]
         [Route("api/users/login")]
@@ -217,12 +297,12 @@ namespace TaxiServiceWebAPI.Controllers
 
             List<Customer> allUsers = jsonParser.ReadUsers();
             foreach (var user in allUsers)
-                if (user.Username.ToLower() == username && user.Password == password)
+                if (user.Username.ToLower() == username && user.Password == password && user.IsBanned == false)
                     return true;
 
             List<Driver> allDrivers = jsonParser.ReadDrivers();
             foreach (var user in allDrivers)
-                if (user.Username.ToLower() == username && user.Password == password)
+                if (user.Username.ToLower() == username && user.Password == password && user.IsBanned == false)
                     return true;
 
             List<Dispatcher> allDispatchers = jsonParser.ReadDispatchers();

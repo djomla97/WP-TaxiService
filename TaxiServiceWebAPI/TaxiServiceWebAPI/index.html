@@ -163,6 +163,9 @@
             <div class="col-xs-12 col-sm-4 col-md-4" id="addNewDriverButtonDiv">
                 <button id="addNewDriverButton" type="button" class="btn btn-primary btn-lg btn-block"><i class="fas fa-user-plus"></i> Add driver</button>
             </div>
+            <div class="col-xs-12 col-sm-2 col-md-2" id="seeUsersButtonDiv">
+                <button id="seeUsersButton" type="button" class="btn btn-primary btn-lg btn-block"><i class="fas fa-list-ul"></i> See users</button>
+            </div>
             <div class="col-xs-12 col-sm-4 col-md-4" id="viewProfileButtonDiv">
                 <button id="checkProfileButton" type="button" class="btn btn-primary btn-lg btn-block"><i class="far fa-user"></i> View profile</button>
             </div>
@@ -395,7 +398,7 @@
                         <div class="col-sm-12">
                             <input type="hidden" id="addRideY" />
                         </div>
-                    </div>                    
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-12">
                             <button id="submitAddRideButton" class="full-width btn btn-primary">Add ride</button>
@@ -838,7 +841,38 @@
             </div>
         </div>
     </div>
-   
+
+    <!-- Modal for ban/unban users -->
+    <div class="modal fade" id="allUsersModal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="allUsersModalTitle"><i class="fas fa-male"></i> All users</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="allUsersBody">
+                    <div class="table-responsive">
+                        <table class="table center-text" id="allUsersTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="col-auto">Username</th>
+                                    <th scope="col" class="col-md-auto">Role</th>                                   
+                                    <th scope="col" class="col-md-auto">Options</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allUsersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeAllUsersModal" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- snackbar -->
     <div id="snackbar"></div>

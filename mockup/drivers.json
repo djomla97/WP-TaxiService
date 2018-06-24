@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "DriverLocation": {
       "X": 45.2544675,
@@ -26,6 +26,7 @@
     "ContactPhone": "+3816541653",
     "Email": "fast@furious.com",
     "Role": "Driver",
+    "IsBanned": false,
     "Gender": "Male",
     "Rides": {
       "$id": "2",
@@ -51,6 +52,7 @@
       "VehicleType": "Passenger"
     },
     "IsFree": true,
+    "IsBanned": false,
     "Username": "duco",
     "Password": "duco",
     "FirstName": "Duco",
@@ -84,6 +86,7 @@
       "VehicleType": "Van"
     },
     "IsFree": true,
+    "IsBanned": false,
     "Username": "caki",
     "Password": "caki",
     "FirstName": "Strahinja",
@@ -116,6 +119,7 @@
       "VehicleType": "Passenger"
     },
     "IsFree": true,
+    "IsBanned": false,
     "Username": "nikola",
     "Password": "nikola",
     "FirstName": "Nikola",
