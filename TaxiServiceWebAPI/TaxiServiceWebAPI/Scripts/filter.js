@@ -169,7 +169,7 @@ function filterRides() {
                     }
                 });
             } else {
-                showSnackbar('Something went wrong with your request to filter rides');
+                //showSnackbar('There are no rides');
             }
         });
     } else {
@@ -193,7 +193,7 @@ function filterRides() {
                     }
                 });
             } else {
-                showSnackbar('Something went wrong with your request to filter rides');
+                //showSnackbar('Something went wrong with your request to filter rides');
             }
         });
     }

@@ -249,7 +249,7 @@ namespace TaxiServiceWebAPI.Controllers
                         jsonParser.EditRide(foundRide.ID, foundRide);
 
                         // free driver
-                        foundRide.RideDriver.IsFree = true;
+                        foundRide.RideDriver.IsFree = true;                        
                         jsonParser.EditDriver(foundRide.RideDriver.Username, foundRide.RideDriver);
 
                         return Request.CreateResponse(HttpStatusCode.OK, foundRide.ID);
@@ -308,6 +308,11 @@ namespace TaxiServiceWebAPI.Controllers
 
                         // free driver
                         foundRide.RideDriver.IsFree = true;
+                        foundRide.RideDriver.DriverLocation.X = options.Location.X;
+                        foundRide.RideDriver.DriverLocation.Y = options.Location.Y;
+                        foundRide.RideDriver.DriverLocation.LocationAddress.Street = options.Location.LocationAddress.Street;
+                        foundRide.RideDriver.DriverLocation.LocationAddress.City = options.Location.LocationAddress.City;
+                        foundRide.RideDriver.DriverLocation.LocationAddress.ZipCode = options.Location.LocationAddress.ZipCode;
                         jsonParser.EditDriver(foundRide.RideDriver.Username, foundRide.RideDriver);
 
                         return Request.CreateResponse(HttpStatusCode.OK, foundRide.ID);

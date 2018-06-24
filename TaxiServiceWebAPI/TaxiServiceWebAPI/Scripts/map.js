@@ -124,39 +124,39 @@ function loadMap() {
                     $('#addRideStreet').val(street);
                     $('#addRideCity').val(city);
                     $('#addRideZipCode').val(zipcode);
-                    $('#addRideY').val(response.lon);
                     $('#addRideX').val(response.lat);
+                    $('#addRideY').val(response.lon);
                 } else if ($('#map').data('location') === 'addNewDriver') {
                     $('#addDriverStreet').val(street);
                     $('#addDriverCity').val(city);
                     $('#addDriverZipCode').val(zipcode);
-                    $('#addNewDriverX').val(response.lon);
-                    $('#addNewDriverY').val(response.lat);
+                    $('#addNewDriverX').val(response.lat);
+                    $('#addNewDriverY').val(response.lon);
                 } else if ($('#map').data('location') === 'orderRide') {
                     $('#orderRideStreet').val(street);
                     $('#orderRideCity').val(city);
                     $('#orderRideZipCode').val(zipcode);
-                    $('#orderRideX').val(response.lon);
-                    $('#orderRideY').val(response.lat);
+                    $('#orderRideX').val(response.lat);
+                    $('#orderRideY').val(response.lon);
                 } else if ($('#map').data('location') === 'successRideModal') {
                     $('#successStreet').val(street);
                     $('#successCity').val(city);
                     $('#successZipCode').val(zipcode);
-                    $('#successX').val(response.lon);
-                    $('#successY').val(response.lat);
+                    $('#successX').val(response.lat);
+                    $('#successY').val(response.lon);
                 } else if ($('#map').data('location') === 'editOrderRide') {
                     $('#editOrderRideStreet').val(street);
                     $('#editOrderRideCity').val(city);
                     $('#editOrderRideZipCode').val(zipcode);
-                    $('#editOrderRideX').val(response.lon);
-                    $('#editOrderRideY').val(response.lat);
+                    $('#editOrderRideX').val(response.lat);
+                    $('#editOrderRideY').val(response.lon);
                 } else if ($('#map').data('location') === 'editDriver') {
                     $('#saveChangesButton').prop('disabled', false);
                     $('#editStreet').val(street);
                     $('#editCity').val(city);
                     $('#editZipCode').val(zipcode);
-                    $('#editDriverX').val(response.lon);
-                    $('#editDriverY').val(response.lat);
+                    $('#editDriverX').val(response.lat);
+                    $('#editDriverY').val(response.lon);
                 }
                 
 
@@ -170,7 +170,7 @@ function loadMap() {
 }
 
 function setMapSize(width, height) {
-    console.log('changing map size')
+    console.log('changing map size');
     $('#map').css('width', width);
     $('#map').css('height', height);
 }

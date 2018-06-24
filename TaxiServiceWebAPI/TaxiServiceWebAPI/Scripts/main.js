@@ -303,6 +303,7 @@ $(document).ready(function () {
         $('#addNewDriverButtonDiv').hide();
         $('#orderRidesTableDiv').hide();
         $('#addRideFormDiv').hide();
+        $('#no-rides-message').hide();
 
         $('#seeAllRidesButtonDiv').show();
         $('#seeDispatcherRidesButtonDiv').show();
@@ -1478,7 +1479,7 @@ function updateOrderTable(orderRide, userRole) {
                         </tr>`);
 
         // button listener for dispatcher
-        $(`#assignRide${orderRide.ID}`).click(function (e) {
+        $(`#assignRide${orderRide.ID}`).unbind('click').click(function (e) {
 
             $('#confirmAssignDriver').attr('id', `confirmAssignDriver${orderRide.ID}`);
 
@@ -1486,7 +1487,7 @@ function updateOrderTable(orderRide, userRole) {
             console.log('[DEBUG] Assinging ride: ' + orderRide.ID);
 
             // fill select options
-            $.get('/api/drivers/free', function (freeDrivers) {
+            $.get(`/api/drivers/closest?y=${orderRide.StartLocation.Y}&x=${orderRide.StartLocation.X}`, function (freeDrivers) {
                 $('#assignedDriverSelect').empty();
                 console.log('Getting free drivers for assign select menu');
                 //freeDrivers = null //debug
@@ -1511,7 +1512,7 @@ function updateOrderTable(orderRide, userRole) {
                     $(`#confirmAssignDriver${orderRide.ID}`).prop('disabled', false);
 
                 // button listener za confirm
-                $(`#confirmAssignDriver${orderRide.ID}`).click(function (e) {
+                $(`#confirmAssignDriver${orderRide.ID}`).unbind('click').click(function (e) {
                     e.preventDefault();
 
                     // ukoliko ima vozaca, nekog je odabrao pa moze

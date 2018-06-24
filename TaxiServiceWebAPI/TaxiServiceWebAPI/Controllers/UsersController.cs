@@ -178,24 +178,22 @@ namespace TaxiServiceWebAPI.Controllers
 
             foreach(var driver in freeDrivers)
             {
-                double distance = CalculateDistance(x, y, driver.DriverLocation.X, driver.DriverLocation.Y);
+                double distance = Math.Sqrt(Math.Pow(x - driver.DriverLocation.X, 2) + Math.Pow(y - driver.DriverLocation.Y, 2));
                 distances.Add(driver, distance);
             }
 
-            foreach(var distance in distances.OrderBy(val => val.Value))
+            var sortedDist = distances.OrderBy(val => val.Value);
+
+            foreach(var distance in sortedDist)
             {
                 closestDrivers.Add(distance.Key);
+                if(closestDrivers.Count == 2)
+                    break;
             }
-
 
             return closestDrivers;
         }
-
-        private double CalculateDistance(double x1, double y1, double x2, double y2)
-        {
-            return Math.Sqrt(Math.Pow(Math.Abs(x1-x2), 2) + Math.Pow(Math.Abs(y1 - y2), 2));
-        }
-
+   
         // POST api/users
         [HttpPost]
         [Route("api/drivers")]
