@@ -915,7 +915,7 @@ function tryLoginUser() {
 
     if (canLoginUser) {
         // poziv za login
-        $.post('/api/users/login', loginUser, function (loggedIn) {
+        $.post('/api/users/login', loginUser, function (response) {
             // restart login/register vrednosti i ciscenje div-ova
             clearForm('login-form');
             clearForm('register-form');
@@ -925,7 +925,7 @@ function tryLoginUser() {
             $('#orderRideFormDiv').hide();
             $('#addRideButtonDiv').hide();
 
-            if (loggedIn !== false) {
+            if (response == "Found") {
 
                 // uzmemo tog korisnika i update UI
                 $.get(`/api/users/${loginUser.username}`, function (user) {
@@ -1049,6 +1049,11 @@ function tryLoginUser() {
                         checkRidesTables();
                     }
                 });
+            } else if (response == 'Banned') {
+                $('p.login-fail').css('text-weight', 'bold');
+                $('p.login-fail').css('color', 'red');
+                $('p.login-fail').text('You are banned.');
+                $('p.login-fail').show();
             } else {
                 $('p.login-fail').css('text-weight', 'bold');
                 $('p.login-fail').css('color', 'red');

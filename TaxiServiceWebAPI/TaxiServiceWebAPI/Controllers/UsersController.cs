@@ -290,27 +290,49 @@ namespace TaxiServiceWebAPI.Controllers
         // GET api/users/
         [HttpPost]
         [Route("api/users/login")]
-        public bool Login([FromBody]Credentials credentials)
+        public HttpResponseMessage Login([FromBody]Credentials credentials)
         {
             string username = credentials.Username;
             string password = credentials.Password;
 
             List<Customer> allUsers = jsonParser.ReadUsers();
             foreach (var user in allUsers)
-                if (user.Username.ToLower() == username && user.Password == password && user.IsBanned == false)
-                    return true;
+            {
+                if (user.Username.ToLower() == username && user.Password == password)
+                {
+                    if (!user.IsBanned)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "Found");
+                    }
+                    else
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "Banned");
+                    }
+                }
+            }
 
             List<Driver> allDrivers = jsonParser.ReadDrivers();
             foreach (var user in allDrivers)
-                if (user.Username.ToLower() == username && user.Password == password && user.IsBanned == false)
-                    return true;
+            {
+                if (user.Username.ToLower() == username && user.Password == password)
+                {
+                    if (!user.IsBanned)
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "Found");
+                    }
+                    else
+                    {
+                        return Request.CreateResponse(HttpStatusCode.OK, "Banned");
+                    }
+                }
+            }
 
             List<Dispatcher> allDispatchers = jsonParser.ReadDispatchers();
             foreach (var user in allDispatchers)
                 if (user.Username.ToLower() == username && user.Password == password)
-                    return true;
+                    return Request.CreateResponse(HttpStatusCode.OK, "Found");
 
-            return false;
+            return Request.CreateResponse(HttpStatusCode.OK, "Not found"); ;
         }
 
     }
