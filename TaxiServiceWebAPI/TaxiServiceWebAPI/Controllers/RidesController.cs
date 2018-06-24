@@ -150,6 +150,7 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/rides/{id}")]
         public Ride Put(int id, [FromBody]Ride editedRide)
         {
+            editedRide.DateAndTime = DateTime.Now;
             try
             {
                 if (editedRide.RideComment.Description != null)

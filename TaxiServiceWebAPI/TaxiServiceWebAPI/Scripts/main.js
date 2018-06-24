@@ -126,7 +126,7 @@ $(document).ready(function () {
         $('#saveChangesButton').prop('disabled', true);
 
         // dodamo event listener na promene u input
-        $('form#edit-form :input').on('input', function () {
+        $('form#edit-form :input').on('change', function () {
             $('#saveChangesButton').prop('disabled', false);
         });
 
@@ -214,6 +214,7 @@ $(document).ready(function () {
         clearFilters();
         showAllRides();
         checkRidesTables();
+        clearForm('add-ride-form');
     });
 
     $('#seeDispatcherRidesButton').unbind('click').click(function (e) {
@@ -231,6 +232,7 @@ $(document).ready(function () {
         $('#seeAllRidesButton').data('clicked', false);
         $('#showAdvancedFiltersButton').data('clicked', true);
         $('#showAdvancedFiltersButton').trigger('click');
+        clearForm('add-ride-form');
 
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
             updateAllRidesTable(user);
@@ -241,6 +243,7 @@ $(document).ready(function () {
     /* Add new ride for dispatcher */
     $('#addRideButton').click(function (e) {
         e.preventDefault();
+        clearForm('add-ride-form');
         $('#seeAllRidesButton').data('clicked', false);
 
         $('#orderRidesTableDiv').fadeOut('500', function () {
@@ -313,6 +316,7 @@ $(document).ready(function () {
         e.preventDefault();
         tryAddNewDriver();
         clearFilters();
+        clearForm('add-ride-form');
     });
 
     // Advanced filters for dispatcher
@@ -708,8 +712,8 @@ function tryAddNewDriver() {
                 ContactPhone: $('#addDriverPhone').val(),
                 Gender: gender,
                 DriverLocation: {
-                    X: 0.0,
-                    Y: 0.0,
+                    X: $('#addNewDriverX').val(),
+                    Y: $('#addNewDriverY').val(),
                     LocationAddress: {
                         Street: $('#addDriverStreet').val(),
                         City: $('#addDriverCity').val(),
@@ -1152,8 +1156,8 @@ function tryEditUser() {
                     Gender: $('input[name=editRadioGender]:checked').val(),
                     Password: $('#editPassword').val(),
                     DriverLocation: {
-                        X: 0.0,
-                        Y: 0.0,
+                        X: $('#editDriverX').val(),
+                        Y: $('#editDriverY').val(),
                         LocationAddress: {
                             City: $('#editCity').val(),
                             Street: $('#editStreet').val(),
@@ -1266,8 +1270,8 @@ function orderRide() {
                     VehicleType: $('#orderCarType').val()
                 },
                 StartLocation: {
-                    X: 0.0,
-                    Y: 0.0,
+                    X: $('#orderRideX').val(),
+                    Y: $('#orderRideY').val(),
                     LocationAddress: {
                         City: $('#orderRideCity').val(),
                         Street: $('#orderRideStreet').val(),
@@ -1379,8 +1383,8 @@ function addNewRide() {
                     VehicleType: $('#addCarType').val()
                 },
                 StartLocation: {
-                    X: 0.0,
-                    Y: 0.0,
+                    X: $('#addRideX').val(),
+                    Y: $('#addRideY').val(),
                     LocationAddress: {
                         City: $('#addRideCity').val(),
                         Street: $('#addRideStreet').val(),
@@ -1782,6 +1786,17 @@ function updateRidesTables(rides, user) {
                         $(`#successRide${ride.ID}`).unbind('click').click(function (e) {
                             e.preventDefault();
 
+                            // map load
+                            if (!$('#successOrderRideModalBody').find('div#mapDiv').length) {
+                                mapDiv = $('#mapDiv').detach();
+                                $('#successOrderRideModalBody').append(mapDiv);
+                            }
+
+                            $('#map').data('loaded', true);
+                            $('#map').data('location', 'successRideModal');
+                            setMapSize(400, 300);
+                            loadMap();
+
                             // button event listeners
                             $('#confirmSuccessOrderRide').attr('id', `confirmSuccessOrderRide${ride.ID}`);
                             $(`#confirmSuccessOrderRide${ride.ID}`).unbind('click').click(function (e) {
@@ -1790,7 +1805,7 @@ function updateRidesTables(rides, user) {
                                 let canSuccess = true;
 
                                 $('form#success-form input').each(function () {
-
+                                    
                                     // ZipCode moze imati samo brojeve
                                     if ($(this).attr('id') == 'successZipCode') {
                                         if (!$('#successZipCode').val().match(/^[\d]+$/g))
@@ -1857,8 +1872,8 @@ function updateRidesTables(rides, user) {
                                     let options = {
                                         Fare: fareAmmount,
                                         Location: {
-                                            X: 0.0,
-                                            Y: 0.0,
+                                            X: $('#successX').val(),
+                                            Y: $('#successY').val(),
                                             LocationAddress: {
                                                 Street: $('#successStreet').val(),
                                                 City: $('#successCity').val(),
@@ -2248,6 +2263,17 @@ function updateDetailRideInfo(ride) {
 function addButtonListeners(orderRide) {
 
     $(`#editOrder${orderRide.ID}`).click(function () {
+
+        if (!$('#editOrderRideModalBody').find('div#mapDiv').length) {
+            mapDiv = $('#mapDiv').detach();
+            $('#editOrderRideModalBody').append(mapDiv);
+        }
+
+        $('#map').data('loaded', true);
+        $('#map').data('location', 'editOrderRide');
+        setMapSize(400, 300);
+        loadMap();
+
         // update edit formu za order ride
         $('#editOrderID').text(orderRide.ID);
         $('#editOrderRideUser').attr('placeholder', `${$('#fullName').text()}`);
@@ -2328,8 +2354,8 @@ function addButtonListeners(orderRide) {
                             VehicleType: $('#editOrderCarType').val()
                         },
                         StartLocation: {
-                            X: 0.0,
-                            Y: 0.0,
+                            X: $('#editOrderRideX').val(),
+                            Y: $('#editOrderRideY').val(),
                             LocationAddress: {
                                 City: $('#editOrderRideCity').val(),
                                 Street: $('#editOrderRideStreet').val(),
@@ -2517,11 +2543,13 @@ function updateUserInformation(user) {
 // dry
 function updateEditForm() {
     $('#edit-form').empty();
-    // bar radi :)
-    // https://img.devrant.com/devrant/rant/r_115445_YcizR.jpg
+    let role = '';
     $('#user-info span').each(function () {
-        if (($(this).text().indexOf('Role') >= 0))
+        if (($(this).text().indexOf('Role') >= 0)) {
+            role = $(this).next().text();
+            console.log(role);
             return true;
+        }
 
         if (($(this).text().indexOf('Gender') >= 0)) {
             if ($(this).next().text() === "Male") {
@@ -2530,12 +2558,29 @@ function updateEditForm() {
                 $('#edit-form').append(`<div class="form-group"><div class="col-sm-12 center-text"><label class="radio-inline user-key"><input type="radio" name="editRadioGender" value="Male" /> Male </label> <label class="radio-inline"><input type="radio" name="editRadioGender" value="Female" checked/> Female </label></div></div>`);
             }
         } else {
-            if (($(this).text().indexOf('City') >= 0))
+            if (($(this).text().indexOf('City') >= 0)) 
                 $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
-            else
+            else 
                 $('#edit-form').append(`<div class="form-group"><div class="col-sm-12"><label id="edit-form-label" class="user-key">${$(this).text()}</label><input type="text" class="form-control" id="edit${$(this).text().replace(/ /g, '')}" value="${$(this).next().text()}" autocomplete="off" /><p class="found-p" id="edit${$(this).text().replace(/ /g, '')}-check" ></p></div></div>`);
+            
         }
     });
+
+    // maps
+    if (role === 'Driver') {
+        if (!$('#edit-form').find('div#mapDiv').length) {
+            mapDiv = $('#mapDiv').detach();
+            $('#edit-form').append(mapDiv);
+        }
+
+        $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="hidden" class="form-control" id="editDriverX"/></div></div>`);
+        $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="hidden" class="form-control" id="editDriverY"/></div></div>`);
+
+        $('#map').data('loaded', true);
+        $('#map').data('location', 'editDriver');
+        setMapSize(400, 300);
+        loadMap();
+    }
 
     // za Password
     $('#edit-form').append(`<hr /><div class="form-group"><div class="col-sm-12"><input type="password" class="form-control" id="editPassword" placeholder="New password (optional)" /></div></div>`);

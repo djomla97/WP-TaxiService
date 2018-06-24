@@ -298,7 +298,6 @@
 
         <!-- View za Order Ride -->
         <div class="row" id="orderRideFormDiv">
-            <div class="col-xs-1 col-sm-3 col-md-3"></div>
             <div class="col-xs-12 col-sm-6 col-md-6 text-center">
                 <h2>Order a ride</h2>
                 <hr>
@@ -331,17 +330,27 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
+                            <input type="hidden" id="orderRideX" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="orderRideY" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
                             <button id="submitRideButton" class="full-width btn btn-primary">Order ride</button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+            <!-- map space -->
         </div>
 
         <!-- View za Add Ride -->
         <div class="row" id="addRideFormDiv">
-            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+
             <div class="col-xs-12 col-sm-6 col-md-6 text-center">
                 <h2>Add a new ride</h2>
                 <hr>
@@ -379,18 +388,31 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
+                            <input type="hidden" id="addRideX" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="addRideY" />
+                        </div>
+                    </div>                    
+                    <div class="form-group">
+                        <div class="col-sm-12">
                             <button id="submitAddRideButton" class="full-width btn btn-primary">Add ride</button>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="col-xs-1 col-sm-3 col-md-3"></div>
+
+            <div class="col-xs-12 col-sm-4 col-md-4" id="mapDiv">
+                <div id="map" class="map"></div>
+            </div>
+
         </div>
 
         <!-- Register new driver for dispatcher -->
-        <div id="register-new-driver-form-view" class="row col-xs-12 col-sm-12 col-md-12 text-center">
-            <div class="col-xs-12 col-sm-3 col-md-3" id="div-to-take-space-right"></div>
-            <div class="col-xs-12 col-sm-6 col-md-6">
+        <div id="register-new-driver-form-view" class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 text-center">
                 <h2>Register new driver</h2>
                 <hr>
                 <form id="register-new-driver-form" class="form-horizontal">
@@ -491,15 +513,26 @@
                             </select>
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="addNewDriverX" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <input type="hidden" id="addNewDriverY" />
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-12">
                             <button id="registerNewDriverButton" class="full-width btn btn-primary">Register new driver</button>
                         </div>
                     </div>
                 </form>
+
             </div>
-            <div class="col-xs-12 col-sm-3 col-md-3" id="div-to-take-space-right"></div>
+            <!-- map space -->
+
         </div>
     </div>
     <!-- END of Home-View div  -->
@@ -677,7 +710,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12">
-                                        <input type="email" class="form-control" id="editOrderRideZipCode" autocomplete="off" />
+                                        <input type="text" class="form-control" id="editOrderRideZipCode" autocomplete="off" />
                                         <p id="editOrderRideZipCode-check" class="found-p"></p>
                                     </div>
                                 </div>
@@ -687,6 +720,16 @@
                                             <option value="Passenger">Passenger</option>
                                             <option value="Van">Van</option>
                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" id="editOrderRideX" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" id="editOrderRideY" />
                                     </div>
                                 </div>
                             </form>
@@ -748,7 +791,7 @@
                 <div class="modal-body">
                     <div id="successOrderRideModalBody" class="text-center">
                         <div class="form-group">
-                            <label><strong>Destinationn</strong></label>
+                            <label><strong>Destination</strong></label>
                             <form id="success-form" class="form-horizontal">
                                 <div class="form-group">
                                     <div class="col-sm-12">
@@ -774,6 +817,16 @@
                                         <p id="successFare-check" class="found-p"></p>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" id="succesX" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="hidden" id="succesY" />
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -785,9 +838,7 @@
             </div>
         </div>
     </div>
-
-    <!-- OpenLayers Map -->
-    <div id="map" class="map"></div>
+   
 
     <!-- snackbar -->
     <div id="snackbar"></div>

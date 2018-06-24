@@ -86,7 +86,7 @@ namespace TaxiServiceWebAPI
                 JMBG = "32165481522",
                 Role = Roles.Driver.ToString(),
                 Gender = Genders.Male.ToString(),
-                DriverLocation = new Location() { X = 0, Y = 0, LocationAddress = new Address("Bulevar Oslobodjenja", "Novi Sad", "21000") },
+                DriverLocation = new Location() { X = 45.2544675, Y = 19.8350986, LocationAddress = new Address("Bulevar Oslobodjenja 66a", "Novi Sad", "21000") },
                 Rides = new List<Ride>(),
                 DriverVehicle = new Vehicle() { NumberOfRegistration="TAXI-055-442", TaxiNumber="250", VehicleAge=2018, VehicleType=VehicleTypes.Passenger.ToString() }
             });
