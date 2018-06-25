@@ -1030,5 +1030,40 @@ namespace TaxiServiceWebAPI.Controllers
 
         }
 
+        [HttpGet]
+        [Route("api/rides/closest")]
+        public List<Ride> Sort([FromUri]double x, [FromUri]double y)
+        {
+            // napomena: vraca samo narucene voznje
+            try
+            {
+                List<Ride> allRides = jsonParser.ReadRides();
+                List<Ride> orderedRides = new List<Ride>();
+
+                foreach (var ride in allRides)
+                    if (ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
+                        orderedRides.Add(ride);
+
+                Dictionary<Ride, double> measuredRides = new Dictionary<Ride, double>();
+                foreach(var orderedRide in orderedRides)
+                {
+                    double distance = Math.Sqrt(Math.Pow(x - orderedRide.StartLocation.X, 2) + Math.Pow(y - orderedRide.StartLocation.Y, 2));
+                    measuredRides.Add(orderedRide, distance);
+                }
+
+                var sortedRidesByDistance = measuredRides.OrderBy(r => r.Value);
+
+                List<Ride> sortedRides = new List<Ride>();
+                foreach (var ride in sortedRidesByDistance)
+                    sortedRides.Add(ride.Key);
+
+                return sortedRides;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 }

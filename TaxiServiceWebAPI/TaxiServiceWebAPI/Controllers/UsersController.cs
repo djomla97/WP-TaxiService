@@ -169,7 +169,6 @@ namespace TaxiServiceWebAPI.Controllers
             return freeDrivers;
         }
 
-        // prakticnije da postavim u drugi controller, ali da ne pravim radi sitnice jedne
         [HttpGet]
         [Route("api/drivers/closest")]
         public List<Driver> ClosestDrivers(double x, double y)
@@ -206,7 +205,7 @@ namespace TaxiServiceWebAPI.Controllers
             return closestDrivers;
         }
    
-        // POST api/users
+        // POST api/drivers
         [HttpPost]
         [Route("api/drivers")]
         public HttpResponseMessage Post([FromBody]Driver newDriver)

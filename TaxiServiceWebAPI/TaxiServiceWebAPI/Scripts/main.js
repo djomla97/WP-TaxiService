@@ -28,7 +28,9 @@ $(document).ready(function () {
     $('#seeAllRidesButton').data('clicked', false);
     $('#showAdvancedFiltersDiv').hide();
     $('#advHR').hide();
-    $('#seeUsersButtonDiv').hide();
+    $('#seeUsersButtonDiv').hide()
+    $('#sortByDistanceRow').hide();
+    $('#sortDistanceHR').hide();
 
     // pokusaj ulogovati korisnika iz cookie
     let loggedInUsername = getCookie('loggedInCookie');
@@ -43,6 +45,7 @@ $(document).ready(function () {
     // ako klikne na login
     $('#loginButton').click(function (e) {
         e.preventDefault();
+        $('#sortDistanceHR').hide();
         removeValidationErrors('register');
         clearFilters();
         tryLoginUser();
@@ -62,6 +65,10 @@ $(document).ready(function () {
         $('#orderRideMark').off('click');
         $('#addRideFormDiv').hide();
         $('#addNewDriverButtonDiv').hide();
+        $('#sortByDistanceButtonDiv').hide();
+        $('#sortByDefaultButtonDiv').hide();
+        $('#sortDistanceHR').hide();
+        $('#sortByDistanceRow').hide();
         clearFilters();
 
         $('#login-register-view').show();
@@ -385,14 +392,63 @@ $(document).ready(function () {
                     $('#checkFreeRidesButtonDiv').hide();
                     $('#seeDriverRidesButtonDiv').show();
                     $('#filterRow').hide();
+                    $('#sortByDistanceButtonDiv').show();
+                    $('#sortByDefaultButtonDiv').hide();
+                    $('#sortByDistanceRow').show();
+                    $('#sortDistanceHR').show();
+
                     clearFilters();
                 } else {
                     showSnackbar('Sorry, there are no ordered rides right now');
+                    $('#sortByDistanceRow').hide();
+                    $('#sortDistanceHR').hide();
                 }
             } else {
                 showSnackbar('Sorry, there are no ordered rides right now');
+                $('#sortByDistanceRow').hide();
+                $('#sortDistanceHR').hide();
             }
         });
+    });
+
+    // sort free rides by distance for driver
+    $('#sortByDistanceButtonDiv').click(function () {
+
+        $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
+            $.get(`/api/rides/closest?x=${user.DriverLocation.X}&y=${user.DriverLocation.Y}`, function (orderedRides) {
+                if (orderedRides != null) {
+                    if (orderedRides.length > 0) {
+
+                        orderedRides.forEach(function (orderedRide) {
+                            updateOrderTable(orderedRide, 'Driver');
+                        });
+
+                        $('#ridesTableDiv').hide();
+                        $('#checkFreeRidesButtonDiv').hide();
+                        $('#seeDriverRidesButtonDiv').show();
+                        $('#filterRow').hide();
+                        $('#sortByDistanceButtonDiv').hide();
+                        $('#sortByDefaultButtonDiv').show();
+                        $('#sortByDistanceRow').show();
+                        $('#sortDistanceHR').show();
+
+                        clearFilters();
+                    } else {
+                        showSnackbar('Sorry, there are no ordered rides right now');
+                        $('#sortByDistanceRow').hide();
+                        $('#sortDistanceHR').hide();
+                    }
+                } else {
+                    showSnackbar('Sorry, there are no ordered rides right now');
+                    $('#sortByDistanceRow').hide();
+                    $('#sortDistanceHR').hide();
+                }
+            });
+        });
+    });
+
+    $('#sortByDefaultButtonDiv').click(function () {
+        $('#checkFreeRidesButton').trigger('click');
     });
 
     $('#closeCustomerCommentModal').click(function () {
@@ -404,8 +460,6 @@ $(document).ready(function () {
     });
 
 }); // on ready
-
-
 
 /* HELPER FUNKCIJE */
 
@@ -782,6 +836,11 @@ function loginFromCookie(username) {
             $('#checkFreeRidesButtonDiv').hide();
             $('#advancedFilterRow').hide();
             $('#seeUsersButtonDiv').show();
+            $('#sortByDistanceButtonDiv').hide();
+            $('#sortByDefaultButtonDiv').hide();
+            $('#sortDistanceHR').hide();
+            $('#sortByDistanceRow').hide();
+            $('#seeDriverRidesButtonDiv').hide();
         } else if (user.Role == 'Driver') {
             $('#addRideButtonDiv').hide();
             $('#orderRideButtonDiv').hide();
@@ -796,6 +855,10 @@ function loginFromCookie(username) {
             $('#showAdvancedFiltersDiv').hide();
             $('#advancedFilterRow').hide();
             $('#seeUsersButtonDiv').hide();
+            $('#sortByDistanceButtonDiv').hide();
+            $('#sortByDefaultButtonDiv').hide();
+            $('#sortDistanceHR').hide();
+            $('#sortByDistanceRow').hide();
         } else {
             $('#register-new-driver-form-view').hide();
             $('#checkFreeRidesButtonDiv').hide();
@@ -812,6 +875,11 @@ function loginFromCookie(username) {
             $('#showAdvancedFiltersDiv').hide();
             $('#advancedFilterRow').hide();
             $('#seeUsersButtonDiv').hide();
+            $('#sortByDistanceButtonDiv').hide();
+            $('#sortByDefaultButtonDiv').hide();
+            $('#sortDistanceHR').hide();
+            $('#sortByDistanceRow').hide();
+            $('#seeDriverRidesButtonDiv').hide();
         }
 
         // update UI size based on role
@@ -873,6 +941,10 @@ function loginFromCookie(username) {
                 updateAllRidesTable(user);
                 $('#checkFreeRidesButtonDiv').show();
                 $('#seeDriverRidesButtonDiv').hide();
+                $('#sortByDistanceButtonDiv').hide();
+                $('#sortByDefaultButtonDiv').hide();
+                $('#sortDistanceHR').hide();
+                $('#sortByDistanceRow').hide();
             });
 
             updateAllRidesTable(user);
@@ -952,6 +1024,11 @@ function tryLoginUser() {
                         $('#checkFreeRidesButtonDiv').hide();
                         $('#advancedFilterRow').hide();
                         $('#seeUsersButtonDiv').show();
+                        $('#sortByDistanceButtonDiv').hide();
+                        $('#sortByDefaultButtonDiv').hide();
+                        $('#sortDistanceHR').hide();
+                        $('#sortByDistanceRow').hide();
+                        $('#seeDriverRidesButtonDiv').hide();
                     } else if (user.Role == 'Driver') {
                         $('#addRideButtonDiv').hide();
                         $('#orderRideButtonDiv').hide();
@@ -967,6 +1044,10 @@ function tryLoginUser() {
                         $('#showAdvancedFiltersDiv').hide();
                         $('#advancedFilterRow').hide();
                         $('#seeUsersButtonDiv').hide();
+                        $('#sortByDistanceButtonDiv').hide();
+                        $('#sortByDefaultButtonDiv').hide();
+                        $('#sortDistanceHR').hide();
+                        $('#sortByDistanceRow').hide();
                     } else {
                         $('#addRideButtonDiv').hide();
                         $('#seeRidesButtonDiv').hide();
@@ -982,6 +1063,10 @@ function tryLoginUser() {
                         $('#showAdvancedFiltersDiv').hide();
                         $('#advancedFilterRow').hide();
                         $('#seeUsersButtonDiv').hide();
+                        $('#sortByDistanceButtonDiv').hide();
+                        $('#sortByDefaultButtonDiv').hide();
+                        $('#sortDistanceHR').hide();
+                        $('#sortByDistanceRow').hide();
                     }
 
                     // update UI size based on role
@@ -1042,6 +1127,10 @@ function tryLoginUser() {
                             updateAllRidesTable(user);
                             $('#checkFreeRidesButtonDiv').show();
                             $('#seeDriverRidesButtonDiv').hide();
+                            $('#sortByDistanceButtonDiv').hide();
+                            $('#sortByDefaultButtonDiv').hide();
+                            $('#sortDistanceHR').hide();
+                            $('#sortByDistanceRow').hide();
                         });
 
                         updateAllRidesTable(user);

@@ -26,7 +26,7 @@ namespace TaxiServiceWebAPI.Helpers.DocParsers
         private void ReadConfig()
         {
             XmlDocument configXml = new XmlDocument();
-            configXml.Load(@"C:\Users\Mladjo\Desktop\TaxiService\WP-TaxiService\TaxiServiceWebAPI\TaxiServiceWebAPI\Helpers\readerConfig.xml");
+            configXml.Load(@"C:\Users\Mladjo\Desktop\WP-TaxiService\TaxiServiceWebAPI\TaxiServiceWebAPI\Helpers\readerConfig.xml");
 
             usersPath = configXml.SelectSingleNode("/config/userDataPath").InnerText;
             driversPath = configXml.SelectSingleNode("/config/driverDataPath").InnerText;
