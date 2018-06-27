@@ -55,7 +55,6 @@ $(document).ready(function () {
     $('#logoutButton').click(function (e) {
         e.preventDefault();
 
-        // neka logika za logout ???
         eraseCookie('loggedInCookie');
         console.log('Cookie cleared.');
         $('#user-info').empty();
@@ -69,6 +68,8 @@ $(document).ready(function () {
         $('#sortByDefaultButtonDiv').hide();
         $('#sortDistanceHR').hide();
         $('#sortByDistanceRow').hide();
+        $('#advancedFilterRow').hide();
+        $('#seeAllRidesButton').data('clicked', false); // ne zelimo da neko drugi dobije filter svih voznji
         clearFilters();
 
         $('#login-register-view').show();
@@ -253,6 +254,7 @@ $(document).ready(function () {
         e.preventDefault();
         clearForm('add-ride-form');
         $('#seeAllRidesButton').data('clicked', false);
+        $('#advancedFilterRow').hide();
 
         $('#orderRidesTableDiv').fadeOut('500', function () {
 
@@ -312,6 +314,7 @@ $(document).ready(function () {
         $('#orderRidesTableDiv').hide();
         $('#addRideFormDiv').hide();
         $('#no-rides-message').hide();
+        $('#advancedFilterRow').hide();
 
         $('#seeAllRidesButtonDiv').show();
         $('#seeDispatcherRidesButtonDiv').show();
@@ -381,6 +384,7 @@ $(document).ready(function () {
     // za dobijanje ordered rides za vozaca
     $('#checkFreeRidesButton').click(function (e) {
         e.preventDefault();
+        $('#rides-table-body').empty();
 
         $.get('/api/rides/ordered', function (orderedRides) {
             if (orderedRides != null) {
@@ -388,6 +392,7 @@ $(document).ready(function () {
                     orderedRides.forEach(function (orderedRide) {
                         updateOrderTable(orderedRide, 'Driver');
                     });
+
                     $('#ridesTableDiv').hide();
                     $('#checkFreeRidesButtonDiv').hide();
                     $('#seeDriverRidesButtonDiv').show();
@@ -396,8 +401,7 @@ $(document).ready(function () {
                     $('#sortByDefaultButtonDiv').hide();
                     $('#sortByDistanceRow').show();
                     $('#sortDistanceHR').show();
-
-                    clearFilters();
+                    clearFilters();                   
                 } else {
                     showSnackbar('Sorry, there are no ordered rides right now');
                     $('#sortByDistanceRow').hide();
@@ -412,13 +416,13 @@ $(document).ready(function () {
     });
 
     // sort free rides by distance for driver
-    $('#sortByDistanceButtonDiv').click(function () {
+    $('#sortByDistanceButton').unbind('click').click(function () {
 
+        $('#rides-table-body').empty();
         $.get(`/api/users/${$('#loggedIn-username').text()}`, function (user) {
             $.get(`/api/rides/closest?x=${user.DriverLocation.X}&y=${user.DriverLocation.Y}`, function (orderedRides) {
                 if (orderedRides != null) {
                     if (orderedRides.length > 0) {
-
                         orderedRides.forEach(function (orderedRide) {
                             updateOrderTable(orderedRide, 'Driver');
                         });
@@ -434,11 +438,13 @@ $(document).ready(function () {
 
                         clearFilters();
                     } else {
+                        console.log('manje od 0')
                         showSnackbar('Sorry, there are no ordered rides right now');
                         $('#sortByDistanceRow').hide();
                         $('#sortDistanceHR').hide();
                     }
                 } else {
+                    console.log('null je')
                     showSnackbar('Sorry, there are no ordered rides right now');
                     $('#sortByDistanceRow').hide();
                     $('#sortDistanceHR').hide();
@@ -447,7 +453,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#sortByDefaultButtonDiv').click(function () {
+    $('#sortByDefaultButton').unbind('click').click(function () {
         $('#checkFreeRidesButton').trigger('click');
     });
 
@@ -1716,7 +1722,7 @@ function updateOrderTable(orderRide, userRole) {
         });
 
     }
-
+   
     checkRidesTables();
 }
 

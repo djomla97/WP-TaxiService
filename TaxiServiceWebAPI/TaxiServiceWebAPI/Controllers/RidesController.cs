@@ -431,22 +431,30 @@ namespace TaxiServiceWebAPI.Controllers
         [Route("api/rides/ordered")]
         public List<Ride> Ordered()
         {
-            List<Ride> allRides = jsonParser.ReadRides();
-            List<Ride> orderedRides = new List<Ride>();
-
-            if (allRides != null)
+            try
             {
-                foreach (Ride ride in allRides)
+                List<Ride> allRides = jsonParser.ReadRides();
+                List<Ride> orderedRides = new List<Ride>();
+
+                if (allRides != null)
                 {
-                    if (ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
-                        orderedRides.Add(ride);
+                    foreach (Ride ride in allRides)
+                    {
+                        if (ride.StatusOfRide == RideStatuses.CREATED_ONWAIT.ToString())
+                            orderedRides.Add(ride);
+                    }
                 }
+                else
+                {
+                    return null;
+                }
+                return orderedRides;
             }
-            else
+            catch (Exception)
             {
                 return null;
             }
-            return orderedRides;
+            
         }
 
         // GET /api/rides/ordered/username
