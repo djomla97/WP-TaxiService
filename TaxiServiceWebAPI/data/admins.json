@@ -1,0 +1,263 @@
+[
+  {
+    "Username": "supermladen",
+    "Password": "admin",
+    "FirstName": "Mladen",
+    "LastName": "Milosevic",
+    "JMBG": "123456789321654",
+    "ContactPhone": "+3816541653",
+    "Email": "mladjo@taxiservice.com",
+    "Role": "Dispatcher",
+    "Gender": "Male",
+    "Rides": {
+      "$id": "1",
+      "$values": [
+        {
+          "ID": 4329,
+          "DateAndTime": "2018-06-27T23:01:36.8942465+02:00",
+          "StartLocation": {
+            "X": 45.2427489,
+            "Y": 19.8826007,
+            "LocationAddress": {
+              "Street": "Preradoviceva 105",
+              "City": "Petrovaradin Municipality",
+              "ZipCode": "21000"
+            }
+          },
+          "RideVehicle": {
+            "$id": "2",
+            "CarDriver": null,
+            "VehicleAge": 0,
+            "NumberOfRegistration": null,
+            "TaxiNumber": null,
+            "VehicleType": "Passenger"
+          },
+          "RideCustomer": {
+            "$id": "3",
+            "IsBanned": false,
+            "Username": null,
+            "Password": null,
+            "FirstName": null,
+            "LastName": null,
+            "JMBG": null,
+            "ContactPhone": null,
+            "Email": null,
+            "Role": "Customer",
+            "Gender": null,
+            "Rides": null
+          },
+          "Destination": null,
+          "RideDispatcher": null,
+          "RideDriver": {
+            "$id": "4",
+            "DriverLocation": {
+              "X": 45.2544675,
+              "Y": 19.8350986,
+              "LocationAddress": {
+                "Street": "Bulevar Oslobodjenja 66a",
+                "City": "Novi Sad",
+                "ZipCode": "21000"
+              }
+            },
+            "DriverVehicle": {
+              "$id": "5",
+              "CarDriver": null,
+              "VehicleAge": 2018,
+              "NumberOfRegistration": "TAXI-055-442",
+              "TaxiNumber": "250",
+              "VehicleType": "Passenger"
+            },
+            "IsFree": false,
+            "IsBanned": false,
+            "Username": "toretto",
+            "Password": "dom",
+            "FirstName": "Dominic",
+            "LastName": "Toretto",
+            "JMBG": "32165481522",
+            "ContactPhone": "+3816541653",
+            "Email": "fast@furious.com",
+            "Role": "Driver",
+            "Gender": "Male",
+            "Rides": {
+              "$id": "6",
+              "$values": []
+            }
+          },
+          "Fare": 0.0,
+          "RideComment": {
+            "$id": "7",
+            "Description": null,
+            "DateAndTime": "0001-01-01T00:00:00",
+            "CommentUser": null,
+            "CommentRide": null,
+            "RideMark": 0
+          },
+          "StatusOfRide": "FORMED"
+        },
+        {
+          "ID": 9100,
+          "DateAndTime": "2018-06-27T23:09:19.8372969+02:00",
+          "StartLocation": {
+            "X": 45.2561514,
+            "Y": 19.8124505,
+            "LocationAddress": {
+              "Street": "Hadzi Ruvimova 58",
+              "City": "Novi Sad",
+              "ZipCode": "21000"
+            }
+          },
+          "RideVehicle": {
+            "$id": "8",
+            "CarDriver": null,
+            "VehicleAge": 0,
+            "NumberOfRegistration": null,
+            "TaxiNumber": null,
+            "VehicleType": "Passenger"
+          },
+          "RideCustomer": {
+            "$id": "9",
+            "IsBanned": false,
+            "Username": null,
+            "Password": null,
+            "FirstName": null,
+            "LastName": null,
+            "JMBG": null,
+            "ContactPhone": null,
+            "Email": null,
+            "Role": "Customer",
+            "Gender": null,
+            "Rides": null
+          },
+          "Destination": null,
+          "RideDispatcher": null,
+          "RideDriver": {
+            "$id": "10",
+            "DriverLocation": {
+              "X": 45.2488136,
+              "Y": 19.877461,
+              "LocationAddress": {
+                "Street": "Прерадовићева 39a",
+                "City": "Petrovaradin Municipality",
+                "ZipCode": "21000"
+              }
+            },
+            "DriverVehicle": {
+              "$id": "11",
+              "CarDriver": null,
+              "VehicleAge": 2012,
+              "NumberOfRegistration": "CAKI-879-215",
+              "TaxiNumber": "666",
+              "VehicleType": "Van"
+            },
+            "IsFree": false,
+            "IsBanned": false,
+            "Username": "caki",
+            "Password": "caki",
+            "FirstName": "Strahinja",
+            "LastName": "Lazarevic",
+            "JMBG": "6549871248951",
+            "ContactPhone": "+6357841269561",
+            "Email": "caki@cale.rs",
+            "Role": "Driver",
+            "Gender": "",
+            "Rides": {
+              "$id": "12",
+              "$values": []
+            }
+          },
+          "Fare": 0.0,
+          "RideComment": {
+            "$id": "13",
+            "Description": null,
+            "DateAndTime": "0001-01-01T00:00:00",
+            "CommentUser": null,
+            "CommentRide": null,
+            "RideMark": 0
+          },
+          "StatusOfRide": "FORMED"
+        },
+        {
+          "ID": 3242,
+          "DateAndTime": "2018-06-27T23:09:38.0152101+02:00",
+          "StartLocation": {
+            "X": 45.24737575,
+            "Y": 19.7671362891273,
+            "LocationAddress": {
+              "Street": "Justina Popovica",
+              "City": "Novi Sad",
+              "ZipCode": "21203"
+            }
+          },
+          "RideVehicle": {
+            "$id": "14",
+            "CarDriver": null,
+            "VehicleAge": 0,
+            "NumberOfRegistration": null,
+            "TaxiNumber": null,
+            "VehicleType": "Van"
+          },
+          "RideCustomer": {
+            "$id": "15",
+            "IsBanned": false,
+            "Username": null,
+            "Password": null,
+            "FirstName": null,
+            "LastName": null,
+            "JMBG": null,
+            "ContactPhone": null,
+            "Email": null,
+            "Role": "Customer",
+            "Gender": null,
+            "Rides": null
+          },
+          "Destination": null,
+          "RideDriver": {
+            "$id": "16",
+            "DriverLocation": {
+              "X": 45.2488868,
+              "Y": 19.8195063,
+              "LocationAddress": {
+                "Street": "Futoska 109",
+                "City": "Novi Sad",
+                "ZipCode": "21102"
+              }
+            },
+            "DriverVehicle": {
+              "$id": "17",
+              "CarDriver": null,
+              "VehicleAge": 2016,
+              "NumberOfRegistration": "BLING-255-478",
+              "TaxiNumber": "665",
+              "VehicleType": "Passenger"
+            },
+            "IsFree": false,
+            "IsBanned": false,
+            "Username": "nikola",
+            "Password": "nikola",
+            "FirstName": "Nikola",
+            "LastName": "Mrsic",
+            "JMBG": "25479998523",
+            "ContactPhone": "+34879956212",
+            "Email": "nikola@yandex.com",
+            "Role": "Driver",
+            "Gender": "",
+            "Rides": {
+              "$id": "18",
+              "$values": []
+            }
+          },
+          "Fare": 0.0,
+          "RideComment": {
+            "$id": "19",
+            "Description": null,
+            "DateAndTime": "0001-01-01T00:00:00",
+            "CommentUser": null,
+            "CommentRide": null,
+            "RideMark": 0
+          },
+          "StatusOfRide": "FORMED"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,199 @@
+[
+  {
+    "DriverLocation": {
+      "X": 45.2544675,
+      "Y": 19.8350986,
+      "LocationAddress": {
+        "Street": "Bulevar Oslobodjenja 66a",
+        "City": "Novi Sad",
+        "ZipCode": "21000"
+      }
+    },
+    "DriverVehicle": {
+      "$id": "1",
+      "CarDriver": null,
+      "VehicleAge": 2018,
+      "NumberOfRegistration": "TAXI-055-442",
+      "TaxiNumber": "250",
+      "VehicleType": "Passenger"
+    },
+    "IsFree": false,
+    "IsBanned": false,
+    "Username": "toretto",
+    "Password": "dom",
+    "FirstName": "Dominic",
+    "LastName": "Toretto",
+    "JMBG": "32165481522",
+    "ContactPhone": "+3816541653",
+    "Email": "fast@furious.com",
+    "Role": "Driver",
+    "Gender": "Male",
+    "Rides": {
+      "$id": "2",
+      "$values": []
+    }
+  },
+  {
+    "DriverLocation": {
+      "X": 45.2394307,
+      "Y": 19.8253587,
+      "LocationAddress": {
+        "Street": "Ive Andrica",
+        "City": "Novi Sad",
+        "ZipCode": "21102"
+      }
+    },
+    "DriverVehicle": {
+      "$id": "3",
+      "CarDriver": null,
+      "VehicleAge": 2018,
+      "NumberOfRegistration": "NS-889-785",
+      "TaxiNumber": "145",
+      "VehicleType": "Van"
+    },
+    "IsFree": true,
+    "IsBanned": false,
+    "Username": "srki",
+    "Password": "srki",
+    "FirstName": "Srdjan",
+    "LastName": "Mijatovic",
+    "JMBG": "6678955412",
+    "ContactPhone": "+381654477986",
+    "Email": "srki@taxi.rs",
+    "Role": "Driver",
+    "Gender": "Male",
+    "Rides": {
+      "$id": "4",
+      "$values": []
+    }
+  },
+  {
+    "DriverLocation": {
+      "X": 44.8192415,
+      "Y": 20.3828198,
+      "LocationAddress": {
+        "Street": "Marka Celebonovica",
+        "City": "New Belgrade Municipality",
+        "ZipCode": "11073"
+      }
+    },
+    "DriverVehicle": {
+      "$id": "5",
+      "CarDriver": null,
+      "VehicleAge": 1996,
+      "NumberOfRegistration": "TAXI-555-678",
+      "TaxiNumber": "159",
+      "VehicleType": "Passenger"
+    },
+    "IsFree": false,
+    "IsBanned": false,
+    "Username": "duco",
+    "Password": "duco",
+    "FirstName": "Duco",
+    "LastName": "Brzina",
+    "JMBG": "34567912",
+    "ContactPhone": "+3659741",
+    "Email": "duco@ljubovija.rs",
+    "Role": "Driver",
+    "Gender": "Male",
+    "Rides": {
+      "$id": "6",
+      "$values": []
+    }
+  },
+  {
+    "DriverLocation": {
+      "X": 45.2488136,
+      "Y": 19.877461,
+      "LocationAddress": {
+        "Street": "Прерадовићева 39a",
+        "City": "Petrovaradin Municipality",
+        "ZipCode": "21000"
+      }
+    },
+    "DriverVehicle": {
+      "$id": "7",
+      "CarDriver": null,
+      "VehicleAge": 2012,
+      "NumberOfRegistration": "CAKI-879-215",
+      "TaxiNumber": "666",
+      "VehicleType": "Van"
+    },
+    "IsFree": false,
+    "IsBanned": false,
+    "Username": "caki",
+    "Password": "caki",
+    "FirstName": "Strahinja",
+    "LastName": "Lazarevic",
+    "JMBG": "6549871248951",
+    "ContactPhone": "+6357841269561",
+    "Email": "caki@cale.rs",
+    "Role": "Driver",
+    "Gender": "",
+    "Rides": {
+      "$id": "8",
+      "$values": []
+    }
+  },
+  {
+    "DriverLocation": {
+      "X": 45.2953059,
+      "Y": 19.8226867,
+      "LocationAddress": {
+        "Street": "Sentandrejski put",
+        "City": "Novi Sad",
+        "ZipCode": "21000"
+      }
+    },
+    "DriverVehicle": {
+      "$id": "9",
+      "CarDriver": null,
+      "VehicleAge": 2009,
+      "NumberOfRegistration": "AC-1212-12",
+      "TaxiNumber": "121",
+      "VehicleType": "Passenger"
+    },
+    "IsFree": false,
+    "IsBanned": false,
+    "Username": "ezio",
+    "Password": "ezio",
+    "FirstName": "Ezio",
+    "LastName": "Auditore",
+    "JMBG": "36547889215",
+    "ContactPhone": "+3684566158",
+    "Email": "ezio@assassins.crom",
+    "Role": "Driver",
+    "Gender": "Male",
+    "Rides": {
+      "$id": "10",
+      "$values": []
+    }
+  },
+  {
+    "DriverLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "Futoska 109",
+        "City": "Novi Sad",
+        "ZipCode": "21102"
+      }
+    },
+    "DriverVehicle": null,
+    "IsFree": true,
+    "IsBanned": false,
+    "Username": "nikola",
+    "Password": "nikola",
+    "FirstName": "Nikola",
+    "LastName": "Mrsic",
+    "JMBG": "25479998523",
+    "ContactPhone": "+34879956212",
+    "Email": "nikola@yandex.com",
+    "Role": "Driver",
+    "Gender": "Female",
+    "Rides": {
+      "$id": "11",
+      "$values": []
+    }
+  }
+]
