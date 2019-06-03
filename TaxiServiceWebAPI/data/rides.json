@@ -1270,5 +1270,1071 @@
       "RideMark": 0
     },
     "StatusOfRide": "ACCEPTED"
+  },
+  {
+    "ID": 6160,
+    "DateAndTime": "2019-06-03T20:18:49.7277454+02:00",
+    "StartLocation": {
+      "X": 0.0,
+      "Y": 0.0,
+      "LocationAddress": {
+        "Street": "Bulevar oslobodjenja 62",
+        "City": "Novi Sad",
+        "ZipCode": "21000"
+      }
+    },
+    "RideVehicle": {
+      "$id": "95",
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "$id": "96",
+      "IsBanned": false,
+      "Username": "demo",
+      "Password": "",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Gender": "Male",
+      "Rides": {
+        "$id": "97",
+        "$values": [
+          {
+            "ID": 1649,
+            "DateAndTime": "2018-06-27T23:00:13.5867559+02:00",
+            "StartLocation": {
+              "X": 45.2584937,
+              "Y": 19.8282438,
+              "LocationAddress": {
+                "Street": "Majevicka 7",
+                "City": "Novi Sad",
+                "ZipCode": "21101"
+              }
+            },
+            "RideVehicle": {
+              "$id": "98",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "99",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "100",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "101",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 5774,
+            "DateAndTime": "2018-06-27T23:00:37.5165674+02:00",
+            "StartLocation": {
+              "X": 45.2643561,
+              "Y": 19.8376891,
+              "LocationAddress": {
+                "Street": "Kisacka 50",
+                "City": "Novi Sad",
+                "ZipCode": "21101"
+              }
+            },
+            "RideVehicle": {
+              "$id": "102",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "103",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "104",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "105",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 7312,
+            "DateAndTime": "2018-06-27T23:15:27.4976858+02:00",
+            "StartLocation": {
+              "X": 45.2416591,
+              "Y": 19.7991466,
+              "LocationAddress": {
+                "Street": "Bulevar patrijarha Pavla 105",
+                "City": "Novi Sad",
+                "ZipCode": "21102"
+              }
+            },
+            "RideVehicle": {
+              "$id": "106",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "107",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "108",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "109",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 3534,
+            "DateAndTime": "2018-06-27T23:15:36.2589125+02:00",
+            "StartLocation": {
+              "X": 45.2715174,
+              "Y": 19.830876,
+              "LocationAddress": {
+                "Street": "Sentandrejski put",
+                "City": "Novi Sad",
+                "ZipCode": "21138"
+              }
+            },
+            "RideVehicle": {
+              "$id": "110",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Van"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "111",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "112",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "113",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 6160,
+            "DateAndTime": "2019-06-03T20:18:29.7415755+02:00",
+            "StartLocation": {
+              "X": 45.2554595,
+              "Y": 19.8345263,
+              "LocationAddress": {
+                "Street": "Bulevar oslobodjenja 62",
+                "City": "Novi Sad",
+                "ZipCode": "21000"
+              }
+            },
+            "RideVehicle": {
+              "$id": "114",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "115",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "116",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "117",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          }
+        ]
+      }
+    },
+    "Destination": null,
+    "RideDispatcher": null,
+    "RideDriver": null,
+    "Fare": 0.0,
+    "RideComment": {
+      "$id": "118",
+      "Description": null,
+      "DateAndTime": "0001-01-01T00:00:00",
+      "CommentUser": null,
+      "CommentRide": null,
+      "RideMark": 0
+    },
+    "StatusOfRide": "CREATED_ONWAIT"
+  },
+  {
+    "ID": 5311,
+    "DateAndTime": "2019-06-03T20:50:57.4837604+02:00",
+    "StartLocation": {
+      "X": 45.2552653,
+      "Y": 19.8343627,
+      "LocationAddress": {
+        "Street": "Novosadskog Sajma 2",
+        "City": "Novi Sad",
+        "ZipCode": "21000"
+      }
+    },
+    "RideVehicle": {
+      "$id": "119",
+      "CarDriver": null,
+      "VehicleAge": 0,
+      "NumberOfRegistration": null,
+      "TaxiNumber": null,
+      "VehicleType": "Passenger"
+    },
+    "RideCustomer": {
+      "$id": "120",
+      "IsBanned": false,
+      "Username": "demo",
+      "Password": "",
+      "FirstName": "Demo",
+      "LastName": "User",
+      "JMBG": "445556978112",
+      "ContactPhone": "+386895111",
+      "Email": "demo@taxiservice.com",
+      "Role": "Customer",
+      "Gender": "Male",
+      "Rides": {
+        "$id": "121",
+        "$values": [
+          {
+            "ID": 1649,
+            "DateAndTime": "2018-06-27T23:00:13.5867559+02:00",
+            "StartLocation": {
+              "X": 45.2584937,
+              "Y": 19.8282438,
+              "LocationAddress": {
+                "Street": "Majevicka 7",
+                "City": "Novi Sad",
+                "ZipCode": "21101"
+              }
+            },
+            "RideVehicle": {
+              "$id": "122",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "123",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "124",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "125",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 5774,
+            "DateAndTime": "2018-06-27T23:00:37.5165674+02:00",
+            "StartLocation": {
+              "X": 45.2643561,
+              "Y": 19.8376891,
+              "LocationAddress": {
+                "Street": "Kisacka 50",
+                "City": "Novi Sad",
+                "ZipCode": "21101"
+              }
+            },
+            "RideVehicle": {
+              "$id": "126",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "127",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "128",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "129",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 7312,
+            "DateAndTime": "2018-06-27T23:15:27.4976858+02:00",
+            "StartLocation": {
+              "X": 45.2416591,
+              "Y": 19.7991466,
+              "LocationAddress": {
+                "Street": "Bulevar patrijarha Pavla 105",
+                "City": "Novi Sad",
+                "ZipCode": "21102"
+              }
+            },
+            "RideVehicle": {
+              "$id": "130",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "131",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "132",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "133",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 3534,
+            "DateAndTime": "2018-06-27T23:15:36.2589125+02:00",
+            "StartLocation": {
+              "X": 45.2715174,
+              "Y": 19.830876,
+              "LocationAddress": {
+                "Street": "Sentandrejski put",
+                "City": "Novi Sad",
+                "ZipCode": "21138"
+              }
+            },
+            "RideVehicle": {
+              "$id": "134",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Van"
+            },
+            "RideCustomer": null,
+            "Destination": null,
+            "RideDispatcher": {
+              "$id": "135",
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Dispatcher",
+              "Gender": null,
+              "Rides": null
+            },
+            "RideDriver": {
+              "$id": "136",
+              "DriverLocation": null,
+              "DriverVehicle": null,
+              "IsFree": true,
+              "IsBanned": false,
+              "Username": null,
+              "Password": null,
+              "FirstName": null,
+              "LastName": null,
+              "JMBG": null,
+              "ContactPhone": null,
+              "Email": null,
+              "Role": "Driver",
+              "Gender": null,
+              "Rides": null
+            },
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "137",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          },
+          {
+            "ID": 6160,
+            "DateAndTime": "2019-06-03T20:18:49.7277454+02:00",
+            "StartLocation": {
+              "X": 0.0,
+              "Y": 0.0,
+              "LocationAddress": {
+                "Street": "Bulevar oslobodjenja 62",
+                "City": "Novi Sad",
+                "ZipCode": "21000"
+              }
+            },
+            "RideVehicle": {
+              "$id": "138",
+              "CarDriver": null,
+              "VehicleAge": 0,
+              "NumberOfRegistration": null,
+              "TaxiNumber": null,
+              "VehicleType": "Passenger"
+            },
+            "RideCustomer": {
+              "$id": "139",
+              "IsBanned": false,
+              "Username": "demo",
+              "Password": "",
+              "FirstName": "Demo",
+              "LastName": "User",
+              "JMBG": "445556978112",
+              "ContactPhone": "+386895111",
+              "Email": "demo@taxiservice.com",
+              "Role": "Customer",
+              "Gender": "Male",
+              "Rides": {
+                "$id": "140",
+                "$values": [
+                  {
+                    "ID": 1649,
+                    "DateAndTime": "2018-06-27T23:00:13.5867559+02:00",
+                    "StartLocation": {
+                      "X": 45.2584937,
+                      "Y": 19.8282438,
+                      "LocationAddress": {
+                        "Street": "Majevicka 7",
+                        "City": "Novi Sad",
+                        "ZipCode": "21101"
+                      }
+                    },
+                    "RideVehicle": {
+                      "$id": "141",
+                      "CarDriver": null,
+                      "VehicleAge": 0,
+                      "NumberOfRegistration": null,
+                      "TaxiNumber": null,
+                      "VehicleType": "Passenger"
+                    },
+                    "RideCustomer": null,
+                    "Destination": null,
+                    "RideDispatcher": {
+                      "$id": "142",
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Dispatcher",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "RideDriver": {
+                      "$id": "143",
+                      "DriverLocation": null,
+                      "DriverVehicle": null,
+                      "IsFree": true,
+                      "IsBanned": false,
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Driver",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "Fare": 0.0,
+                    "RideComment": {
+                      "$id": "144",
+                      "Description": null,
+                      "DateAndTime": "0001-01-01T00:00:00",
+                      "CommentUser": null,
+                      "CommentRide": null,
+                      "RideMark": 0
+                    },
+                    "StatusOfRide": "CREATED_ONWAIT"
+                  },
+                  {
+                    "ID": 5774,
+                    "DateAndTime": "2018-06-27T23:00:37.5165674+02:00",
+                    "StartLocation": {
+                      "X": 45.2643561,
+                      "Y": 19.8376891,
+                      "LocationAddress": {
+                        "Street": "Kisacka 50",
+                        "City": "Novi Sad",
+                        "ZipCode": "21101"
+                      }
+                    },
+                    "RideVehicle": {
+                      "$id": "145",
+                      "CarDriver": null,
+                      "VehicleAge": 0,
+                      "NumberOfRegistration": null,
+                      "TaxiNumber": null,
+                      "VehicleType": "Passenger"
+                    },
+                    "RideCustomer": null,
+                    "Destination": null,
+                    "RideDispatcher": {
+                      "$id": "146",
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Dispatcher",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "RideDriver": {
+                      "$id": "147",
+                      "DriverLocation": null,
+                      "DriverVehicle": null,
+                      "IsFree": true,
+                      "IsBanned": false,
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Driver",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "Fare": 0.0,
+                    "RideComment": {
+                      "$id": "148",
+                      "Description": null,
+                      "DateAndTime": "0001-01-01T00:00:00",
+                      "CommentUser": null,
+                      "CommentRide": null,
+                      "RideMark": 0
+                    },
+                    "StatusOfRide": "CREATED_ONWAIT"
+                  },
+                  {
+                    "ID": 7312,
+                    "DateAndTime": "2018-06-27T23:15:27.4976858+02:00",
+                    "StartLocation": {
+                      "X": 45.2416591,
+                      "Y": 19.7991466,
+                      "LocationAddress": {
+                        "Street": "Bulevar patrijarha Pavla 105",
+                        "City": "Novi Sad",
+                        "ZipCode": "21102"
+                      }
+                    },
+                    "RideVehicle": {
+                      "$id": "149",
+                      "CarDriver": null,
+                      "VehicleAge": 0,
+                      "NumberOfRegistration": null,
+                      "TaxiNumber": null,
+                      "VehicleType": "Passenger"
+                    },
+                    "RideCustomer": null,
+                    "Destination": null,
+                    "RideDispatcher": {
+                      "$id": "150",
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Dispatcher",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "RideDriver": {
+                      "$id": "151",
+                      "DriverLocation": null,
+                      "DriverVehicle": null,
+                      "IsFree": true,
+                      "IsBanned": false,
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Driver",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "Fare": 0.0,
+                    "RideComment": {
+                      "$id": "152",
+                      "Description": null,
+                      "DateAndTime": "0001-01-01T00:00:00",
+                      "CommentUser": null,
+                      "CommentRide": null,
+                      "RideMark": 0
+                    },
+                    "StatusOfRide": "CREATED_ONWAIT"
+                  },
+                  {
+                    "ID": 3534,
+                    "DateAndTime": "2018-06-27T23:15:36.2589125+02:00",
+                    "StartLocation": {
+                      "X": 45.2715174,
+                      "Y": 19.830876,
+                      "LocationAddress": {
+                        "Street": "Sentandrejski put",
+                        "City": "Novi Sad",
+                        "ZipCode": "21138"
+                      }
+                    },
+                    "RideVehicle": {
+                      "$id": "153",
+                      "CarDriver": null,
+                      "VehicleAge": 0,
+                      "NumberOfRegistration": null,
+                      "TaxiNumber": null,
+                      "VehicleType": "Van"
+                    },
+                    "RideCustomer": null,
+                    "Destination": null,
+                    "RideDispatcher": {
+                      "$id": "154",
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Dispatcher",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "RideDriver": {
+                      "$id": "155",
+                      "DriverLocation": null,
+                      "DriverVehicle": null,
+                      "IsFree": true,
+                      "IsBanned": false,
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Driver",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "Fare": 0.0,
+                    "RideComment": {
+                      "$id": "156",
+                      "Description": null,
+                      "DateAndTime": "0001-01-01T00:00:00",
+                      "CommentUser": null,
+                      "CommentRide": null,
+                      "RideMark": 0
+                    },
+                    "StatusOfRide": "CREATED_ONWAIT"
+                  },
+                  {
+                    "ID": 6160,
+                    "DateAndTime": "2019-06-03T20:18:29.7415755+02:00",
+                    "StartLocation": {
+                      "X": 45.2554595,
+                      "Y": 19.8345263,
+                      "LocationAddress": {
+                        "Street": "Bulevar oslobodjenja 62",
+                        "City": "Novi Sad",
+                        "ZipCode": "21000"
+                      }
+                    },
+                    "RideVehicle": {
+                      "$id": "157",
+                      "CarDriver": null,
+                      "VehicleAge": 0,
+                      "NumberOfRegistration": null,
+                      "TaxiNumber": null,
+                      "VehicleType": "Passenger"
+                    },
+                    "RideCustomer": null,
+                    "Destination": null,
+                    "RideDispatcher": {
+                      "$id": "158",
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Dispatcher",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "RideDriver": {
+                      "$id": "159",
+                      "DriverLocation": null,
+                      "DriverVehicle": null,
+                      "IsFree": true,
+                      "IsBanned": false,
+                      "Username": null,
+                      "Password": null,
+                      "FirstName": null,
+                      "LastName": null,
+                      "JMBG": null,
+                      "ContactPhone": null,
+                      "Email": null,
+                      "Role": "Driver",
+                      "Gender": null,
+                      "Rides": null
+                    },
+                    "Fare": 0.0,
+                    "RideComment": {
+                      "$id": "160",
+                      "Description": null,
+                      "DateAndTime": "0001-01-01T00:00:00",
+                      "CommentUser": null,
+                      "CommentRide": null,
+                      "RideMark": 0
+                    },
+                    "StatusOfRide": "CREATED_ONWAIT"
+                  }
+                ]
+              }
+            },
+            "Destination": null,
+            "RideDispatcher": null,
+            "RideDriver": null,
+            "Fare": 0.0,
+            "RideComment": {
+              "$id": "161",
+              "Description": null,
+              "DateAndTime": "0001-01-01T00:00:00",
+              "CommentUser": null,
+              "CommentRide": null,
+              "RideMark": 0
+            },
+            "StatusOfRide": "CREATED_ONWAIT"
+          }
+        ]
+      }
+    },
+    "Destination": null,
+    "RideDispatcher": {
+      "$id": "162",
+      "Username": null,
+      "Password": null,
+      "FirstName": null,
+      "LastName": null,
+      "JMBG": null,
+      "ContactPhone": null,
+      "Email": null,
+      "Role": "Dispatcher",
+      "Gender": null,
+      "Rides": null
+    },
+    "RideDriver": {
+      "$id": "163",
+      "DriverLocation": null,
+      "DriverVehicle": null,
+      "IsFree": true,
+      "IsBanned": false,
+      "Username": null,
+      "Password": null,
+      "FirstName": null,
+      "LastName": null,
+      "JMBG": null,
+      "ContactPhone": null,
+      "Email": null,
+      "Role": "Driver",
+      "Gender": null,
+      "Rides": null
+    },
+    "Fare": 0.0,
+    "RideComment": {
+      "$id": "164",
+      "Description": null,
+      "DateAndTime": "0001-01-01T00:00:00",
+      "CommentUser": null,
+      "CommentRide": null,
+      "RideMark": 0
+    },
+    "StatusOfRide": "CREATED_ONWAIT"
   }
 ]
